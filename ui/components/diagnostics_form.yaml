@@ -1,0 +1,12 @@
+component_id: diagnostics_form
+type: form
+title: Test connection
+description: Sends a live read-only request to Discogs and reports whether the configured credentials can connect.
+ui_schema:
+  actions:
+    test:
+      kind: query
+      query_id: test_discogs_connection
+      label: Test live connection
+  fields: []
+data:

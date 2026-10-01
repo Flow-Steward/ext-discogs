@@ -1,0 +1,18 @@
+component_id: release_lookup
+type: form
+title: Release lookup
+schema_ref: ../../schemas/release_lookup.schema.yaml
+ui_schema:
+  fields:
+    - name: release_id
+      label: Release ID
+      widget: integer
+      required: true
+    - name: include_marketplace
+      label: Include marketplace
+      widget: boolean
+    - name: include_raw
+      label: Include raw provider payload
+      widget: boolean
+data:
+  test_action: enrich_release_metadata

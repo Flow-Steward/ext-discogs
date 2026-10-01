@@ -1,0 +1,27 @@
+component_id: discogs_capabilities_database
+type: markdown
+title: Database
+content: |
+  **Search Database**: search releases, masters, artists, and labels.
+
+  **Get Release**: get a release by id.
+
+  **Get Release Rating**: get current user rating for a release.
+
+  **Update Release Rating**: update current user rating for a release.
+
+  **Delete Release Rating**: delete current user rating for a release.
+
+  **Get Release Stats**: get community stats for a release.
+
+  **Get Master**: get a master release by id.
+
+  **Get Master Versions**: list versions for a master release.
+
+  **Get Artist**: get an artist by id.
+
+  **Get Artist Releases**: list releases for an artist.
+
+  **Get Label**: get a label by id.
+
+  **Get Label Releases**: list releases for a label.

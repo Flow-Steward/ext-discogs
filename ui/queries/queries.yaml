@@ -1,0 +1,169 @@
+queries:
+  - query_id: provider_health
+    title: Provider health
+    description: Returns Discogs runtime status and redacted rate-limit details.
+    required_scopes: [read:projects]
+    result_fields: [result.status, result.authenticated, result.rate_limit, result.checks]
+    error_codes: [internal_error]
+    handler:
+      mode: extension
+      config:
+        provider_key: discogs
+        required_provider_secrets:
+          - user_token
+  - query_id: load_connection_settings
+    title: Load connection settings
+    description: Returns default non-secret Discogs connection settings.
+    required_scopes: [read:projects]
+    result_fields: [result.settings]
+    error_codes: [internal_error]
+    handler:
+      mode: extension
+      config:
+        provider_key: discogs
+        required_provider_secrets:
+          - user_token
+  - query_id: connection_status
+    title: Connection status
+    description: Returns a redacted view of auth and connection configuration.
+    required_scopes: [read:projects]
+    result_fields: [result.configured, result.auth_mode, result.secrets]
+    error_codes: [internal_error]
+    handler:
+      mode: extension
+      config:
+        provider_key: discogs
+        required_provider_secrets:
+          - user_token
+  - query_id: test_discogs_connection
+    title: Test Discogs connection
+    description: Sends a live read-only request to Discogs and returns a human-readable connection result.
+    required_scopes: [extension:invoke]
+    result_fields: [result.status, result.message, result.http_status, result.auth_mode, result.username, result.rate_limit]
+    error_codes: [authentication_required, external_request_blocked, permission_denied, provider_not_found, provider_request_failed, rate_limited]
+    handler:
+      mode: extension
+      config:
+        provider_key: discogs
+        required_provider_secrets:
+          - user_token
+  - query_id: discogs_search
+    title: Search Discogs
+    description: Searches Discogs database resources.
+    required_scopes: [extension:invoke]
+    result_fields: ["items[].id", "items[].type", "items[].title", pagination, rate_limit]
+    error_codes: [invalid_payload, provider_request_failed, rate_limited]
+    handler:
+      mode: extension
+      config:
+        provider_key: discogs
+        required_provider_secrets:
+          - user_token
+  - query_id: release_details
+    title: Release details
+    description: Returns normalized Discogs release metadata.
+    required_scopes: [extension:invoke]
+    result_fields: [result.release_id, result.title, result.artists, result.tracklist]
+    error_codes: [invalid_payload, provider_not_found, provider_request_failed]
+    handler:
+      mode: extension
+      config:
+        provider_key: discogs
+        required_provider_secrets:
+          - user_token
+  - query_id: master_details
+    title: Master details
+    description: Returns normalized Discogs master metadata.
+    required_scopes: [extension:invoke]
+    result_fields: [result.master_id, result.title, result.main_release]
+    error_codes: [invalid_payload, provider_not_found, provider_request_failed]
+    handler:
+      mode: extension
+      config:
+        provider_key: discogs
+        required_provider_secrets:
+          - user_token
+  - query_id: master_versions
+    title: Master versions
+    description: Lists versions for a Discogs master release.
+    required_scopes: [extension:invoke]
+    result_fields: ["items[].id", "items[].title", pagination]
+    error_codes: [invalid_payload, provider_not_found, provider_request_failed]
+    handler:
+      mode: extension
+      config:
+        provider_key: discogs
+        required_provider_secrets:
+          - user_token
+  - query_id: artist_details
+    title: Artist details
+    description: Returns normalized Discogs artist metadata.
+    required_scopes: [extension:invoke]
+    result_fields: [result.artist_id, result.name, result.profile]
+    error_codes: [invalid_payload, provider_not_found, provider_request_failed]
+    handler:
+      mode: extension
+      config:
+        provider_key: discogs
+        required_provider_secrets:
+          - user_token
+  - query_id: label_details
+    title: Label details
+    description: Returns normalized Discogs label metadata.
+    required_scopes: [extension:invoke]
+    result_fields: [result.label_id, result.name, result.profile]
+    error_codes: [invalid_payload, provider_not_found, provider_request_failed]
+    handler:
+      mode: extension
+      config:
+        provider_key: discogs
+        required_provider_secrets:
+          - user_token
+  - query_id: marketplace_stats
+    title: Marketplace stats
+    description: Returns bounded marketplace statistics for a release.
+    required_scopes: [extension:invoke]
+    result_fields: [result.release_id, result.lowest_price, result.num_for_sale]
+    error_codes: [invalid_payload, provider_not_found, provider_request_failed]
+    handler:
+      mode: extension
+      config:
+        provider_key: discogs
+        required_provider_secrets:
+          - user_token
+  - query_id: collection_folders
+    title: Collection folders
+    description: Lists authenticated user collection folders.
+    required_scopes: [extension:invoke]
+    result_fields: ["items[].id", "items[].name", "items[].count"]
+    error_codes: [authentication_required, provider_request_failed]
+    handler:
+      mode: extension
+      config:
+        provider_key: discogs
+        required_provider_secrets:
+          - user_token
+  - query_id: collection_release_status
+    title: Collection release status
+    description: Checks whether a release appears in a collection folder.
+    required_scopes: [extension:invoke]
+    result_fields: [result.release_id, result.in_collection, result.folder_ids]
+    error_codes: [authentication_required, invalid_payload, provider_request_failed]
+    handler:
+      mode: extension
+      config:
+        provider_key: discogs
+        required_provider_secrets:
+          - user_token
+  - query_id: wantlist_status
+    title: Wantlist status
+    description: Checks whether a release appears in the configured wantlist.
+    required_scopes: [extension:invoke]
+    result_fields: [result.release_id, result.in_wantlist]
+    error_codes: [authentication_required, invalid_payload, provider_request_failed]
+    handler:
+      mode: extension
+      config:
+        provider_key: discogs
+        required_provider_secrets:
+          - user_token

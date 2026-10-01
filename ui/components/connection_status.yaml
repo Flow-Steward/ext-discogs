@@ -1,0 +1,15 @@
+component_id: connection_status
+type: key_value_card
+title: Connection status
+query_id: connection_status
+fields:
+  - key: result.configured
+    label: Configured
+  - key: result.auth_mode
+    label: Auth mode
+  - key: result.token_source
+    label: Token source
+  - key: result.username
+    label: Username
+  - key: result.secrets.user_token
+    label: Token

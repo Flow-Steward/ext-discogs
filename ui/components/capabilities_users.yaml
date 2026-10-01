@@ -1,0 +1,11 @@
+component_id: discogs_capabilities_users
+type: markdown
+title: Users
+content: |
+  **Get User Profile**: get Discogs user profile.
+
+  **Get User Submissions**: list user submissions.
+
+  **Get User Contributions**: list user contributions.
+
+  **Get User Lists**: list user lists.

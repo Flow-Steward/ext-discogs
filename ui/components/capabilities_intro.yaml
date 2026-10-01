@@ -1,0 +1,7 @@
+component_id: discogs_capabilities_intro
+type: markdown
+title: Discogs workflow actions
+content: |
+  Discogs API functions are exposed as workflow actions, not as manual API forms inside this extension UI.
+
+  Use Workflow -> Add step -> Action source: Discogs API to add these operations.

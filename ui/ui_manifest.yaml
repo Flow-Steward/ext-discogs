@@ -1,0 +1,5 @@
+version: '1'
+pages:
+  - ref: pages/overview.yaml
+  - ref: pages/account.yaml
+  - ref: pages/capabilities.yaml

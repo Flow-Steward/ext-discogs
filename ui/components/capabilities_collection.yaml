@@ -1,0 +1,25 @@
+component_id: discogs_capabilities_collection
+type: markdown
+title: Collection
+content: |
+  **Get Collection Folders**: list collection folders.
+
+  **Create Collection Folder**: create collection folder.
+
+  **Get Collection Folder**: get collection folder.
+
+  **Update Collection Folder**: update collection folder.
+
+  **Delete Collection Folder**: delete collection folder.
+
+  **Get Collection Releases**: list releases in collection folder.
+
+  **Get Collection Release**: get collection release instances.
+
+  **Add Collection Release**: add release to collection folder.
+
+  **Delete Collection Instance**: delete collection release instance.
+
+  **Get Collection Fields**: list custom collection fields.
+
+  **Edit Collection Field Value**: edit collection custom field value.

@@ -1,0 +1,7 @@
+page_id: account
+title: Connection
+description: Configure and test the Discogs credentials used by workflow actions.
+components:
+  - ref: ../components/connection_form.yaml
+  - ref: ../components/connection_status.yaml
+  - ref: ../components/diagnostics_form.yaml

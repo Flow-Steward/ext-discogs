@@ -1,0 +1,6 @@
+page_id: database
+title: Database
+description: Lookup release, master, artist, and label records.
+components:
+  - ref: ../components/release_lookup_form.yaml
+  - ref: ../components/database_lookup_form.yaml

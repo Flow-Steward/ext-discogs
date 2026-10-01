@@ -1,0 +1,155 @@
+workflow_id: discogs_artist_profile_and_releases
+version: 1.0.2
+display_name: Discogs — Artist profile and releases
+description: Fetch one Discogs artist profile and a bounded page of the artist's releases.
+enabled: true
+trigger:
+  confidence_threshold: 0.0
+settings:
+  portability:
+    allow_full_export: true
+  traits:
+    discogs: true
+    read_only: true
+  policies:
+    branch_strategy: none
+  callable:
+    enabled: true
+    trigger_channels:
+      - ui
+      - api
+      - mcp
+      - parent_workflow
+    input_mode: fields
+    strict_inputs: true
+    expected_inputs:
+      - name: artist_id
+        label: Discogs artist ID
+        type: number
+        required: true
+        description: Numeric artist ID from Discogs.
+      - name: per_page
+        label: Maximum releases
+        type: number
+        required: false
+        description: Bounded Discogs page size; defaults to 25.
+      - name: sort
+        label: Sort releases by
+        type: select
+        required: false
+        options:
+          - year
+          - title
+          - format
+        description: Field used to sort the artist's releases.
+      - name: sort_order
+        label: Sort order
+        type: select
+        required: false
+        options:
+          - desc
+          - asc
+        description: Descending returns the newest releases first when sorting by year.
+    output_mode: variables
+    expected_outputs:
+      - name: artist
+        type: object
+        required: true
+        description: Discogs artist profile, including name, aliases, groups, and profile text when available.
+      - name: releases
+        type: array
+        required: true
+        description: First bounded page of releases associated with the artist.
+      - name: pagination
+        type: object
+        required: false
+        description: Discogs pagination metadata for fetching another page later.
+    expected_artifacts: []
+    side_effects: []
+builder_metadata_jsonb:
+  purpose: Combine a Discogs artist profile with a compact discography result for research or downstream enrichment.
+  use_cases:
+    - artist research
+    - discography preview
+    - catalog enrichment
+    - selecting releases for a follow-up workflow
+  anti_use_cases:
+    - full Discogs crawling
+    - account modification
+  composition_role: data_enrichment_workflow
+  determinism_level: external_api
+  safe_for_auto_use: true
+tags:
+  - discogs
+  - artist
+  - discography
+  - read-only
+dependencies:
+  extensions:
+    - extension_id: com.discogs.api
+      required: true
+      reason: Executes Discogs artist and artist release operations.
+phases:
+  - phase_id: load_artist
+    phase_kind: start
+    display_name: Load Artist
+    required_outputs:
+      - artist
+    gate:
+      type: none
+    steps:
+      - step_id: get_artist_profile
+        display_name: Get artist profile
+        step_kind: connector
+        connector_id: extension.com.discogs.api
+        connector_install_id: com.discogs.api
+        connection_binding_jsonb: {}
+        override:
+          connector:
+            extension_id: com.discogs.api
+            operation_id: discogs_get_artist
+            action_id: discogs_get_artist
+        input_mapping_jsonb:
+          artist_id: state.inputs.artist_id
+        output_mapping_jsonb:
+          result.data.id: state.artist.id
+          result.data.name: state.artist.name
+  - phase_id: load_releases
+    display_name: Load Artist Releases
+    required_outputs:
+      - releases
+    gate:
+      type: none
+    steps:
+      - step_id: get_artist_releases
+        display_name: Get artist releases
+        step_kind: connector
+        connector_id: extension.com.discogs.api
+        connector_install_id: com.discogs.api
+        connection_binding_jsonb: {}
+        override:
+          connector:
+            extension_id: com.discogs.api
+            operation_id: discogs_get_artist_releases
+            action_id: discogs_get_artist_releases
+        input_mapping_jsonb:
+          artist_id: state.inputs.artist_id
+          page: literal:1
+          per_page: state.inputs.per_page | default:25
+          sort: state.inputs.sort | default:year
+          sort_order: state.inputs.sort_order | default:desc
+        output_mapping_jsonb:
+          result.data.releases[]: state.releases
+          result.data.pagination: state.pagination
+  - phase_id: complete
+    phase_kind: terminal
+    display_name: Complete
+    gate:
+      type: none
+    steps:
+      - step_id: artist_lookup_complete
+        display_name: Finish artist lookup
+        step_kind: stop_success
+        override:
+          stop_success:
+            message: Discogs artist profile and release list completed.

@@ -1,0 +1,5 @@
+component_id: discogs_capabilities_write_guard
+type: markdown
+title: Write operation guard
+content: |
+  Write operations require write actions to be enabled in Connection settings and require explicit confirmation in the workflow step.

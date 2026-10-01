@@ -1,0 +1,6 @@
+page_id: search
+title: Search
+description: Search Discogs database resources.
+components:
+  - ref: ../components/search_form.yaml
+  - ref: ../components/search_results_grid.yaml

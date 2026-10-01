@@ -1,0 +1,11 @@
+component_id: marketplace_stats
+type: form
+title: Marketplace stats
+ui_schema:
+  fields:
+    - name: release_id
+      label: Release ID
+      widget: integer
+      required: true
+data:
+  test_action: marketplace_stats

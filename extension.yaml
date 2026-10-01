@@ -1,0 +1,72 @@
+manifest_version: 2
+lifecycle: {data_schema_version: 1, data_migrations: []}
+extension_id: com.discogs.api
+kind: tool_provider
+version: 0.1.9
+display_name: Discogs API
+description: Search Discogs, inspect music database records, query marketplace data, and use guarded authenticated collection or wantlist actions.
+author: Flow Steward
+vendor_name: Discogs
+support_url: https://github.com/Flow-Steward/ext-discogs/issues
+website_url: https://github.com/Flow-Steward/ext-discogs
+listing:
+  category: media
+  tags: [discogs, music, records, marketplace, collection, wantlist]
+  summary: Search the Discogs music database and marketplace, and manage a collection or wantlist with guarded actions.
+features:
+  - tool
+  - action
+  - query
+required_scopes:
+  - extension:invoke
+  - read:projects
+schemas:
+  config: schemas/config.schema.yaml
+  secrets: schemas/secrets.schema.yaml
+  subscriptions: schemas/subscriptions.schema.yaml
+  input:
+    type: object
+    properties:
+      action:
+        type: string
+      query:
+        type: string
+  output:
+    type: object
+    properties:
+      ok:
+        type: boolean
+      result:
+        type: object
+      errors:
+        type: array
+    required:
+      - ok
+machine_auth:
+  service_account_key: svc_ext_discogs_api
+  required_scopes:
+    - extension:invoke
+account_scope:
+  scope_type: project
+  description: Discogs API settings, secrets, and workflow operations are configured per project.
+entrypoint:
+  mode: subprocess
+  command:
+    - python3
+    - main.py
+  timeout_seconds: 30
+health:
+  command:
+    - python3
+    - health.py
+  timeout_seconds: 10
+ui_manifest: ui/ui_manifest.yaml
+query_manifest: ui/queries/queries.yaml
+action_manifest: ui/actions/actions.yaml
+runtime:
+  extension_contract_v2:
+    connection_types: contracts/connection_types.yaml
+    operation_manifest: contracts/operation_manifest.yaml
+    step_ui_manifest: contracts/step_ui_manifest.yaml
+    resource_query_manifest: contracts/resource_query_manifest.yaml
+    artifact_policies: contracts/artifact_policies.yaml

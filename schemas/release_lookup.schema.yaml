@@ -1,0 +1,14 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+type: object
+additionalProperties: false
+required: [release_id]
+properties:
+  release_id:
+    type: integer
+    minimum: 1
+  include_marketplace:
+    type: boolean
+    default: false
+  include_raw:
+    type: boolean
+    default: false

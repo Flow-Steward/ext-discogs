@@ -1,0 +1,13 @@
+component_id: discogs_capabilities_orders
+type: markdown
+title: Orders
+content: |
+  **List Orders**: list marketplace orders.
+
+  **Get Order**: get order by id.
+
+  **Update Order**: update order status, shipping, or archive fields.
+
+  **List Order Messages**: list order messages.
+
+  **Add Order Message**: add message to order.

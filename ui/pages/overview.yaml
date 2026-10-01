@@ -1,0 +1,7 @@
+page_id: overview
+title: Overview
+description: Discogs API runtime, connection status, and rate-limit summary.
+components:
+  - ref: ../components/overview.yaml
+  - ref: ../components/health_panel.yaml
+  - ref: ../components/rate_limit_panel.yaml

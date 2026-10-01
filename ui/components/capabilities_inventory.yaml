@@ -1,0 +1,15 @@
+component_id: discogs_capabilities_inventory
+type: markdown
+title: Inventory
+content: |
+  **Get Inventory Exports**: list inventory exports.
+
+  **Get Inventory Export**: get inventory export by id.
+
+  **Download Inventory Export**: download inventory export metadata/body.
+
+  **Inventory Upload Add**: upload inventory add payload.
+
+  **Inventory Upload Change**: upload inventory change payload.
+
+  **Inventory Upload Delete**: upload inventory delete payload.

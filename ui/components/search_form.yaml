@@ -1,0 +1,43 @@
+component_id: discogs_search_form
+type: form
+title: Database search
+schema_ref: ../../schemas/search.schema.yaml
+ui_schema:
+  actions:
+    search:
+      kind: query
+      query_id: discogs_search
+      label: Search
+      target_component_id: discogs_search_results
+  fields:
+    - name: query
+      label: Query
+      widget: text
+    - name: type
+      label: Type
+      widget: select
+      options:
+        - {label: Release, value: release}
+        - {label: Master, value: master}
+        - {label: Artist, value: artist}
+        - {label: Label, value: label}
+    - name: artist
+      label: Artist
+      widget: text
+    - name: release_title
+      label: Release title
+      widget: text
+    - name: label
+      label: Label
+      widget: text
+    - name: year
+      label: Year
+      widget: text
+    - name: barcode
+      label: Barcode
+      widget: text
+    - name: catno
+      label: Catalog number
+      widget: text
+data:
+  test_action: test_discogs_connection

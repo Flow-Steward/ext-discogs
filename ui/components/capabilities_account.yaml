@@ -1,0 +1,5 @@
+component_id: discogs_capabilities_account
+type: markdown
+title: Account
+content: |
+  **Identity**: get authenticated Discogs identity.

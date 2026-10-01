@@ -1,0 +1,5 @@
+page_id: marketplace
+title: Marketplace
+description: Fetch bounded marketplace statistics for Discogs releases.
+components:
+  - ref: ../components/marketplace_stats_form.yaml

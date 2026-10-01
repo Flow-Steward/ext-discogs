@@ -1,0 +1,18 @@
+component_id: database_lookup
+type: form
+title: Entity lookup
+ui_schema:
+  fields:
+    - name: entity_type
+      label: Entity type
+      widget: select
+      options:
+        - {label: Master, value: master}
+        - {label: Artist, value: artist}
+        - {label: Label, value: label}
+    - name: entity_id
+      label: Entity ID
+      widget: integer
+      required: true
+data:
+  test_action: lookup_database_entity

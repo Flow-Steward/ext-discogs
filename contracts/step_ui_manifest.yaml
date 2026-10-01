@@ -1,0 +1,322 @@
+forms:
+  - operation_id: discogs_identity
+    title: "Identity"
+    fields:
+      - {name: user_token, widget_type: text, label: "User Token", required: false}
+  - operation_id: discogs_search_database
+    title: "Search Database"
+    fields:
+      - {name: query, widget_type: text, label: "Query", required: false}
+      - {name: type, widget_type: text, label: "Type", required: false}
+      - {name: artist, widget_type: text, label: "Artist", required: false}
+      - {name: release_title, widget_type: text, label: "Release Title", required: false}
+      - {name: label, widget_type: text, label: "Label", required: false}
+      - {name: year, widget_type: integer, label: "Year", required: false}
+      - {name: barcode, widget_type: text, label: "Barcode", required: false}
+      - {name: catno, widget_type: text, label: "Catno", required: false}
+      - {name: page, widget_type: integer, label: "Page", required: false}
+      - {name: per_page, widget_type: integer, label: "Per Page", required: false}
+  - operation_id: discogs_get_release
+    title: "Get Release"
+    fields:
+      - {name: release_id, widget_type: resource_picker, label: "Release Id", query_id: discogs_search, required: true}
+  - operation_id: discogs_get_release_rating
+    title: "Get Release Rating"
+    fields:
+      - {name: release_id, widget_type: resource_picker, label: "Release Id", query_id: discogs_search, required: true}
+      - {name: username, widget_type: text, label: "Username", required: false}
+  - operation_id: discogs_update_release_rating
+    title: "Update Release Rating"
+    fields:
+      - {name: release_id, widget_type: resource_picker, label: "Release Id", query_id: discogs_search, required: true}
+      - {name: username, widget_type: text, label: "Username", required: false}
+      - {name: rating, widget_type: integer, label: "Rating", required: true}
+      - {name: confirm, widget_type: boolean, label: "Confirm", required: true}
+  - operation_id: discogs_delete_release_rating
+    title: "Delete Release Rating"
+    fields:
+      - {name: release_id, widget_type: resource_picker, label: "Release Id", query_id: discogs_search, required: true}
+      - {name: username, widget_type: text, label: "Username", required: false}
+      - {name: confirm, widget_type: boolean, label: "Confirm", required: true}
+  - operation_id: discogs_get_release_stats
+    title: "Get Release Stats"
+    fields:
+      - {name: release_id, widget_type: resource_picker, label: "Release Id", query_id: discogs_search, required: true}
+  - operation_id: discogs_get_master
+    title: "Get Master"
+    fields:
+      - {name: master_id, widget_type: integer, label: "Master Id", required: true}
+  - operation_id: discogs_get_master_versions
+    title: "Get Master Versions"
+    fields:
+      - {name: master_id, widget_type: integer, label: "Master Id", required: true}
+      - {name: page, widget_type: integer, label: "Page", required: false}
+      - {name: per_page, widget_type: integer, label: "Per Page", required: false}
+      - {name: format, widget_type: text, label: "Format", required: false}
+      - {name: label, widget_type: text, label: "Label", required: false}
+      - {name: released, widget_type: text, label: "Released", required: false}
+      - {name: country, widget_type: text, label: "Country", required: false}
+      - {name: sort, widget_type: text, label: "Sort", required: false}
+      - {name: sort_order, widget_type: text, label: "Sort Order", required: false}
+  - operation_id: discogs_get_artist
+    title: "Get Artist"
+    fields:
+      - {name: artist_id, widget_type: integer, label: "Artist Id", required: true}
+  - operation_id: discogs_get_artist_releases
+    title: "Get Artist Releases"
+    fields:
+      - {name: artist_id, widget_type: integer, label: "Artist Id", required: true}
+      - {name: page, widget_type: integer, label: "Page", required: false}
+      - {name: per_page, widget_type: integer, label: "Per Page", required: false}
+      - {name: sort, widget_type: text, label: "Sort", required: false}
+      - {name: sort_order, widget_type: text, label: "Sort Order", required: false}
+  - operation_id: discogs_get_label
+    title: "Get Label"
+    fields:
+      - {name: label_id, widget_type: integer, label: "Label Id", required: true}
+  - operation_id: discogs_get_label_releases
+    title: "Get Label Releases"
+    fields:
+      - {name: label_id, widget_type: integer, label: "Label Id", required: true}
+      - {name: page, widget_type: integer, label: "Page", required: false}
+      - {name: per_page, widget_type: integer, label: "Per Page", required: false}
+  - operation_id: discogs_get_marketplace_listing
+    title: "Get Marketplace Listing"
+    fields:
+      - {name: listing_id, widget_type: integer, label: "Listing Id", required: true}
+  - operation_id: discogs_create_marketplace_listing
+    title: "Create Marketplace Listing"
+    fields:
+      - {name: release_id, widget_type: resource_picker, label: "Release Id", query_id: discogs_search, required: true}
+      - {name: condition, widget_type: text, label: "Condition", required: true}
+      - {name: sleeve_condition, widget_type: text, label: "Sleeve Condition", required: false}
+      - {name: price, widget_type: number, label: "Price", required: true}
+      - {name: status, widget_type: text, label: "Status", required: false}
+      - {name: comments, widget_type: textarea, label: "Comments", required: false}
+      - {name: allow_offers, widget_type: boolean, label: "Allow Offers", required: false}
+      - {name: external_id, widget_type: text, label: "External Id", required: false}
+      - {name: location, widget_type: text, label: "Location", required: false}
+      - {name: weight, widget_type: number, label: "Weight", required: false}
+      - {name: format_quantity, widget_type: integer, label: "Format Quantity", required: false}
+      - {name: confirm, widget_type: boolean, label: "Confirm", required: true}
+  - operation_id: discogs_update_marketplace_listing
+    title: "Update Marketplace Listing"
+    fields:
+      - {name: listing_id, widget_type: integer, label: "Listing Id", required: true}
+      - {name: release_id, widget_type: resource_picker, label: "Release Id", query_id: discogs_search, required: false}
+      - {name: condition, widget_type: text, label: "Condition", required: false}
+      - {name: sleeve_condition, widget_type: text, label: "Sleeve Condition", required: false}
+      - {name: price, widget_type: number, label: "Price", required: false}
+      - {name: status, widget_type: text, label: "Status", required: false}
+      - {name: comments, widget_type: textarea, label: "Comments", required: false}
+      - {name: allow_offers, widget_type: boolean, label: "Allow Offers", required: false}
+      - {name: external_id, widget_type: text, label: "External Id", required: false}
+      - {name: location, widget_type: text, label: "Location", required: false}
+      - {name: weight, widget_type: number, label: "Weight", required: false}
+      - {name: format_quantity, widget_type: integer, label: "Format Quantity", required: false}
+      - {name: confirm, widget_type: boolean, label: "Confirm", required: true}
+  - operation_id: discogs_delete_marketplace_listing
+    title: "Delete Marketplace Listing"
+    fields:
+      - {name: listing_id, widget_type: integer, label: "Listing Id", required: true}
+      - {name: confirm, widget_type: boolean, label: "Confirm", required: true}
+  - operation_id: discogs_get_marketplace_stats
+    title: "Get Marketplace Stats"
+    fields:
+      - {name: release_id, widget_type: resource_picker, label: "Release Id", query_id: discogs_search, required: true}
+  - operation_id: discogs_get_price_suggestions
+    title: "Get Price Suggestions"
+    fields:
+      - {name: release_id, widget_type: resource_picker, label: "Release Id", query_id: discogs_search, required: true}
+  - operation_id: discogs_calculate_marketplace_fee
+    title: "Calculate Marketplace Fee"
+    fields:
+      - {name: price, widget_type: number, label: "Price", required: true}
+      - {name: currency, widget_type: text, label: "Currency", required: false}
+  - operation_id: discogs_list_orders
+    title: "List Orders"
+    fields:
+      - {name: status, widget_type: text, label: "Status", required: false}
+      - {name: created_after, widget_type: text, label: "Created After", required: false}
+      - {name: created_before, widget_type: text, label: "Created Before", required: false}
+      - {name: archived, widget_type: boolean, label: "Archived", required: false}
+      - {name: sort, widget_type: text, label: "Sort", required: false}
+      - {name: sort_order, widget_type: text, label: "Sort Order", required: false}
+      - {name: page, widget_type: integer, label: "Page", required: false}
+      - {name: per_page, widget_type: integer, label: "Per Page", required: false}
+  - operation_id: discogs_get_order
+    title: "Get Order"
+    fields:
+      - {name: order_id, widget_type: text, label: "Order Id", required: true}
+  - operation_id: discogs_update_order
+    title: "Update Order"
+    fields:
+      - {name: order_id, widget_type: text, label: "Order Id", required: true}
+      - {name: status, widget_type: text, label: "Status", required: false}
+      - {name: shipping, widget_type: number, label: "Shipping", required: false}
+      - {name: archived, widget_type: boolean, label: "Archived", required: false}
+      - {name: confirm, widget_type: boolean, label: "Confirm", required: true}
+  - operation_id: discogs_list_order_messages
+    title: "List Order Messages"
+    fields:
+      - {name: order_id, widget_type: text, label: "Order Id", required: true}
+  - operation_id: discogs_add_order_message
+    title: "Add Order Message"
+    fields:
+      - {name: order_id, widget_type: text, label: "Order Id", required: true}
+      - {name: message, widget_type: textarea, label: "Message", required: true}
+      - {name: status, widget_type: text, label: "Status", required: false}
+      - {name: confirm, widget_type: boolean, label: "Confirm", required: true}
+  - operation_id: discogs_get_user_profile
+    title: "Get User Profile"
+    fields:
+      - {name: username, widget_type: text, label: "Username", required: true}
+  - operation_id: discogs_get_user_submissions
+    title: "Get User Submissions"
+    fields:
+      - {name: username, widget_type: text, label: "Username", required: true}
+      - {name: page, widget_type: integer, label: "Page", required: false}
+      - {name: per_page, widget_type: integer, label: "Per Page", required: false}
+  - operation_id: discogs_get_user_contributions
+    title: "Get User Contributions"
+    fields:
+      - {name: username, widget_type: text, label: "Username", required: true}
+      - {name: page, widget_type: integer, label: "Page", required: false}
+      - {name: per_page, widget_type: integer, label: "Per Page", required: false}
+      - {name: sort, widget_type: text, label: "Sort", required: false}
+      - {name: sort_order, widget_type: text, label: "Sort Order", required: false}
+  - operation_id: discogs_get_user_lists
+    title: "Get User Lists"
+    fields:
+      - {name: username, widget_type: text, label: "Username", required: true}
+      - {name: page, widget_type: integer, label: "Page", required: false}
+      - {name: per_page, widget_type: integer, label: "Per Page", required: false}
+  - operation_id: discogs_get_collection_folders
+    title: "Get Collection Folders"
+    fields:
+      - {name: username, widget_type: text, label: "Username", required: false}
+  - operation_id: discogs_create_collection_folder
+    title: "Create Collection Folder"
+    fields:
+      - {name: username, widget_type: text, label: "Username", required: false}
+      - {name: name, widget_type: text, label: "Name", required: true}
+      - {name: confirm, widget_type: boolean, label: "Confirm", required: true}
+  - operation_id: discogs_get_collection_folder
+    title: "Get Collection Folder"
+    fields:
+      - {name: username, widget_type: text, label: "Username", required: false}
+      - {name: folder_id, widget_type: integer, label: "Folder Id", required: true}
+  - operation_id: discogs_update_collection_folder
+    title: "Update Collection Folder"
+    fields:
+      - {name: username, widget_type: text, label: "Username", required: false}
+      - {name: folder_id, widget_type: integer, label: "Folder Id", required: true}
+      - {name: name, widget_type: text, label: "Name", required: true}
+      - {name: confirm, widget_type: boolean, label: "Confirm", required: true}
+  - operation_id: discogs_delete_collection_folder
+    title: "Delete Collection Folder"
+    fields:
+      - {name: username, widget_type: text, label: "Username", required: false}
+      - {name: folder_id, widget_type: integer, label: "Folder Id", required: true}
+      - {name: confirm, widget_type: boolean, label: "Confirm", required: true}
+  - operation_id: discogs_get_collection_releases
+    title: "Get Collection Releases"
+    fields:
+      - {name: username, widget_type: text, label: "Username", required: false}
+      - {name: folder_id, widget_type: integer, label: "Folder Id", required: true}
+      - {name: page, widget_type: integer, label: "Page", required: false}
+      - {name: per_page, widget_type: integer, label: "Per Page", required: false}
+      - {name: sort, widget_type: text, label: "Sort", required: false}
+      - {name: sort_order, widget_type: text, label: "Sort Order", required: false}
+  - operation_id: discogs_get_collection_release
+    title: "Get Collection Release"
+    fields:
+      - {name: username, widget_type: text, label: "Username", required: false}
+      - {name: folder_id, widget_type: integer, label: "Folder Id", required: true}
+      - {name: release_id, widget_type: resource_picker, label: "Release Id", query_id: discogs_search, required: true}
+  - operation_id: discogs_add_collection_release
+    title: "Add Collection Release"
+    fields:
+      - {name: username, widget_type: text, label: "Username", required: false}
+      - {name: folder_id, widget_type: integer, label: "Folder Id", required: true}
+      - {name: release_id, widget_type: resource_picker, label: "Release Id", query_id: discogs_search, required: true}
+      - {name: notes, widget_type: textarea, label: "Notes", required: false}
+      - {name: rating, widget_type: integer, label: "Rating", required: false}
+      - {name: confirm, widget_type: boolean, label: "Confirm", required: true}
+  - operation_id: discogs_delete_collection_instance
+    title: "Delete Collection Instance"
+    fields:
+      - {name: username, widget_type: text, label: "Username", required: false}
+      - {name: folder_id, widget_type: integer, label: "Folder Id", required: true}
+      - {name: release_id, widget_type: resource_picker, label: "Release Id", query_id: discogs_search, required: true}
+      - {name: instance_id, widget_type: integer, label: "Instance Id", required: true}
+      - {name: confirm, widget_type: boolean, label: "Confirm", required: true}
+  - operation_id: discogs_get_collection_fields
+    title: "Get Collection Fields"
+    fields:
+      - {name: username, widget_type: text, label: "Username", required: false}
+  - operation_id: discogs_edit_collection_field_value
+    title: "Edit Collection Field Value"
+    fields:
+      - {name: username, widget_type: text, label: "Username", required: false}
+      - {name: folder_id, widget_type: integer, label: "Folder Id", required: true}
+      - {name: release_id, widget_type: resource_picker, label: "Release Id", query_id: discogs_search, required: true}
+      - {name: instance_id, widget_type: integer, label: "Instance Id", required: true}
+      - {name: field_id, widget_type: integer, label: "Field Id", required: true}
+      - {name: value, widget_type: text, label: "Value", required: true}
+      - {name: confirm, widget_type: boolean, label: "Confirm", required: true}
+  - operation_id: discogs_get_wantlist
+    title: "Get Wantlist"
+    fields:
+      - {name: username, widget_type: text, label: "Username", required: false}
+      - {name: page, widget_type: integer, label: "Page", required: false}
+      - {name: per_page, widget_type: integer, label: "Per Page", required: false}
+  - operation_id: discogs_get_wantlist_release
+    title: "Get Wantlist Release"
+    fields:
+      - {name: username, widget_type: text, label: "Username", required: false}
+      - {name: release_id, widget_type: resource_picker, label: "Release Id", query_id: discogs_search, required: true}
+  - operation_id: discogs_add_wantlist_release
+    title: "Add Wantlist Release"
+    fields:
+      - {name: username, widget_type: text, label: "Username", required: false}
+      - {name: release_id, widget_type: resource_picker, label: "Release Id", query_id: discogs_search, required: true}
+      - {name: notes, widget_type: textarea, label: "Notes", required: false}
+      - {name: rating, widget_type: integer, label: "Rating", required: false}
+      - {name: confirm, widget_type: boolean, label: "Confirm", required: true}
+  - operation_id: discogs_delete_wantlist_release
+    title: "Delete Wantlist Release"
+    fields:
+      - {name: username, widget_type: text, label: "Username", required: false}
+      - {name: release_id, widget_type: resource_picker, label: "Release Id", query_id: discogs_search, required: true}
+      - {name: confirm, widget_type: boolean, label: "Confirm", required: true}
+  - operation_id: discogs_get_inventory_exports
+    title: "Get Inventory Exports"
+    fields:
+      []
+  - operation_id: discogs_get_inventory_export
+    title: "Get Inventory Export"
+    fields:
+      - {name: export_id, widget_type: integer, label: "Export Id", required: true}
+  - operation_id: discogs_download_inventory_export
+    title: "Download Inventory Export"
+    fields:
+      - {name: export_id, widget_type: integer, label: "Export Id", required: true}
+  - operation_id: discogs_inventory_upload_add
+    title: "Inventory Upload Add"
+    fields:
+      - {name: items, widget_type: json, label: "Items", required: false}
+      - {name: csv, widget_type: textarea, label: "Csv", required: false}
+      - {name: confirm, widget_type: boolean, label: "Confirm", required: true}
+  - operation_id: discogs_inventory_upload_change
+    title: "Inventory Upload Change"
+    fields:
+      - {name: items, widget_type: json, label: "Items", required: false}
+      - {name: csv, widget_type: textarea, label: "Csv", required: false}
+      - {name: confirm, widget_type: boolean, label: "Confirm", required: true}
+  - operation_id: discogs_inventory_upload_delete
+    title: "Inventory Upload Delete"
+    fields:
+      - {name: items, widget_type: json, label: "Items", required: false}
+      - {name: csv, widget_type: textarea, label: "Csv", required: false}
+      - {name: confirm, widget_type: boolean, label: "Confirm", required: true}

@@ -1,0 +1,5 @@
+component_id: discogs_overview
+type: markdown
+title: Discogs API
+content: |
+  Discogs API workflow actions are available from the workflow builder. Use this extension UI to configure the account connection, verify runtime health, and inspect diagnostics.

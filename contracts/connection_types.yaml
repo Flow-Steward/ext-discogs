@@ -1,0 +1,60 @@
+connection_types:
+  - connection_type_id: discogs_token_account
+    display_name: Discogs token account
+    description: Discogs account authenticated with a user token stored as a project connection secret.
+    auth:
+      type: static_secret
+      secret_names:
+        user_token: user_token
+    config_schema:
+      type: object
+      additionalProperties: false
+      properties:
+        provider:
+          type: string
+          default: discogs
+        base_url:
+          type: string
+          format: uri
+          default: https://api.discogs.com
+        username:
+          type: string
+        user_agent:
+          type: string
+          default: FlowStewardDiscogsExtension/0.1
+        allowed_hosts:
+          type: array
+          items: {type: string}
+          default: [api.discogs.com]
+        mock_mode:
+          type: boolean
+          default: false
+        enable_write_actions:
+          type: boolean
+          default: false
+        default_currency:
+          type: string
+          enum: [USD, EUR, GBP, JPY, CAD, AUD]
+          default: USD
+        default_page_size:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 25
+    secret_schema:
+      type: object
+      additionalProperties: false
+      properties:
+        user_token:
+          type: string
+          title: User token
+    capabilities:
+      anonymous_read: true
+      authenticated_read: true
+      collection_write: true
+      wantlist_write: true
+      marketplace_read: true
+    safety_profile:
+      requires_https: true
+      requires_host_allowlist: true
+      stores_secret_values: false

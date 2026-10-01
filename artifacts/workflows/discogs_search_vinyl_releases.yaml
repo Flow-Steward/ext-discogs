@@ -1,0 +1,137 @@
+workflow_id: discogs_search_vinyl_releases
+version: 1.0.2
+display_name: Discogs — Search vinyl releases
+description: Search Discogs for a bounded list of vinyl releases using a title, artist, or free-text query.
+enabled: true
+trigger:
+  confidence_threshold: 0.0
+settings:
+  portability:
+    allow_full_export: true
+  traits:
+    discogs: true
+    read_only: true
+  policies:
+    branch_strategy: none
+  callable:
+    enabled: true
+    trigger_channels:
+      - ui
+      - api
+      - mcp
+      - parent_workflow
+    input_mode: fields
+    strict_inputs: true
+    expected_inputs:
+      - name: query
+        label: Search query
+        type: string
+        required: false
+        description: Album title, catalog number, barcode, or other free text.
+      - name: artist
+        label: Artist
+        type: string
+        required: false
+        description: Optional artist name used to narrow the search.
+      - name: release_title
+        label: Release title
+        type: string
+        required: false
+        description: Optional album or release title.
+      - name: year
+        label: Year
+        type: number
+        required: false
+        description: Optional release year.
+      - name: per_page
+        label: Maximum results
+        type: number
+        required: false
+        description: Bounded Discogs page size; use 25 for a compact result list.
+    output_mode: variables
+    expected_outputs:
+      - name: releases
+        type: array
+        required: true
+        description: Discogs release search results.
+      - name: pagination
+        type: object
+        required: false
+        description: Discogs pagination metadata.
+      - name: result_count
+        type: number
+        required: true
+        description: Number of releases returned on this page.
+      - name: results_json
+        type: text
+        required: true
+        description: Formatted JSON containing the returned releases.
+    expected_artifacts: []
+    side_effects: []
+builder_metadata_jsonb:
+  purpose: Search Discogs for a small read-only list of vinyl releases.
+  use_cases:
+    - album discovery
+    - release lookup
+    - catalog research
+  anti_use_cases:
+    - unbounded database crawling
+    - collection modification
+  composition_role: data_access_workflow
+  determinism_level: external_api
+  safe_for_auto_use: true
+tags:
+  - discogs
+  - vinyl
+  - search
+  - read-only
+dependencies:
+  extensions:
+    - extension_id: com.discogs.api
+      required: true
+      reason: Executes the Discogs database search operation.
+phases:
+  - phase_id: search_discogs
+    phase_kind: start
+    display_name: Search Discogs
+    required_outputs:
+      - releases
+    gate:
+      type: none
+    steps:
+      - step_id: search_vinyl_releases
+        display_name: Get vinyl release list
+        step_kind: connector
+        connector_id: extension.com.discogs.api
+        connector_install_id: com.discogs.api
+        connection_binding_jsonb: {}
+        override:
+          connector:
+            extension_id: com.discogs.api
+            operation_id: discogs_search_database
+            action_id: discogs_search_database
+        input_mapping_jsonb:
+          query: "state.inputs.query | default:"
+          type: literal:release
+          artist: "state.inputs.artist | default:"
+          release_title: "state.inputs.release_title | default:"
+          year: "state.inputs.year | default:null"
+          page: literal:1
+          per_page: state.inputs.per_page | default:25
+        output_mapping_jsonb:
+          result.data.results[]: state.releases
+          result.data.pagination: state.pagination
+          result.data.result_count: state.result_count
+          result.data.results_json: state.results_json
+  - phase_id: complete
+    phase_kind: terminal
+    display_name: Complete
+    gate:
+      type: none
+    steps:
+      - step_id: search_complete
+        display_name: Finish release search
+        step_kind: stop_success
+        override:
+          stop_success:
+            message: Discogs release search completed.

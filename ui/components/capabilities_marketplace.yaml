@@ -1,0 +1,17 @@
+component_id: discogs_capabilities_marketplace
+type: markdown
+title: Marketplace
+content: |
+  **Get Marketplace Listing**: get marketplace listing by id.
+
+  **Create Marketplace Listing**: create marketplace listing.
+
+  **Update Marketplace Listing**: update marketplace listing.
+
+  **Delete Marketplace Listing**: delete marketplace listing.
+
+  **Get Marketplace Stats**: get marketplace stats for a release.
+
+  **Get Price Suggestions**: get price suggestions for a release.
+
+  **Calculate Marketplace Fee**: calculate marketplace fee for price/currency.

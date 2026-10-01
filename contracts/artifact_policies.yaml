@@ -1,0 +1,16 @@
+policies:
+  - operation_id: discogs_search_database
+    artifacts:
+      - kind: discogs_search_results
+        retention_class: run_window
+        description: Bounded Discogs search result page.
+  - operation_id: discogs_get_release
+    artifacts:
+      - kind: discogs_release_metadata
+        retention_class: run_window
+        description: Normalized Discogs release metadata.
+  - operation_id: discogs_get_marketplace_stats
+    artifacts:
+      - kind: discogs_marketplace_snapshot
+        retention_class: run_window
+        description: Marketplace statistics snapshot for a release.

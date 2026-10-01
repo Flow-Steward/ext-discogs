@@ -1,0 +1,6 @@
+page_id: diagnostics
+title: Diagnostics
+description: Test safe Discogs request construction and inspect redacted runtime status.
+components:
+  - ref: ../components/diagnostics_form.yaml
+  - ref: ../components/connection_status.yaml

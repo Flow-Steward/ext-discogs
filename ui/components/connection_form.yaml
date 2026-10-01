@@ -1,0 +1,20 @@
+component_id: connection_settings
+type: form
+title: Connection settings
+description: Store the Discogs user token used by workflow actions. The token is saved as a provider secret, not as a removable project connection.
+ui_schema:
+  version: '1'
+  type: form_ui
+  layout:
+    columns: 1
+  fields:
+    - field_id: user_token
+      path: user_token
+      name: user_token
+      label: User token
+      widget: secret
+      help: Saved as the provider secret discogs/user_token. Existing secret values are not echoed back into this field.
+  actions:
+    save_label: Save token
+data:
+  save_action: save_secrets

@@ -1,0 +1,740 @@
+operations:
+  - operation_id: discogs_identity
+    display_name: "Identity"
+    description: "Get authenticated Discogs identity."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_account
+    inputs:
+      - {name: "user_token", value_type: text, required: false}
+    outputs:
+      - {name: "result.data.username", value_type: object}
+    result_fields: ["result.data.username"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_search_database
+    display_name: "Search Database"
+    description: "Search Discogs database releases, masters, artists, and labels."
+    operation_kind: source
+    category: discogs_database
+    inputs:
+      - {name: "query", value_type: text, required: false}
+      - {name: "type", value_type: text, required: false}
+      - {name: "artist", value_type: text, required: false}
+      - {name: "release_title", value_type: text, required: false}
+      - {name: "label", value_type: text, required: false}
+      - {name: "year", value_type: integer, required: false}
+      - {name: "barcode", value_type: text, required: false}
+      - {name: "catno", value_type: text, required: false}
+      - {name: "page", value_type: integer, required: false}
+      - {name: "per_page", value_type: integer, required: false}
+    outputs:
+      - {name: "result.data.results[]", value_type: object}
+      - {name: "result.data.pagination", value_type: object}
+      - {name: "result.data.result_count", value_type: integer}
+      - {name: "result.data.results_json", value_type: text}
+    result_fields: ["result.data.results[]", "result.data.pagination", "result.data.result_count", "result.data.results_json"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_get_release
+    display_name: "Get Release"
+    description: "Get a Discogs release by id."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_database
+    inputs:
+      - {name: "release_id", value_type: integer, required: true}
+    outputs:
+      - {name: "result.data.id", value_type: object}
+      - {name: "result.data.title", value_type: object}
+    result_fields: ["result.data.id", "result.data.title"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_get_release_rating
+    display_name: "Get Release Rating"
+    description: "Get current user rating for a release."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_database
+    inputs:
+      - {name: "release_id", value_type: integer, required: true}
+      - {name: "username", value_type: text, required: false}
+    outputs:
+      - {name: "result.data.rating", value_type: object}
+    result_fields: ["result.data.rating"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_update_release_rating
+    display_name: "Update Release Rating"
+    description: "Update current user rating for a release."
+    operation_kind: action
+    connection_type_ids: [discogs_token_account]
+    category: discogs_database
+    inputs:
+      - {name: "release_id", value_type: integer, required: true}
+      - {name: "username", value_type: text, required: false}
+      - {name: "rating", value_type: integer, required: true}
+      - {name: "confirm", value_type: boolean, required: true}
+    outputs:
+      - {name: "result.provider_status", value_type: object}
+    result_fields: ["result.provider_status"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_delete_release_rating
+    display_name: "Delete Release Rating"
+    description: "Delete current user rating for a release."
+    operation_kind: action
+    connection_type_ids: [discogs_token_account]
+    category: discogs_database
+    inputs:
+      - {name: "release_id", value_type: integer, required: true}
+      - {name: "username", value_type: text, required: false}
+      - {name: "confirm", value_type: boolean, required: true}
+    outputs:
+      - {name: "result.provider_status", value_type: object}
+    result_fields: ["result.provider_status"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_get_release_stats
+    display_name: "Get Release Stats"
+    description: "Get community stats for a release."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_database
+    inputs:
+      - {name: "release_id", value_type: integer, required: true}
+    outputs:
+      - {name: "result.data", value_type: object}
+    result_fields: ["result.data"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_get_master
+    display_name: "Get Master"
+    description: "Get a master release by id."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_database
+    inputs:
+      - {name: "master_id", value_type: integer, required: true}
+    outputs:
+      - {name: "result.data.id", value_type: object}
+      - {name: "result.data.title", value_type: object}
+    result_fields: ["result.data.id", "result.data.title"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_get_master_versions
+    display_name: "Get Master Versions"
+    description: "List versions for a master release."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_database
+    inputs:
+      - {name: "master_id", value_type: integer, required: true}
+      - {name: "page", value_type: integer, required: false}
+      - {name: "per_page", value_type: integer, required: false}
+      - {name: "format", value_type: text, required: false}
+      - {name: "label", value_type: text, required: false}
+      - {name: "released", value_type: text, required: false}
+      - {name: "country", value_type: text, required: false}
+      - {name: "sort", value_type: text, required: false}
+      - {name: "sort_order", value_type: text, required: false}
+    outputs:
+      - {name: "result.data.versions[]", value_type: object}
+      - {name: "result.data.pagination", value_type: object}
+    result_fields: ["result.data.results[]", "result.data.pagination"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_get_artist
+    display_name: "Get Artist"
+    description: "Get an artist by id."
+    operation_kind: source
+    category: discogs_database
+    inputs:
+      - {name: "artist_id", value_type: integer, required: true}
+    outputs:
+      - {name: "result.data.id", value_type: object}
+      - {name: "result.data.name", value_type: object}
+    result_fields: ["result.data.id", "result.data.name"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_get_artist_releases
+    display_name: "Get Artist Releases"
+    description: "List releases for an artist."
+    operation_kind: source
+    category: discogs_database
+    inputs:
+      - {name: "artist_id", value_type: integer, required: true}
+      - {name: "page", value_type: integer, required: false}
+      - {name: "per_page", value_type: integer, required: false}
+      - {name: "sort", value_type: text, required: false}
+      - {name: "sort_order", value_type: text, required: false}
+    outputs:
+      - {name: "result.data.releases[]", value_type: object}
+      - {name: "result.data.pagination", value_type: object}
+    result_fields: ["result.data.releases[]", "result.data.pagination"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_get_label
+    display_name: "Get Label"
+    description: "Get a label by id."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_database
+    inputs:
+      - {name: "label_id", value_type: integer, required: true}
+    outputs:
+      - {name: "result.data.id", value_type: object}
+      - {name: "result.data.name", value_type: object}
+    result_fields: ["result.data.id", "result.data.name"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_get_label_releases
+    display_name: "Get Label Releases"
+    description: "List releases for a label."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_database
+    inputs:
+      - {name: "label_id", value_type: integer, required: true}
+      - {name: "page", value_type: integer, required: false}
+      - {name: "per_page", value_type: integer, required: false}
+    outputs:
+      - {name: "result.data.releases[]", value_type: object}
+      - {name: "result.data.pagination", value_type: object}
+    result_fields: ["result.data.releases[]", "result.data.pagination"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_get_marketplace_listing
+    display_name: "Get Marketplace Listing"
+    description: "Get marketplace listing by id."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_marketplace
+    inputs:
+      - {name: "listing_id", value_type: integer, required: true}
+    outputs:
+      - {name: "result.data.id", value_type: object}
+      - {name: "result.data.price", value_type: object}
+    result_fields: ["result.data.id", "result.data.price"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_create_marketplace_listing
+    display_name: "Create Marketplace Listing"
+    description: "Create marketplace listing."
+    operation_kind: action
+    connection_type_ids: [discogs_token_account]
+    category: discogs_marketplace
+    inputs:
+      - {name: "release_id", value_type: integer, required: true}
+      - {name: "condition", value_type: text, required: true}
+      - {name: "sleeve_condition", value_type: text, required: false}
+      - {name: "price", value_type: number, required: true}
+      - {name: "status", value_type: text, required: false}
+      - {name: "comments", value_type: text, required: false}
+      - {name: "allow_offers", value_type: boolean, required: false}
+      - {name: "external_id", value_type: text, required: false}
+      - {name: "location", value_type: text, required: false}
+      - {name: "weight", value_type: number, required: false}
+      - {name: "format_quantity", value_type: integer, required: false}
+      - {name: "confirm", value_type: boolean, required: true}
+    outputs:
+      - {name: "result.data.id", value_type: object}
+      - {name: "result.provider_status", value_type: object}
+    result_fields: ["result.data.id", "result.provider_status"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_update_marketplace_listing
+    display_name: "Update Marketplace Listing"
+    description: "Update marketplace listing."
+    operation_kind: action
+    connection_type_ids: [discogs_token_account]
+    category: discogs_marketplace
+    inputs:
+      - {name: "listing_id", value_type: integer, required: true}
+      - {name: "release_id", value_type: integer, required: false}
+      - {name: "condition", value_type: text, required: false}
+      - {name: "sleeve_condition", value_type: text, required: false}
+      - {name: "price", value_type: number, required: false}
+      - {name: "status", value_type: text, required: false}
+      - {name: "comments", value_type: text, required: false}
+      - {name: "allow_offers", value_type: boolean, required: false}
+      - {name: "external_id", value_type: text, required: false}
+      - {name: "location", value_type: text, required: false}
+      - {name: "weight", value_type: number, required: false}
+      - {name: "format_quantity", value_type: integer, required: false}
+      - {name: "confirm", value_type: boolean, required: true}
+    outputs:
+      - {name: "result.provider_status", value_type: object}
+    result_fields: ["result.provider_status"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_delete_marketplace_listing
+    display_name: "Delete Marketplace Listing"
+    description: "Delete marketplace listing."
+    operation_kind: action
+    connection_type_ids: [discogs_token_account]
+    category: discogs_marketplace
+    inputs:
+      - {name: "listing_id", value_type: integer, required: true}
+      - {name: "confirm", value_type: boolean, required: true}
+    outputs:
+      - {name: "result.provider_status", value_type: object}
+    result_fields: ["result.provider_status"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_get_marketplace_stats
+    display_name: "Get Marketplace Stats"
+    description: "Get marketplace stats for a release."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_marketplace
+    inputs:
+      - {name: "release_id", value_type: integer, required: true}
+    outputs:
+      - {name: "result.data.lowest_price", value_type: object}
+      - {name: "result.data.num_for_sale", value_type: object}
+    result_fields: ["result.data.lowest_price", "result.data.num_for_sale"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_get_price_suggestions
+    display_name: "Get Price Suggestions"
+    description: "Get price suggestions for a release."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_marketplace
+    inputs:
+      - {name: "release_id", value_type: integer, required: true}
+    outputs:
+      - {name: "result.data", value_type: object}
+    result_fields: ["result.data"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_calculate_marketplace_fee
+    display_name: "Calculate Marketplace Fee"
+    description: "Calculate marketplace fee for price/currency."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_marketplace
+    inputs:
+      - {name: "price", value_type: number, required: true}
+      - {name: "currency", value_type: text, required: false}
+    outputs:
+      - {name: "result.data", value_type: object}
+    result_fields: ["result.data"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_list_orders
+    display_name: "List Orders"
+    description: "List marketplace orders."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_orders
+    inputs:
+      - {name: "status", value_type: text, required: false}
+      - {name: "created_after", value_type: text, required: false}
+      - {name: "created_before", value_type: text, required: false}
+      - {name: "archived", value_type: boolean, required: false}
+      - {name: "sort", value_type: text, required: false}
+      - {name: "sort_order", value_type: text, required: false}
+      - {name: "page", value_type: integer, required: false}
+      - {name: "per_page", value_type: integer, required: false}
+    outputs:
+      - {name: "result.data.orders[]", value_type: object}
+      - {name: "result.data.pagination", value_type: object}
+    result_fields: ["result.data.orders[]", "result.data.pagination"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_get_order
+    display_name: "Get Order"
+    description: "Get order by id."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_orders
+    inputs:
+      - {name: "order_id", value_type: text, required: true}
+    outputs:
+      - {name: "result.data.id", value_type: object}
+      - {name: "result.data.status", value_type: object}
+    result_fields: ["result.data.id", "result.data.status"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_update_order
+    display_name: "Update Order"
+    description: "Update order status/shipping/archive fields."
+    operation_kind: action
+    connection_type_ids: [discogs_token_account]
+    category: discogs_orders
+    inputs:
+      - {name: "order_id", value_type: text, required: true}
+      - {name: "status", value_type: text, required: false}
+      - {name: "shipping", value_type: number, required: false}
+      - {name: "archived", value_type: boolean, required: false}
+      - {name: "confirm", value_type: boolean, required: true}
+    outputs:
+      - {name: "result.provider_status", value_type: object}
+    result_fields: ["result.provider_status"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_list_order_messages
+    display_name: "List Order Messages"
+    description: "List order messages."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_orders
+    inputs:
+      - {name: "order_id", value_type: text, required: true}
+    outputs:
+      - {name: "result.data.messages[]", value_type: object}
+    result_fields: ["result.data.messages[]"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_add_order_message
+    display_name: "Add Order Message"
+    description: "Add message to order."
+    operation_kind: action
+    connection_type_ids: [discogs_token_account]
+    category: discogs_orders
+    inputs:
+      - {name: "order_id", value_type: text, required: true}
+      - {name: "message", value_type: text, required: true}
+      - {name: "status", value_type: text, required: false}
+      - {name: "confirm", value_type: boolean, required: true}
+    outputs:
+      - {name: "result.provider_status", value_type: object}
+    result_fields: ["result.provider_status"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_get_user_profile
+    display_name: "Get User Profile"
+    description: "Get Discogs user profile."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_user
+    inputs:
+      - {name: "username", value_type: text, required: true}
+    outputs:
+      - {name: "result.data.username", value_type: object}
+    result_fields: ["result.data.username"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_get_user_submissions
+    display_name: "Get User Submissions"
+    description: "List user submissions."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_user
+    inputs:
+      - {name: "username", value_type: text, required: true}
+      - {name: "page", value_type: integer, required: false}
+      - {name: "per_page", value_type: integer, required: false}
+    outputs:
+      - {name: "result.data.submissions[]", value_type: object}
+      - {name: "result.data.pagination", value_type: object}
+    result_fields: ["result.data.submissions[]", "result.data.pagination"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_get_user_contributions
+    display_name: "Get User Contributions"
+    description: "List user contributions."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_user
+    inputs:
+      - {name: "username", value_type: text, required: true}
+      - {name: "page", value_type: integer, required: false}
+      - {name: "per_page", value_type: integer, required: false}
+      - {name: "sort", value_type: text, required: false}
+      - {name: "sort_order", value_type: text, required: false}
+    outputs:
+      - {name: "result.data.contributions[]", value_type: object}
+      - {name: "result.data.pagination", value_type: object}
+    result_fields: ["result.data.contributions[]", "result.data.pagination"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_get_user_lists
+    display_name: "Get User Lists"
+    description: "List user lists."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_user
+    inputs:
+      - {name: "username", value_type: text, required: true}
+      - {name: "page", value_type: integer, required: false}
+      - {name: "per_page", value_type: integer, required: false}
+    outputs:
+      - {name: "result.data.lists[]", value_type: object}
+      - {name: "result.data.pagination", value_type: object}
+    result_fields: ["result.data.lists[]", "result.data.pagination"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_get_collection_folders
+    display_name: "Get Collection Folders"
+    description: "List collection folders."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_collection
+    inputs:
+      - {name: "username", value_type: text, required: false}
+    outputs:
+      - {name: "result.data.folders[]", value_type: object}
+    result_fields: ["result.data.folders[]"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_create_collection_folder
+    display_name: "Create Collection Folder"
+    description: "Create collection folder."
+    operation_kind: action
+    connection_type_ids: [discogs_token_account]
+    category: discogs_collection
+    inputs:
+      - {name: "username", value_type: text, required: false}
+      - {name: "name", value_type: text, required: true}
+      - {name: "confirm", value_type: boolean, required: true}
+    outputs:
+      - {name: "result.data.id", value_type: object}
+    result_fields: ["result.data.id"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_get_collection_folder
+    display_name: "Get Collection Folder"
+    description: "Get collection folder."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_collection
+    inputs:
+      - {name: "username", value_type: text, required: false}
+      - {name: "folder_id", value_type: integer, required: true}
+    outputs:
+      - {name: "result.data.id", value_type: object}
+      - {name: "result.data.name", value_type: object}
+    result_fields: ["result.data.id", "result.data.name"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_update_collection_folder
+    display_name: "Update Collection Folder"
+    description: "Update collection folder."
+    operation_kind: action
+    connection_type_ids: [discogs_token_account]
+    category: discogs_collection
+    inputs:
+      - {name: "username", value_type: text, required: false}
+      - {name: "folder_id", value_type: integer, required: true}
+      - {name: "name", value_type: text, required: true}
+      - {name: "confirm", value_type: boolean, required: true}
+    outputs:
+      - {name: "result.provider_status", value_type: object}
+    result_fields: ["result.provider_status"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_delete_collection_folder
+    display_name: "Delete Collection Folder"
+    description: "Delete collection folder."
+    operation_kind: action
+    connection_type_ids: [discogs_token_account]
+    category: discogs_collection
+    inputs:
+      - {name: "username", value_type: text, required: false}
+      - {name: "folder_id", value_type: integer, required: true}
+      - {name: "confirm", value_type: boolean, required: true}
+    outputs:
+      - {name: "result.provider_status", value_type: object}
+    result_fields: ["result.provider_status"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_get_collection_releases
+    display_name: "Get Collection Releases"
+    description: "List releases in collection folder."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_collection
+    inputs:
+      - {name: "username", value_type: text, required: false}
+      - {name: "folder_id", value_type: integer, required: true}
+      - {name: "page", value_type: integer, required: false}
+      - {name: "per_page", value_type: integer, required: false}
+      - {name: "sort", value_type: text, required: false}
+      - {name: "sort_order", value_type: text, required: false}
+    outputs:
+      - {name: "result.data.releases[]", value_type: object}
+      - {name: "result.data.pagination", value_type: object}
+    result_fields: ["result.data.releases[]", "result.data.pagination"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_get_collection_release
+    display_name: "Get Collection Release"
+    description: "Get collection release instances."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_collection
+    inputs:
+      - {name: "username", value_type: text, required: false}
+      - {name: "folder_id", value_type: integer, required: true}
+      - {name: "release_id", value_type: integer, required: true}
+    outputs:
+      - {name: "result.data.releases[]", value_type: object}
+    result_fields: ["result.data.releases[]"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_add_collection_release
+    display_name: "Add Collection Release"
+    description: "Add release to collection folder."
+    operation_kind: action
+    connection_type_ids: [discogs_token_account]
+    category: discogs_collection
+    inputs:
+      - {name: "username", value_type: text, required: false}
+      - {name: "folder_id", value_type: integer, required: true}
+      - {name: "release_id", value_type: integer, required: true}
+      - {name: "notes", value_type: text, required: false}
+      - {name: "rating", value_type: integer, required: false}
+      - {name: "confirm", value_type: boolean, required: true}
+    outputs:
+      - {name: "result.provider_status", value_type: object}
+    result_fields: ["result.provider_status"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_delete_collection_instance
+    display_name: "Delete Collection Instance"
+    description: "Delete collection release instance."
+    operation_kind: action
+    connection_type_ids: [discogs_token_account]
+    category: discogs_collection
+    inputs:
+      - {name: "username", value_type: text, required: false}
+      - {name: "folder_id", value_type: integer, required: true}
+      - {name: "release_id", value_type: integer, required: true}
+      - {name: "instance_id", value_type: integer, required: true}
+      - {name: "confirm", value_type: boolean, required: true}
+    outputs:
+      - {name: "result.provider_status", value_type: object}
+    result_fields: ["result.provider_status"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_get_collection_fields
+    display_name: "Get Collection Fields"
+    description: "List custom collection fields."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_collection
+    inputs:
+      - {name: "username", value_type: text, required: false}
+    outputs:
+      - {name: "result.data.fields[]", value_type: object}
+    result_fields: ["result.data.fields[]"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_edit_collection_field_value
+    display_name: "Edit Collection Field Value"
+    description: "Edit collection custom field value."
+    operation_kind: action
+    connection_type_ids: [discogs_token_account]
+    category: discogs_collection
+    inputs:
+      - {name: "username", value_type: text, required: false}
+      - {name: "folder_id", value_type: integer, required: true}
+      - {name: "release_id", value_type: integer, required: true}
+      - {name: "instance_id", value_type: integer, required: true}
+      - {name: "field_id", value_type: integer, required: true}
+      - {name: "value", value_type: text, required: true}
+      - {name: "confirm", value_type: boolean, required: true}
+    outputs:
+      - {name: "result.provider_status", value_type: object}
+    result_fields: ["result.provider_status"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_get_wantlist
+    display_name: "Get Wantlist"
+    description: "List wantlist."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_wantlist
+    inputs:
+      - {name: "username", value_type: text, required: false}
+      - {name: "page", value_type: integer, required: false}
+      - {name: "per_page", value_type: integer, required: false}
+    outputs:
+      - {name: "result.data.wants[]", value_type: object}
+      - {name: "result.data.pagination", value_type: object}
+    result_fields: ["result.data.wants[]", "result.data.pagination"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_get_wantlist_release
+    display_name: "Get Wantlist Release"
+    description: "Get wantlist release."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_wantlist
+    inputs:
+      - {name: "username", value_type: text, required: false}
+      - {name: "release_id", value_type: integer, required: true}
+    outputs:
+      - {name: "result.data.id", value_type: object}
+    result_fields: ["result.data.id"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_add_wantlist_release
+    display_name: "Add Wantlist Release"
+    description: "Add release to wantlist."
+    operation_kind: action
+    connection_type_ids: [discogs_token_account]
+    category: discogs_wantlist
+    inputs:
+      - {name: "username", value_type: text, required: false}
+      - {name: "release_id", value_type: integer, required: true}
+      - {name: "notes", value_type: text, required: false}
+      - {name: "rating", value_type: integer, required: false}
+      - {name: "confirm", value_type: boolean, required: true}
+    outputs:
+      - {name: "result.provider_status", value_type: object}
+    result_fields: ["result.provider_status"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_delete_wantlist_release
+    display_name: "Delete Wantlist Release"
+    description: "Remove release from wantlist."
+    operation_kind: action
+    connection_type_ids: [discogs_token_account]
+    category: discogs_wantlist
+    inputs:
+      - {name: "username", value_type: text, required: false}
+      - {name: "release_id", value_type: integer, required: true}
+      - {name: "confirm", value_type: boolean, required: true}
+    outputs:
+      - {name: "result.provider_status", value_type: object}
+    result_fields: ["result.provider_status"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_get_inventory_exports
+    display_name: "Get Inventory Exports"
+    description: "List inventory exports."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_inventory
+    inputs:
+      []
+    outputs:
+      - {name: "result.data.items[]", value_type: object}
+    result_fields: ["result.data.items[]"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_get_inventory_export
+    display_name: "Get Inventory Export"
+    description: "Get inventory export by id."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_inventory
+    inputs:
+      - {name: "export_id", value_type: integer, required: true}
+    outputs:
+      - {name: "result.data", value_type: object}
+    result_fields: ["result.data"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_download_inventory_export
+    display_name: "Download Inventory Export"
+    description: "Download inventory export metadata/body."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_inventory
+    inputs:
+      - {name: "export_id", value_type: integer, required: true}
+    outputs:
+      - {name: "result.data", value_type: object}
+    result_fields: ["result.data"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_inventory_upload_add
+    display_name: "Inventory Upload Add"
+    description: "Upload inventory add payload."
+    operation_kind: action
+    connection_type_ids: [discogs_token_account]
+    category: discogs_inventory
+    inputs:
+      - {name: "items", value_type: json, required: false}
+      - {name: "csv", value_type: text, required: false}
+      - {name: "confirm", value_type: boolean, required: true}
+    outputs:
+      - {name: "result.provider_status", value_type: object}
+    result_fields: ["result.provider_status"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_inventory_upload_change
+    display_name: "Inventory Upload Change"
+    description: "Upload inventory change payload."
+    operation_kind: action
+    connection_type_ids: [discogs_token_account]
+    category: discogs_inventory
+    inputs:
+      - {name: "items", value_type: json, required: false}
+      - {name: "csv", value_type: text, required: false}
+      - {name: "confirm", value_type: boolean, required: true}
+    outputs:
+      - {name: "result.provider_status", value_type: object}
+    result_fields: ["result.provider_status"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_inventory_upload_delete
+    display_name: "Inventory Upload Delete"
+    description: "Upload inventory delete payload."
+    operation_kind: action
+    connection_type_ids: [discogs_token_account]
+    category: discogs_inventory
+    inputs:
+      - {name: "items", value_type: json, required: false}
+      - {name: "csv", value_type: text, required: false}
+      - {name: "confirm", value_type: boolean, required: true}
+    outputs:
+      - {name: "result.provider_status", value_type: object}
+    result_fields: ["result.provider_status"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]

@@ -1,0 +1,30 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+type: object
+additionalProperties: false
+properties:
+  query:
+    type: string
+  type:
+    type: string
+    enum: [release, master, artist, label]
+  artist:
+    type: string
+  release_title:
+    type: string
+  label:
+    type: string
+  year:
+    type: string
+  barcode:
+    type: string
+  catno:
+    type: string
+  page:
+    type: integer
+    minimum: 1
+    default: 1
+  per_page:
+    type: integer
+    minimum: 1
+    maximum: 100
+    default: 25

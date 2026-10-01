@@ -1,0 +1,11 @@
+queries:
+  - query_id: discogs_search
+    display_name: Discogs search
+    description: Resource picker query for Discogs database entities.
+    cursor_mode: page
+    result_fields: ["items[].id", "items[].title", "items[].type"]
+  - query_id: collection_folders
+    display_name: Collection folders
+    description: Resource picker query for authenticated collection folders.
+    cursor_mode: none
+    result_fields: ["items[].id", "items[].name"]

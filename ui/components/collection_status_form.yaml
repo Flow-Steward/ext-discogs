@@ -1,0 +1,17 @@
+component_id: collection_status_form
+type: form
+title: Collection status
+ui_schema:
+  fields:
+    - name: username
+      label: Username
+      widget: text
+    - name: folder_id
+      label: Folder ID
+      widget: integer
+    - name: release_id
+      label: Release ID
+      widget: integer
+      required: true
+data:
+  test_action: collection_release_status

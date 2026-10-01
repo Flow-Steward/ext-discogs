@@ -1,0 +1,11 @@
+component_id: rate_limit_panel
+type: key_value_card
+title: Rate limit
+query_id: provider_health
+fields:
+  - key: result.rate_limit.limit
+    label: Limit
+  - key: result.rate_limit.used
+    label: Used
+  - key: result.rate_limit.remaining
+    label: Remaining

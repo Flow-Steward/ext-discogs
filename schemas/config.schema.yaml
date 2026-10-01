@@ -1,0 +1,46 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+type: object
+additionalProperties: false
+properties:
+  base_url:
+    type: string
+    format: uri
+    title: Discogs API base URL
+    default: https://api.discogs.com
+  allowed_hosts:
+    type: array
+    title: Allowed hosts
+    items:
+      type: string
+      minLength: 1
+    default:
+      - api.discogs.com
+  username:
+    type: string
+    title: Discogs username
+  user_agent:
+    type: string
+    minLength: 8
+    title: User-Agent
+    default: FlowStewardDiscogsExtension/0.1
+  default_currency:
+    type: string
+    enum:
+      - USD
+      - EUR
+      - GBP
+      - JPY
+      - CAD
+      - AUD
+    default: USD
+  default_page_size:
+    type: integer
+    minimum: 1
+    maximum: 100
+    default: 25
+  mock_mode:
+    type: boolean
+    default: false
+  enable_write_actions:
+    type: boolean
+    default: false

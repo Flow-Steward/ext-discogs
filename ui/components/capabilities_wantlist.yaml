@@ -1,0 +1,11 @@
+component_id: discogs_capabilities_wantlist
+type: markdown
+title: Wantlist
+content: |
+  **Get Wantlist**: list wantlist.
+
+  **Get Wantlist Release**: get wantlist release.
+
+  **Add Wantlist Release**: add release to wantlist.
+
+  **Delete Wantlist Release**: remove release from wantlist.

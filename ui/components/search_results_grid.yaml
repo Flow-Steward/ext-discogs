@@ -1,0 +1,15 @@
+component_id: discogs_search_results
+type: grid
+title: Search results
+query_id: discogs_search
+columns:
+  - {key: id, label: ID, type: id}
+  - {key: type, label: Type, type: badge}
+  - {key: title, label: Title, type: text}
+  - {key: year, label: Year, type: text}
+  - {key: country, label: Country, type: text}
+  - {key: uri, label: Discogs, type: link}
+row_actions:
+  - action_id: enrich_release_metadata
+    label: Enrich
+    scope: row

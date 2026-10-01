@@ -1,0 +1,14 @@
+page_id: capabilities
+title: Capabilities
+description: Workflow-facing Discogs API operation groups.
+components:
+  - ref: ../components/capabilities_intro.yaml
+  - ref: ../components/capabilities_account.yaml
+  - ref: ../components/capabilities_database.yaml
+  - ref: ../components/capabilities_marketplace.yaml
+  - ref: ../components/capabilities_orders.yaml
+  - ref: ../components/capabilities_users.yaml
+  - ref: ../components/capabilities_collection.yaml
+  - ref: ../components/capabilities_wantlist.yaml
+  - ref: ../components/capabilities_inventory.yaml
+  - ref: ../components/capabilities_write_guard.yaml

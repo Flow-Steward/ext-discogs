@@ -1,0 +1,52 @@
+schema_version: extension_descriptor_v1
+extension_id: com.discogs.api
+release_version: 0.1.9
+extension_type: service_extension
+identity:
+  display_name: Discogs API
+  description: Discogs database, marketplace, collection, and wantlist integration for Flow Steward workflows.
+  tags:
+    - music
+    - catalog
+    - marketplace
+    - discogs
+vendor:
+  vendor_name: Discogs
+  support_url: https://www.discogs.com/developers/
+listing:
+  visibility: private_reference
+  category: data_enrichment
+distribution:
+  channel: private_byo
+  execution_modes:
+    - local
+  allows_self_hosted: true
+  requires_connected_control_plane: false
+  import_sources:
+    - file
+runtime:
+  contract_version: extension_host_v1
+  compatibility:
+    platform_min: 1.0.0
+  extension_contract_v2:
+    connection_types: contracts/connection_types.yaml
+    operation_manifest: contracts/operation_manifest.yaml
+    step_ui_manifest: contracts/step_ui_manifest.yaml
+    resource_query_manifest: contracts/resource_query_manifest.yaml
+    artifact_policies: contracts/artifact_policies.yaml
+artifacts:
+  extensions:
+    - extension_id: com.discogs.api
+      ref: extension.yaml
+      publish: true
+  workflows:
+    - workflow_id: discogs_search_vinyl_releases
+      ref: artifacts/workflows/discogs_search_vinyl_releases.yaml
+      publish: true
+    - workflow_id: discogs_artist_profile_and_releases
+      ref: artifacts/workflows/discogs_artist_profile_and_releases.yaml
+      publish: true
+provenance:
+  origin: user_generated
+commerce:
+  billing_mode: free
