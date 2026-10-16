@@ -1,11 +1,23 @@
 workflow_id: discogs_artist_profile_and_releases
-version: 1.0.2
+version: 1.1.0
 display_name: Discogs — Artist profile and releases
 description: Fetch one Discogs artist profile and a bounded page of the artist's releases.
 enabled: true
 trigger:
   confidence_threshold: 0.0
 settings:
+  execution_graph:
+    schema_version: 1
+    entry: {kind: step, id: get_artist_profile}
+    edges:
+      - source: {kind: step, id: get_artist_profile}
+        outcome: {name: success}
+        target: {kind: step, id: get_artist_releases}
+        rework: false
+      - source: {kind: step, id: get_artist_releases}
+        outcome: {name: success}
+        target: {kind: step, id: artist_lookup_complete}
+        rework: false
   portability:
     allow_full_export: true
   traits:
@@ -89,67 +101,53 @@ dependencies:
     - extension_id: com.discogs.api
       required: true
       reason: Executes Discogs artist and artist release operations.
-phases:
-  - phase_id: load_artist
-    phase_kind: start
-    display_name: Load Artist
-    required_outputs:
-      - artist
-    gate:
-      type: none
-    steps:
-      - step_id: get_artist_profile
-        display_name: Get artist profile
-        step_kind: connector
-        connector_id: extension.com.discogs.api
-        connector_install_id: com.discogs.api
-        connection_binding_jsonb: {}
-        override:
-          connector:
-            extension_id: com.discogs.api
-            operation_id: discogs_get_artist
-            action_id: discogs_get_artist
-        input_mapping_jsonb:
-          artist_id: state.inputs.artist_id
-        output_mapping_jsonb:
-          result.data.id: state.artist.id
-          result.data.name: state.artist.name
-  - phase_id: load_releases
-    display_name: Load Artist Releases
-    required_outputs:
-      - releases
-    gate:
-      type: none
-    steps:
-      - step_id: get_artist_releases
-        display_name: Get artist releases
-        step_kind: connector
-        connector_id: extension.com.discogs.api
-        connector_install_id: com.discogs.api
-        connection_binding_jsonb: {}
-        override:
-          connector:
-            extension_id: com.discogs.api
-            operation_id: discogs_get_artist_releases
-            action_id: discogs_get_artist_releases
-        input_mapping_jsonb:
-          artist_id: state.inputs.artist_id
-          page: literal:1
-          per_page: state.inputs.per_page | default:25
-          sort: state.inputs.sort | default:year
-          sort_order: state.inputs.sort_order | default:desc
-        output_mapping_jsonb:
-          result.data.releases[]: state.releases
-          result.data.pagination: state.pagination
-  - phase_id: complete
-    phase_kind: terminal
-    display_name: Complete
-    gate:
-      type: none
-    steps:
-      - step_id: artist_lookup_complete
-        display_name: Finish artist lookup
-        step_kind: stop_success
-        override:
-          stop_success:
-            message: Discogs artist profile and release list completed.
+steps:
+  - step_id: get_artist_profile
+    display_name: Get artist profile
+    step_kind: connector
+    connector_id: extension.com.discogs.api
+    connector_install_id: com.discogs.api
+    connection_binding_jsonb: {}
+    override:
+      connector:
+        extension_id: com.discogs.api
+        operation_id: discogs_get_artist
+        action_id: discogs_get_artist
+    input_mapping_jsonb:
+      artist_id: state.inputs.artist_id
+    output_mapping_jsonb:
+      result.data.id: state.artist.id
+      result.data.name: state.artist.name
+    boundary_contract:
+      exit:
+        - artist
+  - step_id: get_artist_releases
+    display_name: Get artist releases
+    step_kind: connector
+    connector_id: extension.com.discogs.api
+    connector_install_id: com.discogs.api
+    connection_binding_jsonb: {}
+    override:
+      connector:
+        extension_id: com.discogs.api
+        operation_id: discogs_get_artist_releases
+        action_id: discogs_get_artist_releases
+    input_mapping_jsonb:
+      artist_id: state.inputs.artist_id
+      page: literal:1
+      per_page: state.inputs.per_page | default:25
+      sort: state.inputs.sort | default:year
+      sort_order: state.inputs.sort_order | default:desc
+    output_mapping_jsonb:
+      result.data.releases[]: state.releases
+      result.data.pagination: state.pagination
+    boundary_contract:
+      exit:
+        - releases
+  - step_id: artist_lookup_complete
+    display_name: Finish artist lookup
+    step_kind: stop_success
+    override:
+      stop_success:
+        message: Discogs artist profile and release list completed.
+groups: []

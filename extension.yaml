@@ -2,7 +2,7 @@ manifest_version: 2
 lifecycle: {data_schema_version: 1, data_migrations: []}
 extension_id: com.discogs.api
 kind: tool_provider
-version: 0.1.9
+version: 0.2.0
 display_name: Discogs API
 description: Search Discogs, inspect music database records, query marketplace data, and use guarded authenticated collection or wantlist actions.
 author: Flow Steward
@@ -64,6 +64,7 @@ ui_manifest: ui/ui_manifest.yaml
 query_manifest: ui/queries/queries.yaml
 action_manifest: ui/actions/actions.yaml
 runtime:
+  contract_version: extension_host_v2
   extension_contract_v2:
     connection_types: contracts/connection_types.yaml
     operation_manifest: contracts/operation_manifest.yaml

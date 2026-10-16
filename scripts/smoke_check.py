@@ -11,12 +11,26 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 
+# Every request the host sends carries the extension_host_v2 contract and the
+# execution scope of the step it runs for (here a root step).
+HOST_ENVELOPE: dict[str, Any] = {
+    "contract_version": "extension_host_v2",
+    "runtime_context": {
+        "group_id": None,
+        "for_each_id": None,
+        "step_id": "smoke_check",
+        "step_execution_id": "smoke-check-0001",
+    },
+}
 
-def _run(args: list[str], payload: dict[str, Any] | None = None, *, expect_ok: bool = True) -> dict[str, Any]:
+
+def _run(
+    args: list[str], payload: dict[str, Any] | None = None, *, expect_ok: bool = True
+) -> dict[str, Any]:
     proc = subprocess.run(
         [sys.executable, *args],
         cwd=str(ROOT),
-        input=json.dumps(payload) if payload is not None else None,
+        input=json.dumps({**HOST_ENVELOPE, **payload}) if payload is not None else None,
         capture_output=True,
         text=True,
         timeout=10,

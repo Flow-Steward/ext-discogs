@@ -5,7 +5,6 @@ from __future__ import annotations
 from typing import Any
 
 from handlers.common import (
-    action_input,
     as_dict,
     as_int,
     as_text,
@@ -40,7 +39,10 @@ def _provider_error_details(response: dict[str, Any]) -> tuple[str, str, int | N
     elif error == "provider_not_found":
         message = "Discogs endpoint was not found. Check the configured base URL."
     else:
-        message = as_text(response.get("message"), "Failed to connect to Discogs. Check network access and connection settings.")
+        message = as_text(
+            response.get("message"),
+            "Failed to connect to Discogs. Check network access and connection settings.",
+        )
     return error, message, provider_status
 
 
@@ -104,12 +106,26 @@ def provider_health(query: dict[str, Any]) -> dict[str, Any]:
         "username": client.config.username,
         "rate_limit": {"limit": None, "used": None, "remaining": None},
         "checks": [
-            {"name": "Subprocess runtime", "status": "healthy", "detail": "main.py handles query/action envelopes"},
-            {"name": "Request mode", "status": "healthy", "detail": "mock" if client.config.mock_mode else "live"},
-            {"name": "Write actions", "status": "warning" if client.config.enable_write_actions else "healthy", "detail": "enabled" if client.config.enable_write_actions else "disabled"},
+            {
+                "name": "Subprocess runtime",
+                "status": "healthy",
+                "detail": "main.py handles query/action envelopes",
+            },
+            {
+                "name": "Request mode",
+                "status": "healthy",
+                "detail": "mock" if client.config.mock_mode else "live",
+            },
+            {
+                "name": "Write actions",
+                "status": "warning" if client.config.enable_write_actions else "healthy",
+                "detail": "enabled" if client.config.enable_write_actions else "disabled",
+            },
         ],
     }
-    return ok(result, summary={"status": result["status"], "authenticated": result["authenticated"]})
+    return ok(
+        result, summary={"status": result["status"], "authenticated": result["authenticated"]}
+    )
 
 
 def load_connection_settings(query: dict[str, Any]) -> dict[str, Any]:
@@ -128,7 +144,11 @@ def connection_status(query: dict[str, Any]) -> dict[str, Any]:
             "base_url": client.config.base_url,
             "mock_mode": client.config.mock_mode,
             "write_actions": client.config.enable_write_actions,
-            "secrets": {"user_token": f"<{client.config.token_source}>" if client.config.token else "<missing>"},
+            "secrets": {
+                "user_token": f"<{client.config.token_source}>"
+                if client.config.token
+                else "<missing>"
+            },
         },
         summary={"auth_mode": "token" if client.config.token else "anonymous"},
     )
@@ -224,7 +244,9 @@ def release_details(query: dict[str, Any]) -> dict[str, Any]:
     response = client.get_release(release_id)
     if not response.get("ok"):
         return _provider_error(response)
-    result = normalize_release(as_dict(response.get("body")), include_raw=bool(params.get("include_raw")))
+    result = normalize_release(
+        as_dict(response.get("body")), include_raw=bool(params.get("include_raw"))
+    )
     result["rate_limit"] = response.get("rate_limit")
     return ok(result, summary={"release_id": release_id, "title": result.get("title")})
 
@@ -258,45 +280,81 @@ def master_versions(query: dict[str, Any]) -> dict[str, Any]:
     if master_id <= 0:
         return fail("invalid_payload", "master_id is required.")
     client = _client_for_query(query)
-    response = client.get_master_versions(master_id, as_int(params.get("page"), 1), as_int(params.get("per_page"), 25))
+    response = client.get_master_versions(
+        master_id, as_int(params.get("page"), 1), as_int(params.get("per_page"), 25)
+    )
     if not response.get("ok"):
         return _provider_error(response)
     body = as_dict(response.get("body"))
     items = [as_dict(item) for item in body.get("versions") or []]
-    return ok({"items": items, "pagination": body.get("pagination") or {}}, items=items, pagination=body.get("pagination") or {})
+    return ok(
+        {"items": items, "pagination": body.get("pagination") or {}},
+        items=items,
+        pagination=body.get("pagination") or {},
+    )
 
 
 def artist_details(query: dict[str, Any]) -> dict[str, Any]:
-    artist_id = as_int(as_dict(query.get("params")).get("artist_id") or as_dict(query.get("params")).get("id"), 0)
+    artist_id = as_int(
+        as_dict(query.get("params")).get("artist_id") or as_dict(query.get("params")).get("id"), 0
+    )
     if artist_id <= 0:
         return fail("invalid_payload", "artist_id is required.")
     response = _client_for_query(query).get_artist(artist_id)
     if not response.get("ok"):
         return _provider_error(response)
     body = as_dict(response.get("body"))
-    return ok({"artist_id": body.get("id"), "name": body.get("name"), "profile": body.get("profile"), "aliases": body.get("aliases") or [], "members": body.get("members") or [], "urls": body.get("urls") or []})
+    return ok(
+        {
+            "artist_id": body.get("id"),
+            "name": body.get("name"),
+            "profile": body.get("profile"),
+            "aliases": body.get("aliases") or [],
+            "members": body.get("members") or [],
+            "urls": body.get("urls") or [],
+        }
+    )
 
 
 def label_details(query: dict[str, Any]) -> dict[str, Any]:
-    label_id = as_int(as_dict(query.get("params")).get("label_id") or as_dict(query.get("params")).get("id"), 0)
+    label_id = as_int(
+        as_dict(query.get("params")).get("label_id") or as_dict(query.get("params")).get("id"), 0
+    )
     if label_id <= 0:
         return fail("invalid_payload", "label_id is required.")
     response = _client_for_query(query).get_label(label_id)
     if not response.get("ok"):
         return _provider_error(response)
     body = as_dict(response.get("body"))
-    return ok({"label_id": body.get("id"), "name": body.get("name"), "profile": body.get("profile"), "urls": body.get("urls") or []})
+    return ok(
+        {
+            "label_id": body.get("id"),
+            "name": body.get("name"),
+            "profile": body.get("profile"),
+            "urls": body.get("urls") or [],
+        }
+    )
 
 
 def marketplace_stats(query: dict[str, Any]) -> dict[str, Any]:
-    release_id = as_int(as_dict(query.get("params")).get("release_id") or as_dict(query.get("params")).get("id"), 0)
+    release_id = as_int(
+        as_dict(query.get("params")).get("release_id") or as_dict(query.get("params")).get("id"), 0
+    )
     if release_id <= 0:
         return fail("invalid_payload", "release_id is required.")
     response = _client_for_query(query).get_marketplace_stats(release_id)
     if not response.get("ok"):
         return _provider_error(response)
     body = as_dict(response.get("body"))
-    return ok({"release_id": body.get("release_id", release_id), "lowest_price": body.get("lowest_price"), "num_for_sale": body.get("num_for_sale"), "blocked_from_sale": body.get("blocked_from_sale"), "rate_limit": response.get("rate_limit")})
+    return ok(
+        {
+            "release_id": body.get("release_id", release_id),
+            "lowest_price": body.get("lowest_price"),
+            "num_for_sale": body.get("num_for_sale"),
+            "blocked_from_sale": body.get("blocked_from_sale"),
+            "rate_limit": response.get("rate_limit"),
+        }
+    )
 
 
 def collection_folders(query: dict[str, Any]) -> dict[str, Any]:
@@ -327,7 +385,15 @@ def collection_release_status(query: dict[str, Any]) -> dict[str, Any]:
     if not response.get("ok"):
         return _provider_error(response)
     releases = [as_dict(item) for item in as_dict(response.get("body")).get("releases") or []]
-    return ok({"release_id": release_id, "in_collection": bool(releases), "folder_ids": sorted({item.get("folder_id", folder_id) for item in releases}), "items": releases}, items=releases)
+    return ok(
+        {
+            "release_id": release_id,
+            "in_collection": bool(releases),
+            "folder_ids": sorted({item.get("folder_id", folder_id) for item in releases}),
+            "items": releases,
+        },
+        items=releases,
+    )
 
 
 def wantlist_status(query: dict[str, Any]) -> dict[str, Any]:

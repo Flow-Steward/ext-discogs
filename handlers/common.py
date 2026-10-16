@@ -105,14 +105,18 @@ def runtime_connection(operation: dict[str, Any]) -> dict[str, Any]:
 
 
 def connection_config(operation: dict[str, Any]) -> dict[str, Any]:
-    payload = action_input(operation) if "action_id" in operation else as_dict(operation.get("params"))
+    payload = (
+        action_input(operation) if "action_id" in operation else as_dict(operation.get("params"))
+    )
     config = dict(as_dict(payload.get("connection_config") or payload.get("config")))
     config.update(as_dict(runtime_connection(operation).get("config")))
     return config
 
 
 def connection_secrets(operation: dict[str, Any]) -> dict[str, Any]:
-    payload = action_input(operation) if "action_id" in operation else as_dict(operation.get("params"))
+    payload = (
+        action_input(operation) if "action_id" in operation else as_dict(operation.get("params"))
+    )
     secrets = dict(as_dict(payload.get("secrets")))
     secrets.update(as_dict(runtime_connection(operation).get("secrets")))
     return secrets

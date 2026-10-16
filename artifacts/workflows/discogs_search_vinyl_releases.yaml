@@ -1,11 +1,19 @@
 workflow_id: discogs_search_vinyl_releases
-version: 1.0.2
+version: 1.1.0
 display_name: Discogs — Search vinyl releases
 description: Search Discogs for a bounded list of vinyl releases using a title, artist, or free-text query.
 enabled: true
 trigger:
   confidence_threshold: 0.0
 settings:
+  execution_graph:
+    schema_version: 1
+    entry: {kind: step, id: search_vinyl_releases}
+    edges:
+      - source: {kind: step, id: search_vinyl_releases}
+        outcome: {name: success}
+        target: {kind: step, id: search_complete}
+        rework: false
   portability:
     allow_full_export: true
   traits:
@@ -90,48 +98,38 @@ dependencies:
     - extension_id: com.discogs.api
       required: true
       reason: Executes the Discogs database search operation.
-phases:
-  - phase_id: search_discogs
-    phase_kind: start
-    display_name: Search Discogs
-    required_outputs:
-      - releases
-    gate:
-      type: none
-    steps:
-      - step_id: search_vinyl_releases
-        display_name: Get vinyl release list
-        step_kind: connector
-        connector_id: extension.com.discogs.api
-        connector_install_id: com.discogs.api
-        connection_binding_jsonb: {}
-        override:
-          connector:
-            extension_id: com.discogs.api
-            operation_id: discogs_search_database
-            action_id: discogs_search_database
-        input_mapping_jsonb:
-          query: "state.inputs.query | default:"
-          type: literal:release
-          artist: "state.inputs.artist | default:"
-          release_title: "state.inputs.release_title | default:"
-          year: "state.inputs.year | default:null"
-          page: literal:1
-          per_page: state.inputs.per_page | default:25
-        output_mapping_jsonb:
-          result.data.results[]: state.releases
-          result.data.pagination: state.pagination
-          result.data.result_count: state.result_count
-          result.data.results_json: state.results_json
-  - phase_id: complete
-    phase_kind: terminal
-    display_name: Complete
-    gate:
-      type: none
-    steps:
-      - step_id: search_complete
-        display_name: Finish release search
-        step_kind: stop_success
-        override:
-          stop_success:
-            message: Discogs release search completed.
+steps:
+  - step_id: search_vinyl_releases
+    display_name: Get vinyl release list
+    step_kind: connector
+    connector_id: extension.com.discogs.api
+    connector_install_id: com.discogs.api
+    connection_binding_jsonb: {}
+    override:
+      connector:
+        extension_id: com.discogs.api
+        operation_id: discogs_search_database
+        action_id: discogs_search_database
+    input_mapping_jsonb:
+      query: "state.inputs.query | default:"
+      type: literal:release
+      artist: "state.inputs.artist | default:"
+      release_title: "state.inputs.release_title | default:"
+      year: "state.inputs.year | default:null"
+      page: literal:1
+      per_page: state.inputs.per_page | default:25
+    output_mapping_jsonb:
+      result.data.results[]: state.releases
+      result.data.pagination: state.pagination
+      result.data.result_count: state.result_count
+      result.data.results_json: state.results_json
+    boundary_contract:
+      exit:
+        - releases
+  - step_id: search_complete
+    display_name: Finish release search
+    step_kind: stop_success
+    override:
+      stop_success:
+        message: Discogs release search completed.
+groups: []

@@ -15,7 +15,6 @@ from handlers.common import (
     DEFAULT_BASE_URL,
     DEFAULT_USER_AGENT,
     as_bool,
-    as_dict,
     as_int,
     as_list,
     as_text,
@@ -60,7 +59,9 @@ class DiscogsClient:
         self.config = config
 
     @classmethod
-    def from_payload(cls, config: dict[str, Any], secrets: dict[str, Any] | None = None) -> "DiscogsClient":
+    def from_payload(
+        cls, config: dict[str, Any], secrets: dict[str, Any] | None = None
+    ) -> "DiscogsClient":
         merged = dict(config)
         secrets = secrets or {}
         token = as_text(secrets.get("user_token") or merged.get("user_token"))
@@ -72,9 +73,7 @@ class DiscogsClient:
                     token_source = f"env:{env_name}"
                     break
         allowed_hosts = {
-            as_text(item).lower()
-            for item in as_list(merged.get("allowed_hosts"))
-            if as_text(item)
+            as_text(item).lower() for item in as_list(merged.get("allowed_hosts")) if as_text(item)
         } or {DEFAULT_ALLOWED_HOST}
         return cls(
             DiscogsClientConfig(
@@ -107,9 +106,7 @@ class DiscogsClient:
         rel = path.lstrip("/")
         url = urljoin(base, rel)
         clean_params = {
-            key: value
-            for key, value in (params or {}).items()
-            if value not in (None, "", [], {})
+            key: value for key, value in (params or {}).items() if value not in (None, "", [], {})
         }
         if clean_params:
             url = f"{url}?{urlencode(clean_params, doseq=True)}"
@@ -208,7 +205,12 @@ class DiscogsClient:
         path = "/" + path.strip("/")
         rate_limit = {"limit": 60, "used": 1, "remaining": 59}
         if path == "/":
-            return {"ok": True, "status_code": 200, "body": {"hello": "discogs"}, "rate_limit": rate_limit}
+            return {
+                "ok": True,
+                "status_code": 200,
+                "body": {"hello": "discogs"},
+                "rate_limit": rate_limit,
+            }
         if path == "/oauth/identity":
             return {
                 "ok": True,
@@ -222,7 +224,12 @@ class DiscogsClient:
                 "ok": True,
                 "status_code": 200,
                 "body": {
-                    "pagination": {"page": as_int(params.get("page"), 1), "per_page": as_int(params.get("per_page"), 25), "items": 1, "pages": 1},
+                    "pagination": {
+                        "page": as_int(params.get("page"), 1),
+                        "per_page": as_int(params.get("per_page"), 25),
+                        "items": 1,
+                        "pages": 1,
+                    },
                     "results": [
                         {
                             "id": 249504,
@@ -242,37 +249,113 @@ class DiscogsClient:
             }
         if path == "/releases/249504" or path.startswith("/releases/"):
             release_id = as_int(path.rsplit("/", 1)[-1], 249504)
-            return {"ok": True, "status_code": 200, "body": _mock_release(release_id), "rate_limit": rate_limit}
+            return {
+                "ok": True,
+                "status_code": 200,
+                "body": _mock_release(release_id),
+                "rate_limit": rate_limit,
+            }
         if path == "/masters/1000" or path.startswith("/masters/"):
             master_id = as_int(path.rsplit("/", 1)[-1], 1000)
             return {
                 "ok": True,
                 "status_code": 200,
-                "body": {"id": master_id, "title": "Discovery", "main_release": 249504, "artists": [{"id": 1289, "name": "Daft Punk"}], "year": 2001, "versions_url": f"{self.config.base_url}/masters/{master_id}/versions"},
+                "body": {
+                    "id": master_id,
+                    "title": "Discovery",
+                    "main_release": 249504,
+                    "artists": [{"id": 1289, "name": "Daft Punk"}],
+                    "year": 2001,
+                    "versions_url": f"{self.config.base_url}/masters/{master_id}/versions",
+                },
                 "rate_limit": rate_limit,
             }
         if "/versions" in path:
             return {
                 "ok": True,
                 "status_code": 200,
-                "body": {"pagination": {"page": 1, "per_page": 25, "items": 1, "pages": 1}, "versions": [{"id": 249504, "title": "Discovery", "format": "CD, Album", "label": "Virgin", "country": "France", "year": 2001}]},
+                "body": {
+                    "pagination": {"page": 1, "per_page": 25, "items": 1, "pages": 1},
+                    "versions": [
+                        {
+                            "id": 249504,
+                            "title": "Discovery",
+                            "format": "CD, Album",
+                            "label": "Virgin",
+                            "country": "France",
+                            "year": 2001,
+                        }
+                    ],
+                },
                 "rate_limit": rate_limit,
             }
         if path.startswith("/artists/"):
             artist_id = as_int(path.rsplit("/", 1)[-1], 1289)
-            return {"ok": True, "status_code": 200, "body": {"id": artist_id, "name": "Daft Punk", "profile": "French electronic music duo.", "aliases": [], "members": [], "urls": ["https://www.discogs.com/artist/1289-Daft-Punk"]}, "rate_limit": rate_limit}
+            return {
+                "ok": True,
+                "status_code": 200,
+                "body": {
+                    "id": artist_id,
+                    "name": "Daft Punk",
+                    "profile": "French electronic music duo.",
+                    "aliases": [],
+                    "members": [],
+                    "urls": ["https://www.discogs.com/artist/1289-Daft-Punk"],
+                },
+                "rate_limit": rate_limit,
+            }
         if path.startswith("/labels/"):
             label_id = as_int(path.rsplit("/", 1)[-1], 123)
-            return {"ok": True, "status_code": 200, "body": {"id": label_id, "name": "Virgin", "profile": "Record label.", "urls": ["https://www.discogs.com/label/123"]}, "rate_limit": rate_limit}
+            return {
+                "ok": True,
+                "status_code": 200,
+                "body": {
+                    "id": label_id,
+                    "name": "Virgin",
+                    "profile": "Record label.",
+                    "urls": ["https://www.discogs.com/label/123"],
+                },
+                "rate_limit": rate_limit,
+            }
         if path.endswith("/marketplace/stats") or "/marketplace/stats" in path:
             release_id = as_int(path.split("/")[2], 249504)
-            return {"ok": True, "status_code": 200, "body": {"release_id": release_id, "lowest_price": 12.34, "num_for_sale": 42, "blocked_from_sale": False}, "rate_limit": rate_limit}
+            return {
+                "ok": True,
+                "status_code": 200,
+                "body": {
+                    "release_id": release_id,
+                    "lowest_price": 12.34,
+                    "num_for_sale": 42,
+                    "blocked_from_sale": False,
+                },
+                "rate_limit": rate_limit,
+            }
         if "/collection/folders" in path and "/releases/" not in path:
-            return {"ok": True, "status_code": 200, "body": {"folders": [{"id": 0, "name": "All", "count": 12}, {"id": 1, "name": "Uncategorized", "count": 3}]}, "rate_limit": rate_limit}
+            return {
+                "ok": True,
+                "status_code": 200,
+                "body": {
+                    "folders": [
+                        {"id": 0, "name": "All", "count": 12},
+                        {"id": 1, "name": "Uncategorized", "count": 3},
+                    ]
+                },
+                "rate_limit": rate_limit,
+            }
         if "/collection/folders/" in path and "/releases/" in path:
-            return {"ok": True, "status_code": 200, "body": {"releases": [{"id": 249504, "instance_id": 77, "folder_id": 1}]}, "rate_limit": rate_limit}
+            return {
+                "ok": True,
+                "status_code": 200,
+                "body": {"releases": [{"id": 249504, "instance_id": 77, "folder_id": 1}]},
+                "rate_limit": rate_limit,
+            }
         if "/wants/" in path:
-            return {"ok": True, "status_code": 200, "body": {"id": as_int(path.rsplit("/", 1)[-1], 249504), "notes": ""}, "rate_limit": rate_limit}
+            return {
+                "ok": True,
+                "status_code": 200,
+                "body": {"id": as_int(path.rsplit("/", 1)[-1], 249504), "notes": ""},
+                "rate_limit": rate_limit,
+            }
         return {
             "ok": True,
             "status_code": 200,
@@ -294,7 +377,9 @@ class DiscogsClient:
     def search_database(self, params: dict[str, Any]) -> dict[str, Any]:
         clean = dict(params)
         clean["page"] = max(1, as_int(clean.get("page"), 1))
-        clean["per_page"] = max(1, min(100, as_int(clean.get("per_page"), self.config.default_page_size)))
+        clean["per_page"] = max(
+            1, min(100, as_int(clean.get("per_page"), self.config.default_page_size))
+        )
         return self._request("GET", "/database/search", params=clean)
 
     def get_release(self, release_id: int) -> dict[str, Any]:
@@ -303,8 +388,12 @@ class DiscogsClient:
     def get_master(self, master_id: int) -> dict[str, Any]:
         return self._request("GET", f"/masters/{master_id}")
 
-    def get_master_versions(self, master_id: int, page: int = 1, per_page: int = 25) -> dict[str, Any]:
-        return self._request("GET", f"/masters/{master_id}/versions", params={"page": page, "per_page": per_page})
+    def get_master_versions(
+        self, master_id: int, page: int = 1, per_page: int = 25
+    ) -> dict[str, Any]:
+        return self._request(
+            "GET", f"/masters/{master_id}/versions", params={"page": page, "per_page": per_page}
+        )
 
     def get_artist(self, artist_id: int) -> dict[str, Any]:
         return self._request("GET", f"/artists/{artist_id}")
@@ -318,23 +407,40 @@ class DiscogsClient:
     def get_collection_folders(self, username: str) -> dict[str, Any]:
         return self._request("GET", f"/users/{username}/collection/folders")
 
-    def get_collection_release(self, username: str, folder_id: int, release_id: int) -> dict[str, Any]:
-        return self._request("GET", f"/users/{username}/collection/folders/{folder_id}/releases/{release_id}")
+    def get_collection_release(
+        self, username: str, folder_id: int, release_id: int
+    ) -> dict[str, Any]:
+        return self._request(
+            "GET", f"/users/{username}/collection/folders/{folder_id}/releases/{release_id}"
+        )
 
     def get_wantlist_release(self, username: str, release_id: int) -> dict[str, Any]:
         return self._request("GET", f"/users/{username}/wants/{release_id}")
 
-    def add_wantlist_release(self, username: str, release_id: int, payload: dict[str, Any]) -> dict[str, Any]:
+    def add_wantlist_release(
+        self, username: str, release_id: int, payload: dict[str, Any]
+    ) -> dict[str, Any]:
         return self._request("PUT", f"/users/{username}/wants/{release_id}", body=payload)
 
     def remove_wantlist_release(self, username: str, release_id: int) -> dict[str, Any]:
         return self._request("DELETE", f"/users/{username}/wants/{release_id}")
 
-    def add_collection_release(self, username: str, folder_id: int, release_id: int, payload: dict[str, Any]) -> dict[str, Any]:
-        return self._request("POST", f"/users/{username}/collection/folders/{folder_id}/releases/{release_id}", body=payload)
+    def add_collection_release(
+        self, username: str, folder_id: int, release_id: int, payload: dict[str, Any]
+    ) -> dict[str, Any]:
+        return self._request(
+            "POST",
+            f"/users/{username}/collection/folders/{folder_id}/releases/{release_id}",
+            body=payload,
+        )
 
-    def delete_collection_instance(self, username: str, folder_id: int, release_id: int, instance_id: int) -> dict[str, Any]:
-        return self._request("DELETE", f"/users/{username}/collection/folders/{folder_id}/releases/{release_id}/instances/{instance_id}")
+    def delete_collection_instance(
+        self, username: str, folder_id: int, release_id: int, instance_id: int
+    ) -> dict[str, Any]:
+        return self._request(
+            "DELETE",
+            f"/users/{username}/collection/folders/{folder_id}/releases/{release_id}/instances/{instance_id}",
+        )
 
 
 def _decode_json(raw: bytes) -> Any:

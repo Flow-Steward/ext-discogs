@@ -4,20 +4,44 @@ import json
 import subprocess
 import sys
 from pathlib import Path
-from typing import ClassVar
+from typing import Any, ClassVar
 
+import pytest
 import yaml
 
 BUNDLE_ROOT = Path(__file__).resolve().parents[1]
 if str(BUNDLE_ROOT) not in sys.path:
     sys.path.insert(0, str(BUNDLE_ROOT))
 
+# The final extension_host_v2 execution scope: all four keys, at most one owner.
+ROOT_STEP_SCOPE = {
+    "group_id": None,
+    "for_each_id": None,
+    "step_id": "search_vinyl_releases",
+    "step_execution_id": "7c1d2e3f-4a5b-4c6d-8e9f-0a1b2c3d0001",
+}
+GROUP_STEP_SCOPE = {**ROOT_STEP_SCOPE, "group_id": "lookup_releases"}
+FOR_EACH_STEP_SCOPE = {
+    **ROOT_STEP_SCOPE,
+    "for_each_id": "each_artist",
+    "step_execution_id": "7c1d2e3f-4a5b-4c6d-8e9f-0a1b2c3d0002",
+}
+
+
+def _envelope(body: dict, scope: dict | None = None) -> dict:
+    """A host request: the extension_host_v2 contract and its execution scope."""
+    return {
+        "contract_version": "extension_host_v2",
+        "runtime_context": dict(ROOT_STEP_SCOPE if scope is None else scope),
+        **body,
+    }
+
 
 def _invoke(payload: dict, *, expect_ok: bool = True) -> dict:
     proc = subprocess.run(
         [sys.executable, str(BUNDLE_ROOT / "main.py")],
         cwd=str(BUNDLE_ROOT),
-        input=json.dumps(payload),
+        input=json.dumps(_envelope(payload)),
         capture_output=True,
         text=True,
         timeout=10,
@@ -69,13 +93,16 @@ def test_bundled_discogs_workflows_are_read_only_and_declared() -> None:
         workflow = yaml.safe_load((BUNDLE_ROOT / item["ref"]).read_text())
         assert workflow["workflow_id"] == item["workflow_id"]
         assert workflow["settings"]["callable"]["side_effects"] == []
-        for phase in workflow["phases"]:
-            for step in phase["steps"]:
-                connector = step.get("override", {}).get("connector", {})
-                if connector:
-                    assert step["connector_id"] == "extension.com.discogs.api"
-                    assert connector["extension_id"] == "com.discogs.api"
-                    operation_ids.add(connector["operation_id"])
+        # The final workflow model: steps and one execution graph, no phases.
+        assert "phases" not in workflow
+        assert workflow["settings"]["execution_graph"]["schema_version"] == 1
+        for step in workflow["steps"]:
+            assert "phase_id" not in step
+            connector = step.get("override", {}).get("connector", {})
+            if connector:
+                assert step["connector_id"] == "extension.com.discogs.api"
+                assert connector["extension_id"] == "com.discogs.api"
+                operation_ids.add(connector["operation_id"])
 
     assert operation_ids == {
         "discogs_search_database",
@@ -142,7 +169,7 @@ def test_connection_status_uses_payload_provider_secret() -> None:
             "params": {"secrets": {"user_token": "provider-secret-token"}},
         },
     }
-    result = handle_request(payload)
+    result = handle_request(_envelope(payload))
     assert result["ok"] is True
     assert result["result"]["auth_mode"] == "token"
     assert result["result"]["token_source"] == "connection"
@@ -176,7 +203,7 @@ def test_url_safety_blocks_unsafe_hosts_and_schemes() -> None:
 def test_token_is_sent_only_in_headers_and_not_returned(monkeypatch) -> None:
     from handlers import discogs_client
 
-    captured: dict[str, object] = {}
+    captured: dict[str, Any] = {}
 
     class _FakeResponse:
         status = 200
@@ -309,3 +336,131 @@ def test_router_rejects_unknown_ids() -> None:
         expect_ok=False,
     )
     assert unknown_action["error"] == "invalid_payload"
+
+
+class _RecordingResponse:
+    status = 200
+    headers: ClassVar[dict[str, str]] = {}
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc, traceback):
+        return False
+
+    def read(self, _size: int = -1) -> bytes:
+        return json.dumps(
+            {
+                "pagination": {"page": 1, "pages": 1, "items": 1},
+                "results": [{"id": 249504, "title": "Daft Punk - Discovery"}],
+            }
+        ).encode("utf-8")
+
+
+def _search_operation() -> dict[str, Any]:
+    return {
+        "mode": "action",
+        "action": {
+            "action_id": "discogs_search_database",
+            "target": {
+                "connection": {
+                    "config": {"mock_mode": False},
+                    "secrets": {"user_token": "secret-token"},
+                }
+            },
+            "input": {"query": "Discovery", "type": "release", "page": 1, "per_page": 5},
+        },
+    }
+
+
+@pytest.mark.parametrize("scope", [ROOT_STEP_SCOPE, GROUP_STEP_SCOPE, FOR_EACH_STEP_SCOPE])
+def test_every_final_scope_owner_runs_the_workflow_search(monkeypatch, scope: dict) -> None:
+    from handlers import discogs_client
+    from handlers.router import handle_request
+
+    requests: list[str] = []
+
+    def _fake_urlopen(request, timeout: int):
+        requests.append(request.full_url)
+        return _RecordingResponse()
+
+    monkeypatch.setattr(discogs_client, "urlopen", _fake_urlopen)
+
+    response = handle_request(_envelope(_search_operation(), scope))
+
+    assert response["ok"] is True, response
+    assert response["result"]["data"]["result_count"] == 1
+    assert len(requests) == 1
+    assert requests[0].startswith("https://api.discogs.com/database/search?")
+
+
+@pytest.mark.parametrize(
+    ("contract_version", "scope", "reason"),
+    [
+        ("extension_host_v1", FOR_EACH_STEP_SCOPE, "Unsupported host contract"),
+        ("", FOR_EACH_STEP_SCOPE, "Unsupported host contract"),
+        (
+            "extension_host_v2",
+            {k: v for k, v in FOR_EACH_STEP_SCOPE.items() if k != "for_each_id"},
+            "misses execution scope",
+        ),
+        (
+            "extension_host_v2",
+            {**FOR_EACH_STEP_SCOPE, "group_id": "lookup_releases"},
+            "both a Group and a For each",
+        ),
+        (
+            "extension_host_v2",
+            {**ROOT_STEP_SCOPE, "step_execution_id": None},
+            "without its logical execution",
+        ),
+    ],
+)
+def test_foreign_or_incomplete_envelope_is_refused_before_any_request(
+    monkeypatch, contract_version: str, scope: dict, reason: str
+) -> None:
+    from handlers import discogs_client
+    from handlers.router import handle_request
+
+    def _no_request(*_args: Any, **_kwargs: Any):
+        raise AssertionError("Discogs must not be called for a refused envelope")
+
+    monkeypatch.setattr(discogs_client, "urlopen", _no_request)
+    payload = _envelope(_search_operation(), scope)
+    payload["contract_version"] = contract_version
+
+    response = handle_request(payload)
+
+    assert response["ok"] is False
+    assert response["error"] == "invalid_host_envelope"
+    assert reason in response["errors"][0]["message"]
+    assert response["definitely_no_external_effect"] is True
+
+
+def test_main_refuses_a_request_without_the_host_envelope() -> None:
+    proc = subprocess.run(
+        [sys.executable, str(BUNDLE_ROOT / "main.py")],
+        cwd=str(BUNDLE_ROOT),
+        input=json.dumps({"mode": "query", "query": {"query_id": "provider_health"}}),
+        capture_output=True,
+        text=True,
+        timeout=10,
+        check=False,
+    )
+
+    assert proc.returncode != 0
+    response = json.loads(proc.stdout)
+    assert response["error"] == "invalid_host_envelope"
+    assert response["definitely_no_external_effect"] is True
+
+
+def test_bundle_carries_a_valid_logo() -> None:
+    import struct
+
+    raw = (BUNDLE_ROOT / "icon.png").read_bytes()
+    assert raw[:8] == b"\x89PNG\r\n\x1a\n"
+    assert raw[12:16] == b"IHDR"
+    width, height = struct.unpack(">II", raw[16:24])
+    assert width == height
+    assert 32 <= width <= 512
+    assert len(raw) <= 100 * 1024

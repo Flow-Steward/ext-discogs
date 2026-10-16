@@ -7,6 +7,20 @@ The extension runs as an isolated subprocess. It reads one JSON request from
 stdin and writes one JSON response to stdout. Mock mode is enabled by default so
 local validation and tests do not call the Discogs API.
 
+## Requirements
+
+This release speaks the host contract `extension_host_v2` with its final
+execution scope (`group_id`, `for_each_id`, `step_id`, `step_execution_id`)
+and is built on `flowsteward-extension-sdk` 0.4.0. A request with another
+contract, a missing scope key, or both a Group and a For each as its owner is
+refused before Discogs is called. Its bundled workflows use the final workflow
+model (steps and one execution graph, no phases). Install it on a Flow Steward
+Core that speaks this contract; an older Core does not run it.
+
+## Logo
+
+Logo: `icon.png` at the bundle root (the Flow Steward wave mark, PNG, 128x128).
+
 ## Capabilities
 
 - Search Discogs database resources.
