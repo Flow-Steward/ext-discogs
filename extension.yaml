@@ -2,7 +2,7 @@ manifest_version: 2
 lifecycle: {data_schema_version: 1, data_migrations: []}
 extension_id: com.discogs.api
 kind: tool_provider
-version: 0.2.0
+version: 0.2.1
 display_name: Discogs API
 description: Search Discogs, inspect music database records, query marketplace data, and use guarded authenticated collection or wantlist actions.
 author: Flow Steward
