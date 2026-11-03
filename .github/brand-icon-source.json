@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "extension_id": "com.discogs.api",
+  "release_version": "0.2.2",
+  "asset": "icon.png",
+  "asset_sha256": "675a3064c3ac54c1f2228245d99418865391fef4763d12be38406085dffcdea8",
+  "dimensions": "128x128",
+  "official_source_page": "https://github.com/discogs",
+  "sources": [
+    {
+      "url": "https://avatars.githubusercontent.com/u/194096?v=4",
+      "sha256": "98fb7b8fb8a5b6f51edf5654e4dd42903075e571c05ba82b9c0f875210dd8c91"
+    }
+  ],
+  "transformation": "Original owned-org avatar, 96x96 native pixels on transparent 128x128 canvas; no upscaling. Official org links discogs.com and hosts deprecated official Discogs Python API client. Discogs brand page/static SVG return 403.",
+  "renderer": "ImageMagick (original PNG input except WhatsApp SVG rendered at density 1600)",
+  "trademark_attribution": "The Discogs API names and marks belong to Discogs / Zink Media, LLC. This independent integration identifies the supported service; it is not endorsed by or affiliated with the trademark owners.",
+  "usage_notes": "Accurate integration identification permitted; avoid endorsement, imitation, combining marks or making Discogs dominant. https://support.discogs.com/hc/en-us/articles/360009207054-Application-Name-and-Description-Policy",
+  "legal_agreement_accepted": false
+}

@@ -19,7 +19,7 @@ Core that speaks this contract; an older Core does not run it.
 
 ## Logo
 
-Logo: `icon.png` at the bundle root (the Flow Steward wave mark, PNG, 128x128).
+Logo: `icon.png` at the bundle root (the original Discogs vinyl-record mark; PNG, 128x128).
 
 ## Capabilities
 
@@ -57,3 +57,5 @@ variables when a project needs its own Discogs account.
 Live requests require HTTPS, an allowlisted host, a configured User-Agent, body
 size caps, and short timeouts. Secret tokens are sent only in headers and are
 never echoed in responses.
+
+Logo sources and attribution: [BRANDING.md](BRANDING.md).
