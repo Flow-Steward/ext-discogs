@@ -2,17 +2,32 @@ manifest_version: 2
 lifecycle: {data_schema_version: 1, data_migrations: []}
 extension_id: com.discogs.api
 kind: tool_provider
-version: 0.2.2
+version: 0.2.3
 display_name: Discogs API
-description: Search Discogs, inspect music database records, query marketplace data, and use guarded authenticated collection or wantlist actions.
+description: |-
+  Research record releases, enrich a music catalog and manage Discogs account tasks from Flow Steward workflows. Search releases, masters, artists and labels using filters such as artist, release title, year, barcode or catalog number. Look up individual records, explore master versions and artist or label releases, and return result objects with pagination for subsequent workflow steps.
+
+  Marketplace operations cover listings, release sales statistics, price suggestions, fee calculations, orders and order messages. Collection and wantlist operations let workflows inspect folders, release instances and custom collection fields, then add, update or remove supported items. The release also exposes user profiles, contributions, submissions, lists, release ratings and inventory export or upload operations.
+
+  Use these functions to enrich a record catalog, research a pressing, compare collection holdings against a wantlist, or connect record-selling tasks to other systems. Write operations require a token, explicit enablement and confirmation. Discogs permissions and rate limits still apply. This is a Flow Steward-maintained integration with Discogs; the returned marketplace information does not itself place a purchase.
 author: Flow Steward
 vendor_name: Discogs
 support_url: https://github.com/Flow-Steward/ext-discogs/issues
 website_url: https://github.com/Flow-Steward/ext-discogs
 listing:
   category: media
-  tags: [discogs, music, records, marketplace, collection, wantlist]
-  summary: Search the Discogs music database and marketplace, and manage a collection or wantlist with guarded actions.
+  tags:
+  - discogs
+  - music
+  - records
+  - marketplace
+  - collection
+  - wantlist
+  summary: Connect Discogs database, marketplace, collection and wantlist operations to music research and record-selling
+    workflows.
+  setup_summary: Configure a project Discogs connection with a user token and the account username where needed;
+    self-hosted runtimes can also supply a Discogs token through supported environment variables. Enable write actions
+    only when needed and supply confirmation for each modifying operation.
 features:
   - tool
   - action
