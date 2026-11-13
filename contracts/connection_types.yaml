@@ -1,7 +1,7 @@
 connection_types:
   - connection_type_id: discogs_token_account
     display_name: Discogs token account
-    description: Discogs account authenticated with a user token stored as a project connection secret.
+    description: "Save a Discogs personal user token as a project connection secret. Add the account username for collection and wantlist actions; enable writes only for workflows that modify the account."
     auth:
       type: static_secret
       secret_names:
@@ -11,32 +11,41 @@ connection_types:
       additionalProperties: false
       properties:
         provider:
+          description: "Provider identifier; keep discogs for this extension."
           type: string
           default: discogs
         base_url:
+          description: "Discogs API origin. Keep https://api.discogs.com for the live service."
           type: string
           format: uri
           default: https://api.discogs.com
         username:
+          description: "Discogs account username used by account, collection and wantlist actions when an action omits it."
           type: string
         user_agent:
+          description: "Application-identifying User-Agent sent to Discogs. Use a descriptive application name and version."
           type: string
           default: FlowStewardDiscogsExtension/0.1
         allowed_hosts:
+          description: "Hosts this connection may contact. Include api.discogs.com for the live service."
           type: array
           items: {type: string}
           default: [api.discogs.com]
         mock_mode:
+          description: "Use built-in example responses instead of contacting Discogs. Disable to operate on the live account."
           type: boolean
           default: false
         enable_write_actions:
+          description: "Allow modifying actions. Each modifying action also requires confirm=true and a saved token."
           type: boolean
           default: false
         default_currency:
+          description: "Default currency used by supported pricing operations."
           type: string
           enum: [USD, EUR, GBP, JPY, CAD, AUD]
           default: USD
         default_page_size:
+          description: "Default result count for supported list operations, from 1 to 100."
           type: integer
           minimum: 1
           maximum: 100
@@ -46,6 +55,7 @@ connection_types:
       additionalProperties: false
       properties:
         user_token:
+          description: "Personal access token from Discogs Settings > Developers. Store it here as a secret; never in a workflow example."
           type: string
           title: User token
     capabilities:

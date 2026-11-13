@@ -2,10 +2,10 @@ component_id: discogs_capabilities_users
 type: markdown
 title: Users
 content: |
-  **Get User Profile**: get Discogs user profile.
+  **Get a Discogs user profile**: Read the profile of the named Discogs account.
 
-  **Get User Submissions**: list user submissions.
+  **List a user’s database submissions**: Read one page of music database submissions associated with the named Discogs account.
 
-  **Get User Contributions**: list user contributions.
+  **List a user’s database contributions**: Read one page of music database contributions associated with the named Discogs account.
 
-  **Get User Lists**: list user lists.
+  **List a user’s saved lists**: Read one page of lists belonging to the named Discogs account.

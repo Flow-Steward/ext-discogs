@@ -2,4 +2,4 @@ component_id: discogs_capabilities_account
 type: markdown
 title: Account
 content: |
-  **Identity**: get authenticated Discogs identity.
+  **Get the connected Discogs account**: Read the username and account details associated with the saved Discogs token.

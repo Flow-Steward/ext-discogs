@@ -2,16 +2,16 @@ component_id: discogs_capabilities_marketplace
 type: markdown
 title: Marketplace
 content: |
-  **Get Marketplace Listing**: get marketplace listing by id.
+  **Get a marketplace sale listing**: Read one seller listing by listing ID, including the price and condition returned by Discogs. A listing ID is different from a release ID.
 
-  **Create Marketplace Listing**: create marketplace listing.
+  **Create a marketplace sale listing**: Offer a specific release for sale using its condition, price and listing details. Creates a real seller listing and requires enabled writes and confirmation.
 
-  **Update Marketplace Listing**: update marketplace listing.
+  **Update a marketplace sale listing**: Change the price, condition or other supplied details of an existing seller listing. Requires enabled writes and confirmation.
 
-  **Delete Marketplace Listing**: delete marketplace listing.
+  **Delete a marketplace sale listing**: Remove an existing seller listing by listing ID. Requires enabled writes and confirmation.
 
-  **Get Marketplace Stats**: get marketplace stats for a release.
+  **Get release marketplace statistics**: Read marketplace availability and pricing statistics for a release to support pricing research.
 
-  **Get Price Suggestions**: get price suggestions for a release.
+  **Get suggested sale prices by condition**: Read Discogs price suggestions for a release by condition. These are suggestions, not a change to your listings.
 
-  **Calculate Marketplace Fee**: calculate marketplace fee for price/currency.
+  **Estimate a marketplace sale fee**: Calculate the Discogs marketplace fee for a proposed price and currency without creating a listing or order.

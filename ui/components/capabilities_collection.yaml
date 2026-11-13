@@ -2,24 +2,24 @@ component_id: discogs_capabilities_collection
 type: markdown
 title: Collection
 content: |
-  **Get Collection Folders**: list collection folders.
+  **List record collection folders**: Read the named account’s collection folders and their IDs before selecting a folder in another collection action.
 
-  **Create Collection Folder**: create collection folder.
+  **Create a record collection folder**: Create a named folder in the account’s record collection. Requires enabled writes and confirmation.
 
-  **Get Collection Folder**: get collection folder.
+  **Get a record collection folder**: Read details of one collection folder using its folder ID.
 
-  **Update Collection Folder**: update collection folder.
+  **Rename a record collection folder**: Change the name of an existing collection folder. Requires enabled writes and confirmation.
 
-  **Delete Collection Folder**: delete collection folder.
+  **Delete a record collection folder**: Request deletion of an existing collection folder. Requires enabled writes and confirmation; Discogs decides whether the folder can be deleted.
 
-  **Get Collection Releases**: list releases in collection folder.
+  **List records in a collection folder**: Read one page of release instances in a collection folder. Keep each instance ID when later editing or removing an individual copy.
 
-  **Get Collection Release**: get collection release instances.
+  **Get collection copies of a release**: Read the account’s collection instances for one release in a folder. Each instance identifies one owned copy.
 
-  **Add Collection Release**: add release to collection folder.
+  **Add a release to a collection folder**: Add a copy of a specific release to the account’s collection folder, with optional notes and rating. Requires enabled writes and confirmation.
 
-  **Delete Collection Instance**: delete collection release instance.
+  **Remove one copy from a collection**: Remove a particular owned copy using its release, folder and instance IDs. Requires enabled writes and confirmation.
 
-  **Get Collection Fields**: list custom collection fields.
+  **List custom collection fields**: Read the account’s custom collection field definitions and IDs before updating a field on an owned copy.
 
-  **Edit Collection Field Value**: edit collection custom field value.
+  **Set a custom field on a collection copy**: Save a value for one custom collection field on a specific owned copy. Requires folder, release, instance and field IDs, enabled writes and confirmation.

@@ -2,12 +2,12 @@ component_id: discogs_capabilities_orders
 type: markdown
 title: Orders
 content: |
-  **List Orders**: list marketplace orders.
+  **List marketplace orders**: Read one page of the connected account’s marketplace orders, optionally filtered by status, creation date and archive state.
 
-  **Get Order**: get order by id.
+  **Get a marketplace order**: Read an existing marketplace order by its Discogs order ID for fulfillment or reporting.
 
-  **Update Order**: update order status, shipping, or archive fields.
+  **Update a marketplace order**: Change the supplied status, shipping amount or archive state of an existing order. Requires enabled writes and confirmation; Discogs controls allowed status transitions.
 
-  **List Order Messages**: list order messages.
+  **Read marketplace order messages**: Read the message history for an existing Discogs marketplace order.
 
-  **Add Order Message**: add message to order.
+  **Send a marketplace order message**: Post a message on an existing order, optionally with a status value. Sends a real order message and requires enabled writes and confirmation.

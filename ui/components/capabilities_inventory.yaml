@@ -2,14 +2,14 @@ component_id: discogs_capabilities_inventory
 type: markdown
 title: Inventory
 content: |
-  **Get Inventory Exports**: list inventory exports.
+  **List seller inventory exports**: Read the inventory export jobs available to the connected seller account.
 
-  **Get Inventory Export**: get inventory export by id.
+  **Get an inventory export status**: Read metadata and status for an existing seller inventory export using its export ID.
 
-  **Download Inventory Export**: download inventory export metadata/body.
+  **Read an inventory export download**: Request the download response for an existing seller inventory export. Returns the provider response through this action’s result; it does not create a workflow file artifact.
 
-  **Inventory Upload Add**: upload inventory add payload.
+  **Submit inventory additions**: Submit the supplied inventory items or CSV value to Discogs’ inventory add endpoint. Requires enabled writes and confirmation; inspect the provider response before assuming processing is complete.
 
-  **Inventory Upload Change**: upload inventory change payload.
+  **Submit inventory changes**: Submit the supplied inventory items or CSV value to Discogs’ inventory change endpoint. Requires enabled writes and confirmation; inspect the provider response before assuming processing is complete.
 
-  **Inventory Upload Delete**: upload inventory delete payload.
+  **Submit inventory removals**: Submit the supplied inventory items or CSV value to Discogs’ inventory delete endpoint. Requires enabled writes and confirmation; inspect the provider response before assuming processing is complete.

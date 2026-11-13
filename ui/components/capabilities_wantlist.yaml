@@ -2,10 +2,10 @@ component_id: discogs_capabilities_wantlist
 type: markdown
 title: Wantlist
 content: |
-  **Get Wantlist**: list wantlist.
+  **List wanted releases**: Read one page of the account’s wantlist to compare wanted records with a catalog or collection.
 
-  **Get Wantlist Release**: get wantlist release.
+  **Get one wanted release**: Read the account’s wantlist entry for a particular release.
 
-  **Add Wantlist Release**: add release to wantlist.
+  **Add or update a wanted release**: Add a release to the account’s wantlist, or update its supplied notes and rating. Requires enabled writes and confirmation.
 
-  **Delete Wantlist Release**: remove release from wantlist.
+  **Remove a wanted release**: Remove a specific release from the account’s wantlist. Requires enabled writes and confirmation.

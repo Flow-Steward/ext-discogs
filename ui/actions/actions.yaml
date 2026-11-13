@@ -190,8 +190,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_identity
     workflow_visible: true
-    title: "Identity"
-    description: "Get authenticated Discogs identity."
+    title: "Get the connected Discogs account"
+    description: "Read the username and account details associated with the saved Discogs token."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -204,8 +204,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_search_database
     workflow_visible: true
-    title: "Search Database"
-    description: "Search Discogs database releases, masters, artists, and labels."
+    title: "Search the Discogs music database"
+    description: "Find releases, masters, artists or labels using text and music catalog filters. Returns one page of matches; use a release ID from the results to look up a particular pressing."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -218,8 +218,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_get_release
     workflow_visible: true
-    title: "Get Release"
-    description: "Get a Discogs release by id."
+    title: "Get a record release"
+    description: "Read one specific release or pressing by its Discogs release ID, including the metadata returned by Discogs."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -232,8 +232,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_get_release_rating
     workflow_visible: true
-    title: "Get Release Rating"
-    description: "Get current user rating for a release."
+    title: "Get an account’s release rating"
+    description: "Read the selected account’s personal rating for a specific release; this is separate from community statistics."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -246,8 +246,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_update_release_rating
     workflow_visible: true
-    title: "Update Release Rating"
-    description: "Update current user rating for a release."
+    title: "Set an account’s release rating"
+    description: "Save the selected account’s personal rating for a release. Requires a token, enabled write actions and confirmation."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -260,8 +260,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_delete_release_rating
     workflow_visible: true
-    title: "Delete Release Rating"
-    description: "Delete current user rating for a release."
+    title: "Remove an account’s release rating"
+    description: "Remove the selected account’s personal rating for a release. Requires a token, enabled write actions and confirmation."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -274,8 +274,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_get_release_stats
     workflow_visible: true
-    title: "Get Release Stats"
-    description: "Get community stats for a release."
+    title: "Get release collection and wantlist statistics"
+    description: "Read community collection and wantlist statistics for a release to support music catalog research."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -288,8 +288,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_get_master
     workflow_visible: true
-    title: "Get Master"
-    description: "Get a master release by id."
+    title: "Get a master release"
+    description: "Read the master record that groups editions of an album or single. A master ID is different from a particular release ID."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -302,8 +302,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_get_master_versions
     workflow_visible: true
-    title: "Get Master Versions"
-    description: "List versions for a master release."
+    title: "List editions of a master release"
+    description: "Read one page of releases grouped under a master. Narrow by format, label, country or release date to identify a pressing."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -316,8 +316,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_get_artist
     workflow_visible: true
-    title: "Get Artist"
-    description: "Get an artist by id."
+    title: "Get an artist"
+    description: "Read a Discogs artist profile using an artist ID from search results."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -330,8 +330,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_get_artist_releases
     workflow_visible: true
-    title: "Get Artist Releases"
-    description: "List releases for an artist."
+    title: "List an artist’s releases"
+    description: "Read one page of releases associated with a Discogs artist for discography research."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -344,8 +344,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_get_label
     workflow_visible: true
-    title: "Get Label"
-    description: "Get a label by id."
+    title: "Get a record label"
+    description: "Read a Discogs record label profile using its label ID."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -358,8 +358,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_get_label_releases
     workflow_visible: true
-    title: "Get Label Releases"
-    description: "List releases for a label."
+    title: "List a label’s releases"
+    description: "Read one page of releases associated with a Discogs record label."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -372,8 +372,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_get_marketplace_listing
     workflow_visible: true
-    title: "Get Marketplace Listing"
-    description: "Get marketplace listing by id."
+    title: "Get a marketplace sale listing"
+    description: "Read one seller listing by listing ID, including the price and condition returned by Discogs. A listing ID is different from a release ID."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -386,8 +386,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_create_marketplace_listing
     workflow_visible: true
-    title: "Create Marketplace Listing"
-    description: "Create marketplace listing."
+    title: "Create a marketplace sale listing"
+    description: "Offer a specific release for sale using its condition, price and listing details. Creates a real seller listing and requires enabled writes and confirmation."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -400,8 +400,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_update_marketplace_listing
     workflow_visible: true
-    title: "Update Marketplace Listing"
-    description: "Update marketplace listing."
+    title: "Update a marketplace sale listing"
+    description: "Change the price, condition or other supplied details of an existing seller listing. Requires enabled writes and confirmation."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -414,8 +414,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_delete_marketplace_listing
     workflow_visible: true
-    title: "Delete Marketplace Listing"
-    description: "Delete marketplace listing."
+    title: "Delete a marketplace sale listing"
+    description: "Remove an existing seller listing by listing ID. Requires enabled writes and confirmation."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -428,8 +428,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_get_marketplace_stats
     workflow_visible: true
-    title: "Get Marketplace Stats"
-    description: "Get marketplace stats for a release."
+    title: "Get release marketplace statistics"
+    description: "Read marketplace availability and pricing statistics for a release to support pricing research."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -442,8 +442,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_get_price_suggestions
     workflow_visible: true
-    title: "Get Price Suggestions"
-    description: "Get price suggestions for a release."
+    title: "Get suggested sale prices by condition"
+    description: "Read Discogs price suggestions for a release by condition. These are suggestions, not a change to your listings."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -456,8 +456,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_calculate_marketplace_fee
     workflow_visible: true
-    title: "Calculate Marketplace Fee"
-    description: "Calculate marketplace fee for price/currency."
+    title: "Estimate a marketplace sale fee"
+    description: "Calculate the Discogs marketplace fee for a proposed price and currency without creating a listing or order."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -470,8 +470,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_list_orders
     workflow_visible: true
-    title: "List Orders"
-    description: "List marketplace orders."
+    title: "List marketplace orders"
+    description: "Read one page of the connected account’s marketplace orders, optionally filtered by status, creation date and archive state."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -484,8 +484,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_get_order
     workflow_visible: true
-    title: "Get Order"
-    description: "Get order by id."
+    title: "Get a marketplace order"
+    description: "Read an existing marketplace order by its Discogs order ID for fulfillment or reporting."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -498,8 +498,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_update_order
     workflow_visible: true
-    title: "Update Order"
-    description: "Update order status/shipping/archive fields."
+    title: "Update a marketplace order"
+    description: "Change the supplied status, shipping amount or archive state of an existing order. Requires enabled writes and confirmation; Discogs controls allowed status transitions."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -512,8 +512,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_list_order_messages
     workflow_visible: true
-    title: "List Order Messages"
-    description: "List order messages."
+    title: "Read marketplace order messages"
+    description: "Read the message history for an existing Discogs marketplace order."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -526,8 +526,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_add_order_message
     workflow_visible: true
-    title: "Add Order Message"
-    description: "Add message to order."
+    title: "Send a marketplace order message"
+    description: "Post a message on an existing order, optionally with a status value. Sends a real order message and requires enabled writes and confirmation."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -540,8 +540,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_get_user_profile
     workflow_visible: true
-    title: "Get User Profile"
-    description: "Get Discogs user profile."
+    title: "Get a Discogs user profile"
+    description: "Read the profile of the named Discogs account."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -554,8 +554,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_get_user_submissions
     workflow_visible: true
-    title: "Get User Submissions"
-    description: "List user submissions."
+    title: "List a user’s database submissions"
+    description: "Read one page of music database submissions associated with the named Discogs account."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -568,8 +568,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_get_user_contributions
     workflow_visible: true
-    title: "Get User Contributions"
-    description: "List user contributions."
+    title: "List a user’s database contributions"
+    description: "Read one page of music database contributions associated with the named Discogs account."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -582,8 +582,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_get_user_lists
     workflow_visible: true
-    title: "Get User Lists"
-    description: "List user lists."
+    title: "List a user’s saved lists"
+    description: "Read one page of lists belonging to the named Discogs account."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -596,8 +596,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_get_collection_folders
     workflow_visible: true
-    title: "Get Collection Folders"
-    description: "List collection folders."
+    title: "List record collection folders"
+    description: "Read the named account’s collection folders and their IDs before selecting a folder in another collection action."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -610,8 +610,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_create_collection_folder
     workflow_visible: true
-    title: "Create Collection Folder"
-    description: "Create collection folder."
+    title: "Create a record collection folder"
+    description: "Create a named folder in the account’s record collection. Requires enabled writes and confirmation."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -624,8 +624,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_get_collection_folder
     workflow_visible: true
-    title: "Get Collection Folder"
-    description: "Get collection folder."
+    title: "Get a record collection folder"
+    description: "Read details of one collection folder using its folder ID."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -638,8 +638,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_update_collection_folder
     workflow_visible: true
-    title: "Update Collection Folder"
-    description: "Update collection folder."
+    title: "Rename a record collection folder"
+    description: "Change the name of an existing collection folder. Requires enabled writes and confirmation."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -652,8 +652,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_delete_collection_folder
     workflow_visible: true
-    title: "Delete Collection Folder"
-    description: "Delete collection folder."
+    title: "Delete a record collection folder"
+    description: "Request deletion of an existing collection folder. Requires enabled writes and confirmation; Discogs decides whether the folder can be deleted."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -666,8 +666,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_get_collection_releases
     workflow_visible: true
-    title: "Get Collection Releases"
-    description: "List releases in collection folder."
+    title: "List records in a collection folder"
+    description: "Read one page of release instances in a collection folder. Keep each instance ID when later editing or removing an individual copy."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -680,8 +680,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_get_collection_release
     workflow_visible: true
-    title: "Get Collection Release"
-    description: "Get collection release instances."
+    title: "Get collection copies of a release"
+    description: "Read the account’s collection instances for one release in a folder. Each instance identifies one owned copy."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -694,8 +694,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_add_collection_release
     workflow_visible: true
-    title: "Add Collection Release"
-    description: "Add release to collection folder."
+    title: "Add a release to a collection folder"
+    description: "Add a copy of a specific release to the account’s collection folder, with optional notes and rating. Requires enabled writes and confirmation."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -708,8 +708,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_delete_collection_instance
     workflow_visible: true
-    title: "Delete Collection Instance"
-    description: "Delete collection release instance."
+    title: "Remove one copy from a collection"
+    description: "Remove a particular owned copy using its release, folder and instance IDs. Requires enabled writes and confirmation."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -722,8 +722,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_get_collection_fields
     workflow_visible: true
-    title: "Get Collection Fields"
-    description: "List custom collection fields."
+    title: "List custom collection fields"
+    description: "Read the account’s custom collection field definitions and IDs before updating a field on an owned copy."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -736,8 +736,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_edit_collection_field_value
     workflow_visible: true
-    title: "Edit Collection Field Value"
-    description: "Edit collection custom field value."
+    title: "Set a custom field on a collection copy"
+    description: "Save a value for one custom collection field on a specific owned copy. Requires folder, release, instance and field IDs, enabled writes and confirmation."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -750,8 +750,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_get_wantlist
     workflow_visible: true
-    title: "Get Wantlist"
-    description: "List wantlist."
+    title: "List wanted releases"
+    description: "Read one page of the account’s wantlist to compare wanted records with a catalog or collection."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -764,8 +764,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_get_wantlist_release
     workflow_visible: true
-    title: "Get Wantlist Release"
-    description: "Get wantlist release."
+    title: "Get one wanted release"
+    description: "Read the account’s wantlist entry for a particular release."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -778,8 +778,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_add_wantlist_release
     workflow_visible: true
-    title: "Add Wantlist Release"
-    description: "Add release to wantlist."
+    title: "Add or update a wanted release"
+    description: "Add a release to the account’s wantlist, or update its supplied notes and rating. Requires enabled writes and confirmation."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -792,8 +792,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_delete_wantlist_release
     workflow_visible: true
-    title: "Delete Wantlist Release"
-    description: "Remove release from wantlist."
+    title: "Remove a wanted release"
+    description: "Remove a specific release from the account’s wantlist. Requires enabled writes and confirmation."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -806,8 +806,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_get_inventory_exports
     workflow_visible: true
-    title: "Get Inventory Exports"
-    description: "List inventory exports."
+    title: "List seller inventory exports"
+    description: "Read the inventory export jobs available to the connected seller account."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -820,8 +820,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_get_inventory_export
     workflow_visible: true
-    title: "Get Inventory Export"
-    description: "Get inventory export by id."
+    title: "Get an inventory export status"
+    description: "Read metadata and status for an existing seller inventory export using its export ID."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -834,8 +834,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_download_inventory_export
     workflow_visible: true
-    title: "Download Inventory Export"
-    description: "Download inventory export metadata/body."
+    title: "Read an inventory export download"
+    description: "Request the download response for an existing seller inventory export. Returns the provider response through this action’s result; it does not create a workflow file artifact."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -848,8 +848,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_inventory_upload_add
     workflow_visible: true
-    title: "Inventory Upload Add"
-    description: "Upload inventory add payload."
+    title: "Submit inventory additions"
+    description: "Submit the supplied inventory items or CSV value to Discogs’ inventory add endpoint. Requires enabled writes and confirmation; inspect the provider response before assuming processing is complete."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -862,8 +862,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_inventory_upload_change
     workflow_visible: true
-    title: "Inventory Upload Change"
-    description: "Upload inventory change payload."
+    title: "Submit inventory changes"
+    description: "Submit the supplied inventory items or CSV value to Discogs’ inventory change endpoint. Requires enabled writes and confirmation; inspect the provider response before assuming processing is complete."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -876,8 +876,8 @@ actions:
     mutates_platform: false
   - action_id: discogs_inventory_upload_delete
     workflow_visible: true
-    title: "Inventory Upload Delete"
-    description: "Upload inventory delete payload."
+    title: "Submit inventory removals"
+    description: "Submit the supplied inventory items or CSV value to Discogs’ inventory delete endpoint. Requires enabled writes and confirmation; inspect the provider response before assuming processing is complete."
     required_scopes: [extension:invoke]
     handler:
       mode: extension

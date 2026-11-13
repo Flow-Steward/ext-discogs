@@ -2,26 +2,26 @@ component_id: discogs_capabilities_database
 type: markdown
 title: Database
 content: |
-  **Search Database**: search releases, masters, artists, and labels.
+  **Search the Discogs music database**: Find releases, masters, artists or labels using text and music catalog filters. Returns one page of matches; use a release ID from the results to look up a particular pressing.
 
-  **Get Release**: get a release by id.
+  **Get a record release**: Read one specific release or pressing by its Discogs release ID, including the metadata returned by Discogs.
 
-  **Get Release Rating**: get current user rating for a release.
+  **Get an account’s release rating**: Read the selected account’s personal rating for a specific release; this is separate from community statistics.
 
-  **Update Release Rating**: update current user rating for a release.
+  **Set an account’s release rating**: Save the selected account’s personal rating for a release. Requires a token, enabled write actions and confirmation.
 
-  **Delete Release Rating**: delete current user rating for a release.
+  **Remove an account’s release rating**: Remove the selected account’s personal rating for a release. Requires a token, enabled write actions and confirmation.
 
-  **Get Release Stats**: get community stats for a release.
+  **Get release collection and wantlist statistics**: Read community collection and wantlist statistics for a release to support music catalog research.
 
-  **Get Master**: get a master release by id.
+  **Get a master release**: Read the master record that groups editions of an album or single. A master ID is different from a particular release ID.
 
-  **Get Master Versions**: list versions for a master release.
+  **List editions of a master release**: Read one page of releases grouped under a master. Narrow by format, label, country or release date to identify a pressing.
 
-  **Get Artist**: get an artist by id.
+  **Get an artist**: Read a Discogs artist profile using an artist ID from search results.
 
-  **Get Artist Releases**: list releases for an artist.
+  **List an artist’s releases**: Read one page of releases associated with a Discogs artist for discography research.
 
-  **Get Label**: get a label by id.
+  **Get a record label**: Read a Discogs record label profile using its label ID.
 
-  **Get Label Releases**: list releases for a label.
+  **List a label’s releases**: Read one page of releases associated with a Discogs record label.
