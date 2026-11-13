@@ -32,20 +32,20 @@ connection_types:
           items: {type: string}
           default: [api.discogs.com]
         mock_mode:
-          description: "Use built-in example responses instead of contacting Discogs. Disable to operate on the live account."
+          description: "Use built-in example responses for regular API requests. Connection testing always contacts live Discogs. Disable mock mode to operate on live account data."
           type: boolean
           default: false
         enable_write_actions:
-          description: "Allow modifying actions. Each modifying action also requires confirm=true and a saved token."
+          description: "Allow modifying actions. Each modifying action also requires confirm=true and an available user token."
           type: boolean
           default: false
         default_currency:
-          description: "Default currency used by supported pricing operations."
+          description: "Reserved setting; currently unused by the runtime. Set Currency explicitly on Estimate a marketplace sale fee."
           type: string
           enum: [USD, EUR, GBP, JPY, CAD, AUD]
           default: USD
         default_page_size:
-          description: "Default result count for supported list operations, from 1 to 100."
+          description: "Default page size for the legacy database-search helper, from 1 to 100. Workflow actions use their own Results per page input; set it explicitly."
           type: integer
           minimum: 1
           maximum: 100

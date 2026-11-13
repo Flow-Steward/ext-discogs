@@ -5,7 +5,8 @@ token from Discogs Settings > Developers in the connection secret, and set the
 Discogs username for account, collection and wantlist actions. Keep the live API
 origin `https://api.discogs.com` and allowed host `api.discogs.com`. Set mock mode
 according to whether you want built-in example responses or live Discogs data.
-Test the connection before building the workflow.
+Connection testing always contacts live Discogs, even in mock mode. Test the
+connection before building the workflow.
 
 Select this connection on account actions. Public database reads may work
 anonymously; private account data and modifications require the saved token and
@@ -53,6 +54,11 @@ release, instance and field IDs, plus the value to save, for example `Shelf B3`.
 These IDs are separate and cannot be substituted for each other.
 
 ## Manage a marketplace listing and order
+
+**Estimate a marketplace sale fee** (`discogs_calculate_marketplace_fee`) takes
+an explicit **Currency**, for example `EUR`, together with the proposed price.
+The connection's **Default currency** setting is currently unused and does not
+supply a currency to this action.
 
 **Create a marketplace sale listing** (`discogs_create_marketplace_listing`)
 offers a real sale copy. After identifying the release, enter its exact Discogs
