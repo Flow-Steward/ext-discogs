@@ -2,6 +2,8 @@
 
 See [Workflow actions and examples](docs/workflow-actions.md) for connection setup, action inputs and end-to-end examples.
 
+For the upstream API reference, see [Discogs developer documentation](https://www.discogs.com/developers/).
+
 Research record releases, enrich a music catalog and manage Discogs account tasks from Flow Steward workflows. Search releases, masters, artists and labels using filters such as artist, release title, year, barcode or catalog number. Look up individual records, explore master versions and artist or label releases, and return result objects with pagination for subsequent workflow steps.
 
 Marketplace operations cover listings, release sales statistics, price suggestions, fee calculations, orders and order messages. Collection and wantlist operations let workflows inspect folders, release instances and custom collection fields, then add, update or remove supported items. The release also exposes user profiles, contributions, submissions, lists, release ratings and inventory export or upload operations.
