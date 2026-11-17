@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.6
+
+- Identify Flow Steward as the extension publisher and direct extension support to this repository's issues. Discogs developer documentation remains linked from the README.
+
+[Changes from 0.2.5](https://github.com/Flow-Steward/ext-discogs/compare/v0.2.5...v0.2.6)
+
 ## 0.2.5
 
 ### Added

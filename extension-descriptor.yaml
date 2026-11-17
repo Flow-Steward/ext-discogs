@@ -1,6 +1,6 @@
 schema_version: extension_descriptor_v1
 extension_id: com.discogs.api
-release_version: 0.2.5
+release_version: 0.2.6
 extension_type: service_extension
 identity:
   display_name: Discogs API
@@ -26,8 +26,8 @@ identity:
   - marketplace
   - discogs
 vendor:
-  vendor_name: Discogs
-  support_url: https://www.discogs.com/developers/
+  vendor_name: Flow Steward
+  support_url: https://github.com/Flow-Steward/ext-discogs/issues
 listing:
   visibility: private_reference
   category: data_enrichment
