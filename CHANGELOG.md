@@ -4,6 +4,7 @@
 
 ### Added
 
+- **Action reference** in `docs/workflow-actions.md`: every action with its name, ID and description, grouped as on the Capabilities page; a test keeps it, the Capabilities page and the workflow editor descriptions equal to the operation manifest.
 - **List a seller’s inventory** (`discogs_list_inventory`) and **Read a seller’s whole inventory** (`discogs_list_all_inventory`): all pages up to 100 listings each, every page checked against its pagination, an exact `next_page` when the time, size or item limit stops the read, and `complete: false` with a warning when the inventory total changes during the read.
 - **Request an inventory export** (`discogs_request_inventory_export`): returns `processing: accepted`, `applied: false`, the export ID from Discogs’ Location header and `check: discogs_get_inventory_export`.
 - **List recent inventory uploads** (`discogs_list_inventory_uploads`) and **Get an inventory upload status** (`discogs_get_inventory_upload`).

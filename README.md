@@ -39,10 +39,16 @@ Logo: `icon.png` at the bundle root (the original Discogs vinyl-record mark; PNG
 - Read a seller inventory one page at a time or completely, with an exact
   continuation page and a check of every page against its pagination.
 - Request inventory exports and follow exports and inventory uploads by ID.
+- Add, change or remove marketplace listings in bulk by uploading the CSV
+  Discogs documents, built from a list of objects, CSV text or a workflow file;
+  columns are checked before anything is sent.
 - Read community release ratings, collection value, the copies of a release in
   a collection and the items of a saved list; rate or move a collection copy,
   edit a wanted release and edit the account profile.
 - Return the Discogs rate-limit window (`result.rate_limit`) from every action.
+
+All 62 actions with their names, IDs and descriptions are listed in
+[Action reference](docs/workflow-actions.md#action-reference).
 
 ## API coverage
 
