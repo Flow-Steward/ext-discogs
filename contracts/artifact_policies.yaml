@@ -14,3 +14,27 @@ policies:
       - kind: discogs_marketplace_snapshot
         retention_class: run_window
         description: Marketplace statistics snapshot for a release.
+  - operation_id: discogs_inventory_upload_add
+    inputs:
+      - kind: artifact
+        value_type: artifact_handle
+        binding_key: discogs_inventory_csv
+        field: file
+        required: false
+        max_size_bytes: 10485760
+  - operation_id: discogs_inventory_upload_change
+    inputs:
+      - kind: artifact
+        value_type: artifact_handle
+        binding_key: discogs_inventory_csv
+        field: file
+        required: false
+        max_size_bytes: 10485760
+  - operation_id: discogs_inventory_upload_delete
+    inputs:
+      - kind: artifact
+        value_type: artifact_handle
+        binding_key: discogs_inventory_csv
+        field: file
+        required: false
+        max_size_bytes: 10485760

@@ -2,10 +2,15 @@
 
 from __future__ import annotations
 
+import csv
+import io
 import json
 import time
+from decimal import Decimal, InvalidOperation
 from typing import Any
 from urllib.parse import urlparse
+
+from flowsteward_extension_sdk import read_artifact_bytes
 
 from handlers.common import (
     action_input,
@@ -21,7 +26,7 @@ from handlers.common import (
     ok,
     redacted_secret_refs,
 )
-from handlers.discogs_client import DiscogsClient
+from handlers.discogs_client import DiscogsClient, UploadFile
 from handlers.queries import (
     _normalize_search_item,
     _provider_error,
@@ -424,7 +429,8 @@ DISCOGS_API_OPERATIONS: dict[str, dict[str, Any]] = {
         "method": "POST",
         "path": "/inventory/upload/add",
         "write": True,
-        "body_fields": ["items", "csv"],
+        "upload": "add",
+        "no_body": True,
         "check": "discogs_get_inventory_upload",
         "job_id": "upload_id",
     },
@@ -432,7 +438,8 @@ DISCOGS_API_OPERATIONS: dict[str, dict[str, Any]] = {
         "method": "POST",
         "path": "/inventory/upload/change",
         "write": True,
-        "body_fields": ["items", "csv"],
+        "upload": "change",
+        "no_body": True,
         "check": "discogs_get_inventory_upload",
         "job_id": "upload_id",
     },
@@ -440,7 +447,8 @@ DISCOGS_API_OPERATIONS: dict[str, dict[str, Any]] = {
         "method": "POST",
         "path": "/inventory/upload/delete",
         "write": True,
-        "body_fields": ["items", "csv"],
+        "upload": "delete",
+        "no_body": True,
         "check": "discogs_get_inventory_upload",
         "job_id": "upload_id",
     },
@@ -474,6 +482,198 @@ DOCUMENTED_CURRENCIES = (
     "SEK",
     "ZAR",
 )
+
+
+# Inventory uploads (documented: POST /inventory/upload/{add,change,delete}, one parameter
+# "upload", a comma-separated CSV file whose first row is a header of lower-case field
+# names). Columns per kind as the documentation lists them.
+UPLOAD_COLUMNS: dict[str, dict[str, tuple[str, ...]]] = {
+    "add": {
+        "required": ("release_id", "price", "media_condition"),
+        "optional": (
+            "sleeve_condition",
+            "comments",
+            "accept_offer",
+            "location",
+            "external_id",
+            "weight",
+            "format_quantity",
+        ),
+    },
+    "change": {
+        "required": ("release_id",),
+        # "Optional fields (at least one required)".
+        "optional": (
+            "price",
+            "media_condition",
+            "sleeve_condition",
+            "comments",
+            "accept_offer",
+            "external_id",
+            "location",
+            "weight",
+            "format_quantity",
+        ),
+    },
+    "delete": {"required": ("listing_id",), "optional": ()},
+}
+MEDIA_CONDITIONS = (
+    "Mint (M)",
+    "Near Mint (NM or M-)",
+    "Very Good Plus (VG+)",
+    "Very Good (VG)",
+    "Good Plus (G+)",
+    "Good (G)",
+    "Fair (F)",
+    "Poor (P)",
+)
+SLEEVE_CONDITIONS = (*MEDIA_CONDITIONS, "Not Graded", "Generic", "No Cover")
+MAX_UPLOAD_BYTES = 10 * 1024 * 1024
+UPLOAD_FILENAME = "inventory.csv"
+
+
+def _whole_number(value: Any, name: str, row: int) -> str:
+    if isinstance(value, bool):
+        raise ValueError(f"items[{row}].{name} must be a whole number")
+    text = as_text(value).strip()
+    if isinstance(value, int):
+        text = str(value)
+    if not text.isdigit():
+        raise ValueError(f"items[{row}].{name} must be a whole number")
+    return str(int(text))
+
+
+def _price(value: Any, row: int) -> str:
+    """A documented number as exact decimal text; a JSON number is taken by its shortest
+    round-trip text, never through float arithmetic."""
+    if isinstance(value, bool) or value in (None, ""):
+        raise ValueError(f"items[{row}].price must be a number")
+    text = repr(value) if isinstance(value, float) else as_text(value).strip()
+    try:
+        number = Decimal(text)
+    except InvalidOperation:
+        raise ValueError(f"items[{row}].price must be a number") from None
+    if not number.is_finite() or number < 0:
+        raise ValueError(f"items[{row}].price must be a non-negative number")
+    return format(number, "f")
+
+
+def _cell(name: str, value: Any, row: int) -> str:
+    if name in ("release_id", "listing_id"):
+        return _whole_number(value, name, row)
+    if name == "price":
+        return _price(value, row)
+    if name in ("weight", "format_quantity"):
+        return _whole_number(value, name, row)
+    text = as_text(value)
+    if name == "media_condition" and text not in MEDIA_CONDITIONS:
+        raise ValueError(
+            f"items[{row}].media_condition must be one of: {', '.join(MEDIA_CONDITIONS)}"
+        )
+    if name == "sleeve_condition" and text not in SLEEVE_CONDITIONS:
+        raise ValueError(
+            f"items[{row}].sleeve_condition must be one of: {', '.join(SLEEVE_CONDITIONS)}"
+        )
+    if name == "accept_offer" and text not in ("Y", "N"):
+        raise ValueError(f"items[{row}].accept_offer must be Y or N")
+    return text
+
+
+def upload_csv_from_items(kind: str, items: Any) -> bytes:
+    """The CSV Discogs documents for this upload kind, built from a list of objects."""
+    columns = UPLOAD_COLUMNS[kind]
+    allowed = (*columns["required"], *columns["optional"])
+    if not isinstance(items, list) or not items:
+        raise ValueError("items must be a non-empty list of objects")
+    used: list[str] = []
+    for index, item in enumerate(items):
+        if not isinstance(item, dict):
+            raise ValueError(f"items[{index}] must be an object")
+        unknown = sorted(set(item) - set(allowed))
+        if unknown:
+            raise ValueError(
+                f"items[{index}] has columns Discogs does not take for {kind}: "
+                f"{', '.join(unknown)}; allowed: {', '.join(allowed)}"
+            )
+        missing = [c for c in columns["required"] if item.get(c) in (None, "")]
+        if missing:
+            raise ValueError(f"items[{index}] is missing: {', '.join(missing)}")
+        if kind == "change" and not any(item.get(c) not in (None, "") for c in columns["optional"]):
+            raise ValueError(
+                f"items[{index}] must change at least one of: {', '.join(allowed[1:])}"
+            )
+        for name in allowed:
+            if name in item and name not in used:
+                used.append(name)
+    header = [name for name in allowed if name in used]
+    buffer = io.StringIO()
+    writer = csv.writer(buffer, lineterminator="\r\n")
+    writer.writerow(header)
+    for index, item in enumerate(items):
+        writer.writerow(
+            [
+                _cell(name, item[name], index) if item.get(name) not in (None, "") else ""
+                for name in header
+            ]
+        )
+    return buffer.getvalue().encode("utf-8")
+
+
+def check_upload_csv(kind: str, content: bytes) -> bytes:
+    """A CSV given as text or file: UTF-8, a header of documented columns for the kind."""
+    columns = UPLOAD_COLUMNS[kind]
+    allowed = (*columns["required"], *columns["optional"])
+    if not content.strip():
+        raise ValueError("The CSV is empty")
+    if len(content) > MAX_UPLOAD_BYTES:
+        raise ValueError(f"The CSV is larger than {MAX_UPLOAD_BYTES} bytes")
+    try:
+        text = content.decode("utf-8-sig")
+    except UnicodeDecodeError:
+        raise ValueError("The CSV must be UTF-8 text") from None
+    first = next(csv.reader(io.StringIO(text)), [])
+    header = [name.strip() for name in first]
+    unknown = sorted(set(header) - set(allowed))
+    if unknown:
+        raise ValueError(
+            f"The CSV header has columns Discogs does not take for {kind}: "
+            f"{', '.join(unknown)}; allowed: {', '.join(allowed)}"
+        )
+    missing = [c for c in columns["required"] if c not in header]
+    if missing:
+        raise ValueError(f"The CSV header is missing: {', '.join(missing)}")
+    return text.encode("utf-8")
+
+
+def _upload_from_payload(
+    action: dict[str, Any], payload: dict[str, Any], kind: str
+) -> tuple[UploadFile | None, dict[str, Any] | None]:
+    given = [name for name in ("items", "csv", "file") if payload.get(name) not in (None, "", [])]
+    if len(given) != 1:
+        return None, fail(
+            "invalid_payload",
+            "Give exactly one of items, csv (CSV text) or file (a workflow file with the CSV).",
+        )
+    try:
+        if given[0] == "items":
+            content = upload_csv_from_items(kind, payload["items"])
+        elif given[0] == "csv":
+            text = payload["csv"] if isinstance(payload["csv"], str) else as_text(payload["csv"])
+            content = check_upload_csv(kind, text.encode("utf-8"))
+        else:
+            handle = as_text(payload["file"]).strip()
+            try:
+                raw = read_artifact_bytes(
+                    {"artifacts": as_dict(action.get("artifacts"))},
+                    artifact_id=handle,
+                    timeout_seconds=30.0,
+                )
+            except Exception:  # noqa: BLE001 - any read failure: nothing was sent
+                return None, fail("invalid_payload", "The workflow file could not be read.")
+            content = check_upload_csv(kind, raw)
+    except ValueError as exc:
+        return None, fail("invalid_payload", str(exc))
+    return UploadFile("upload", UPLOAD_FILENAME, "text/csv", content), None
 
 
 def _client_for_action(action: dict[str, Any]) -> DiscogsClient:
@@ -607,6 +807,11 @@ def execute_discogs_api_operation(action: dict[str, Any]) -> dict[str, Any]:
                 f"curr_abbr must be one of: {', '.join(DOCUMENTED_CURRENCIES)}.",
             )
         payload = {**payload, "curr_abbr": curr_abbr}
+    upload = None
+    if spec.get("upload"):
+        upload, error = _upload_from_payload(action, payload, as_text(spec["upload"]))
+        if error:
+            return error
     body = (
         _body_from_payload(
             payload, as_list(spec.get("body_fields")), as_dict(spec.get("body_renames"))
@@ -614,7 +819,7 @@ def execute_discogs_api_operation(action: dict[str, Any]) -> dict[str, Any]:
         if method != "GET" and not spec.get("no_body")
         else None
     )
-    response = client.request_api(method, path, params=params, body=body)
+    response = client.request_api(method, path, params=params, body=body, upload=upload)
     if not response.get("ok"):
         return _provider_error(response)
     data = as_dict(response.get("body"))

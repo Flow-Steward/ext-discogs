@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import secrets as _secrets
 from dataclasses import dataclass
 from typing import Any
 from urllib.error import HTTPError, URLError
@@ -22,6 +23,31 @@ from handlers.common import (
 )
 
 MAX_RESPONSE_BYTES = 1024 * 1024
+
+
+@dataclass(frozen=True)
+class UploadFile:
+    """One file part of a multipart/form-data request (Discogs inventory uploads)."""
+
+    field: str
+    filename: str
+    content_type: str
+    content: bytes
+
+
+def multipart_body(upload: UploadFile) -> tuple[bytes, str]:
+    """The multipart/form-data body with the single file part and its Content-Type."""
+    boundary = "----flowsteward-" + _secrets.token_hex(16)
+    head = (
+        f"--{boundary}\r\n"
+        f'Content-Disposition: form-data; name="{upload.field}"; '
+        f'filename="{upload.filename}"\r\n'
+        f"Content-Type: {upload.content_type}\r\n\r\n"
+    ).encode("ascii")
+    tail = f"\r\n--{boundary}--\r\n".encode("ascii")
+    return head + upload.content + tail, f"multipart/form-data; boundary={boundary}"
+
+
 TOKEN_ENV_NAMES = ("DISCOGS_USER_TOKEN", "DISCOGS_API_TOKEN", "DISCOGS_TOKEN")
 
 
@@ -139,6 +165,7 @@ class DiscogsClient:
         *,
         params: dict[str, Any] | None = None,
         body: dict[str, Any] | None = None,
+        upload: UploadFile | None = None,
         force_live: bool = False,
     ) -> dict[str, Any]:
         url = self._build_url(path, params)
@@ -149,7 +176,9 @@ class DiscogsClient:
             return self._mock_response(method, path, params or {}, body or {})
         data = None
         headers = self._headers()
-        if body is not None:
+        if upload is not None:
+            data, headers["Content-Type"] = multipart_body(upload)
+        elif body is not None:
             data = json.dumps(body).encode("utf-8")
             headers["Content-Type"] = "application/json"
         request = Request(url, data=data, headers=headers, method=method)
@@ -186,8 +215,9 @@ class DiscogsClient:
         *,
         params: dict[str, Any] | None = None,
         body: dict[str, Any] | None = None,
+        upload: UploadFile | None = None,
     ) -> dict[str, Any]:
-        return self._request(method.upper(), path, params=params, body=body)
+        return self._request(method.upper(), path, params=params, body=body, upload=upload)
 
     def test_connection(self) -> dict[str, Any]:
         if not self.config.token:

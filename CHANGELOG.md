@@ -13,6 +13,7 @@
 
 ### Fixed
 
+- Inventory add, change and delete uploads now send the CSV file Discogs documents (multipart field `upload`), built from `items`, `csv` or a workflow `file`; columns are checked against the documentation before anything is sent. Before, these actions sent a JSON body, which the documentation does not describe for these endpoints.
 - The rate limit is read from Discogs’ `X-Discogs-Ratelimit`, `X-Discogs-Ratelimit-Used` and `X-Discogs-Ratelimit-Remaining` headers; it was always empty before.
 - **Estimate a marketplace sale fee** calls `/marketplace/fee/{price}/{currency}` when a currency is given, so the fee is calculated in that currency instead of always USD; the currency must be one Discogs documents.
 - The inventory add, change and delete actions return the upload ID from Discogs’ Location header with `processing: accepted` and `check: discogs_get_inventory_upload`.

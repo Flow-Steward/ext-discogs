@@ -111,8 +111,15 @@ status is `success`, then to **Read an inventory export download**. List
 earlier exports with **List seller inventory exports**. The download action
 returns the provider response and does not create a workflow file artifact.
 
-The inventory add/change/delete actions submit the supplied `items` array or
-`csv` text value to the corresponding fixed Discogs endpoint. Discogs records
+The inventory add/change/delete actions upload a CSV of listings as the file
+Discogs documents (multipart field `upload`, `inventory.csv`, `text/csv`). Give
+exactly one of `items` (objects turned into the CSV), `csv` (CSV text) or `file`
+(a workflow file with the CSV). Columns: add takes `release_id`, `price`,
+`media_condition` and optionally `sleeve_condition`, `comments`, `accept_offer`,
+`location`, `external_id`, `weight`, `format_quantity`; change takes `release_id`
+and at least one of the optional add columns or `price`/`media_condition`;
+delete takes `listing_id`. An unknown column is refused before anything is sent;
+prices are written as exact decimals. Discogs records
 each submission as an upload: the result reports `processing: accepted`,
 `check: discogs_get_inventory_upload` and the `upload_id`. **Get an inventory
 upload status** returns the upload’s `status` and `results` text, and **List

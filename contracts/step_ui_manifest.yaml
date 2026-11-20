@@ -374,20 +374,23 @@ forms:
   - operation_id: discogs_inventory_upload_add
     title: "Submit inventory additions"
     fields:
-      - {name: items, widget_type: json, label: "Items", required: false, help_text: "JSON array of inventory entries sent to the selected inventory upload endpoint. Follow Discogs’ format for add, change or delete; this extension does not reconcile row outcomes."}
-      - {name: csv, widget_type: textarea, label: "Csv", required: false, help_text: "CSV content sent as the csv value to the selected inventory upload endpoint. This is text, not a local path or workflow file handle."}
+      - {name: items, widget_type: json, label: "Items", required: false, help_text: "JSON array of objects, one per listing; turned into the CSV Discogs documents for add. Columns: release_id, price and media_condition; optional sleeve_condition, comments, accept_offer, location, external_id, weight, format_quantity. Give items, csv or file — exactly one."}
+      - {name: csv, widget_type: textarea, label: "CSV", required: false, help_text: "CSV text with a header row of lower-case column names, uploaded as the file Discogs documents. Give items, csv or file — exactly one."}
+      - {name: file, widget_type: artifact_picker, label: "CSV file", required: false, help_text: "A workflow file from an earlier step holding the CSV (UTF-8, header row of lower-case column names). Give items, csv or file — exactly one."}
       - {name: confirm, widget_type: boolean, label: "Confirm this change", required: true, help_text: "Set true only after reviewing this modification. A user token must also be available and write actions enabled.", placeholder: "true"}
   - operation_id: discogs_inventory_upload_change
     title: "Submit inventory changes"
     fields:
-      - {name: items, widget_type: json, label: "Items", required: false, help_text: "JSON array of inventory entries sent to the selected inventory upload endpoint. Follow Discogs’ format for add, change or delete; this extension does not reconcile row outcomes."}
-      - {name: csv, widget_type: textarea, label: "Csv", required: false, help_text: "CSV content sent as the csv value to the selected inventory upload endpoint. This is text, not a local path or workflow file handle."}
+      - {name: items, widget_type: json, label: "Items", required: false, help_text: "JSON array of objects, one per listing; turned into the CSV Discogs documents for change. Columns: release_id and at least one of price, media_condition, sleeve_condition, comments, accept_offer, external_id, location, weight, format_quantity. Give items, csv or file — exactly one."}
+      - {name: csv, widget_type: textarea, label: "CSV", required: false, help_text: "CSV text with a header row of lower-case column names, uploaded as the file Discogs documents. Give items, csv or file — exactly one."}
+      - {name: file, widget_type: artifact_picker, label: "CSV file", required: false, help_text: "A workflow file from an earlier step holding the CSV (UTF-8, header row of lower-case column names). Give items, csv or file — exactly one."}
       - {name: confirm, widget_type: boolean, label: "Confirm this change", required: true, help_text: "Set true only after reviewing this modification. A user token must also be available and write actions enabled.", placeholder: "true"}
   - operation_id: discogs_inventory_upload_delete
     title: "Submit inventory removals"
     fields:
-      - {name: items, widget_type: json, label: "Items", required: false, help_text: "JSON array of inventory entries sent to the selected inventory upload endpoint. Follow Discogs’ format for add, change or delete; this extension does not reconcile row outcomes."}
-      - {name: csv, widget_type: textarea, label: "Csv", required: false, help_text: "CSV content sent as the csv value to the selected inventory upload endpoint. This is text, not a local path or workflow file handle."}
+      - {name: items, widget_type: json, label: "Items", required: false, help_text: "JSON array of objects, one per listing; turned into the CSV Discogs documents for delete. Columns: listing_id. Give items, csv or file — exactly one."}
+      - {name: csv, widget_type: textarea, label: "CSV", required: false, help_text: "CSV text with a header row of lower-case column names, uploaded as the file Discogs documents. Give items, csv or file — exactly one."}
+      - {name: file, widget_type: artifact_picker, label: "CSV file", required: false, help_text: "A workflow file from an earlier step holding the CSV (UTF-8, header row of lower-case column names). Give items, csv or file — exactly one."}
       - {name: confirm, widget_type: boolean, label: "Confirm this change", required: true, help_text: "Set true only after reviewing this modification. A user token must also be available and write actions enabled.", placeholder: "true"}
   - operation_id: discogs_list_inventory_uploads
     title: "List recent inventory uploads"

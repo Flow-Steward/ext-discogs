@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import io
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -50,6 +51,7 @@ class _Recorder:
     def __init__(self, answer):
         self.answer = answer
         self.requests: list[dict[str, Any]] = []
+        self.raw: list[dict[str, Any]] = []
 
     def __call__(self, request, timeout: int):
         url = urlparse(request.full_url)
@@ -57,9 +59,16 @@ class _Recorder:
             "method": request.get_method(),
             "path": url.path,
             "query": {key: values[0] for key, values in parse_qs(url.query).items()},
-            "body": json.loads(request.data) if request.data else None,
+            "body": (
+                json.loads(request.data)
+                if request.data and "json" in (request.get_header("Content-type") or "")
+                else None
+            ),
         }
         self.requests.append(record)
+        self.raw.append(
+            {"raw": request.data or b"", "content_type": request.get_header("Content-type") or ""}
+        )
         return self.answer(record)
 
 
@@ -237,6 +246,13 @@ def test_inventory_export_is_accepted_not_applied(monkeypatch) -> None:
     assert result["result"]["rate_limit"]["remaining"] == 55
 
 
+UPLOAD_CSV = {
+    "add": "release_id,price,media_condition\n123,1.50,Mint (M)\n",
+    "change": "release_id,price\n123,2.00\n",
+    "delete": "listing_id\n12345678\n",
+}
+
+
 @pytest.mark.parametrize("kind", ["add", "change", "delete"])
 def test_inventory_uploads_point_to_their_upload_record(monkeypatch, kind) -> None:
     recorder = _Recorder(
@@ -248,7 +264,7 @@ def test_inventory_uploads_point_to_their_upload_record(monkeypatch, kind) -> No
         monkeypatch,
         recorder,
         f"discogs_inventory_upload_{kind}",
-        {"csv": "listing_id\n1\n", "confirm": True},
+        {"csv": UPLOAD_CSV[kind], "confirm": True},
         WRITE_CONNECTION,
     )
     assert recorder.requests[0]["path"] == f"/inventory/upload/{kind}"
@@ -472,3 +488,202 @@ def test_list_all_inventory_runs_in_mock_mode() -> None:
     )["result"]
     assert result["complete"] is True
     assert result["item_count"] == 3
+
+
+# -- inventory uploads are the CSV file Discogs documents ----------------------------------
+
+
+def _multipart_parts(sent: dict[str, Any]) -> list[dict[str, Any]]:
+    """The parts of a recorded multipart/form-data request, split on its boundary."""
+    kind, _, params = sent["content_type"].partition(";")
+    assert kind.strip() == "multipart/form-data"
+    boundary = params.split("boundary=", 1)[1].strip().encode("ascii")
+    raw = sent["raw"]
+    assert raw.endswith(b"\r\n--" + boundary + b"--\r\n")
+    parts = []
+    for chunk in raw.split(b"--" + boundary)[1:-1]:
+        assert chunk.startswith(b"\r\n") and chunk.endswith(b"\r\n")
+        head, _, content = chunk[2:-2].partition(b"\r\n\r\n")
+        headers = dict(line.split(": ", 1) for line in head.decode("ascii").split("\r\n") if line)
+        disposition = headers["Content-Disposition"]
+        name = re.search(r' name="([^"]*)"', disposition)
+        filename = re.search(r'filename="([^"]*)"', disposition)
+        assert name is not None and filename is not None
+        parts.append(
+            {
+                "name": name.group(1),
+                "filename": filename.group(1),
+                "content_type": headers["Content-Type"],
+                "content": content,
+            }
+        )
+    return parts
+
+
+def _upload_answer(record: dict[str, Any]) -> _Response:
+    return _Response(None, headers={"Location": "https://api.discogs.com/inventory/upload/599632"})
+
+
+@pytest.mark.parametrize("kind", ["add", "change", "delete"])
+def test_an_upload_is_sent_as_a_multipart_file_named_upload(monkeypatch, kind) -> None:
+    recorder = _Recorder(_upload_answer)
+    result = _run(
+        monkeypatch,
+        recorder,
+        f"discogs_inventory_upload_{kind}",
+        {"csv": UPLOAD_CSV[kind], "confirm": True},
+        WRITE_CONNECTION,
+    )
+    assert result["ok"] is True, result
+    assert recorder.requests[0]["method"] == "POST"
+    sent = recorder.raw[0]
+    parts = _multipart_parts(sent)
+    assert [(p["name"], p["filename"], p["content_type"]) for p in parts] == [
+        ("upload", "inventory.csv", "text/csv")
+    ]
+    assert parts[0]["content"] == UPLOAD_CSV[kind].encode("utf-8")
+    assert b'"items"' not in sent["raw"] and b'"csv"' not in sent["raw"]
+
+
+def test_items_become_the_documented_csv_with_exact_prices(monkeypatch) -> None:
+    recorder = _Recorder(_upload_answer)
+    items = [
+        {"release_id": 123, "price": 1.5, "media_condition": "Mint (M)", "comments": "a, b"},
+        {
+            "release_id": "456",
+            "price": "2.50",
+            "media_condition": "Near Mint (NM or M-)",
+            "accept_offer": "Y",
+            "weight": 230,
+        },
+        {"release_id": 789, "price": 0.1, "media_condition": "Good (G)"},
+    ]
+    result = _run(
+        monkeypatch,
+        recorder,
+        "discogs_inventory_upload_add",
+        {"items": items, "confirm": True},
+        WRITE_CONNECTION,
+    )
+    assert result["ok"] is True, result
+    content = _multipart_parts(recorder.raw[0])[0]["content"].decode("utf-8")
+    assert content == (
+        "release_id,price,media_condition,comments,accept_offer,weight\r\n"
+        '123,1.5,Mint (M),"a, b",,\r\n'
+        "456,2.50,Near Mint (NM or M-),,Y,230\r\n"
+        "789,0.1,Good (G),,,\r\n"
+    )
+
+
+def test_items_for_delete_and_change_use_their_own_columns(monkeypatch) -> None:
+    recorder = _Recorder(_upload_answer)
+    _run(
+        monkeypatch,
+        recorder,
+        "discogs_inventory_upload_delete",
+        {"items": [{"listing_id": 12345678}, {"listing_id": "98765432"}], "confirm": True},
+        WRITE_CONNECTION,
+    )
+    _run(
+        monkeypatch,
+        recorder,
+        "discogs_inventory_upload_change",
+        {"items": [{"release_id": 123, "price": "3.00"}], "confirm": True},
+        WRITE_CONNECTION,
+    )
+    contents = [_multipart_parts(r)[0]["content"].decode("utf-8") for r in recorder.raw]
+    assert contents == [
+        "listing_id\r\n12345678\r\n98765432\r\n",
+        "release_id,price\r\n123,3.00\r\n",
+    ]
+
+
+@pytest.mark.parametrize(
+    ("kind", "payload", "said"),
+    [
+        ("add", {"csv": UPLOAD_CSV["add"], "file": "artifact-1"}, "exactly one of"),
+        ("add", {"csv": UPLOAD_CSV["add"], "items": [{"release_id": 1}]}, "exactly one of"),
+        ("add", {}, "exactly one of"),
+        (
+            "add",
+            {"items": [{"release_id": 1, "price": 1, "media_condition": "Mint (M)", "color": "x"}]},
+            "does not take for add: color",
+        ),
+        ("delete", {"items": [{"listing_id": 1, "release_id": 2}]}, "does not take for delete"),
+        ("add", {"csv": "release_id,price,media_condition,color\n1,1,Mint (M),x\n"}, "color"),
+        ("delete", {"csv": "release_id\n1\n"}, "does not take for delete: release_id"),
+        ("add", {"items": [{"release_id": 1, "price": 1}]}, "missing: media_condition"),
+        ("change", {"items": [{"release_id": 1}]}, "at least one of"),
+        ("add", {"items": [{"release_id": 1, "price": 1, "media_condition": "Shiny"}]}, "media"),
+        (
+            "add",
+            {"items": [{"release_id": 1, "price": "x", "media_condition": "Mint (M)"}]},
+            "price",
+        ),
+        (
+            "add",
+            {"items": [{"release_id": 1.5, "price": 1, "media_condition": "Mint (M)"}]},
+            "whole",
+        ),
+        ("delete", {"items": [{"listing_id": 1}], "file": "a"}, "exactly one of"),
+    ],
+)
+def test_an_upload_is_refused_before_anything_is_sent(monkeypatch, kind, payload, said) -> None:
+    recorder = _Recorder(_upload_answer)
+    result = _run(
+        monkeypatch,
+        recorder,
+        f"discogs_inventory_upload_{kind}",
+        {**payload, "confirm": True},
+        WRITE_CONNECTION,
+    )
+    assert result["ok"] is False and result["error"] == "invalid_payload", result
+    assert said in json.dumps(result)
+    assert recorder.requests == []
+
+
+def test_an_upload_from_a_workflow_file_reads_the_granted_file(monkeypatch) -> None:
+    from handlers import actions
+
+    seen: dict[str, Any] = {}
+
+    def _reader(payload, *, artifact_id="", binding_key="", timeout_seconds=30.0):
+        seen["artifact_id"] = artifact_id
+        seen["payload"] = payload
+        return UPLOAD_CSV["delete"].encode("utf-8")
+
+    monkeypatch.setattr(actions, "read_artifact_bytes", _reader)
+    recorder = _Recorder(_upload_answer)
+    grant = {"inputs": [{"artifact_id": "artifact-7", "field": "file"}]}
+    from handlers import discogs_client
+
+    monkeypatch.setattr(discogs_client, "urlopen", recorder)
+    action = {
+        "action_id": "discogs_inventory_upload_delete",
+        "input": {"file": "artifact-7", "confirm": True},
+        "target": {"connection": WRITE_CONNECTION},
+        "artifacts": grant,
+    }
+    result = actions.ACTION_HANDLERS["discogs_inventory_upload_delete"](action)
+    assert result["ok"] is True, result
+    assert seen == {"artifact_id": "artifact-7", "payload": {"artifacts": grant}}
+    assert _multipart_parts(recorder.raw[0])[0]["content"] == b"listing_id\n12345678\n"
+
+
+def test_the_router_hands_the_file_grant_to_the_action(monkeypatch) -> None:
+    from handlers import router
+
+    seen: dict[str, Any] = {}
+    monkeypatch.setitem(
+        router.ACTION_HANDLERS, "discogs_inventory_upload_add", lambda a: seen.update(a) or {}
+    )
+    monkeypatch.setattr(router, "runtime_context_from_payload", lambda payload: None)
+    grant = {"inputs": [{"artifact_id": "artifact-1"}]}
+    router.handle_request(
+        {
+            "mode": "action",
+            "action": {"action_id": "discogs_inventory_upload_add"},
+            "artifacts": grant,
+        }
+    )
+    assert seen["artifacts"] == grant

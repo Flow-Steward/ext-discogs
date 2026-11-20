@@ -42,6 +42,8 @@ def handle_request(request_payload: dict) -> dict:
     if mode == "action":
         action = as_dict(request_payload.get("action"))
         action["runtime_context"] = as_dict(request_payload.get("runtime_context"))
+        # Workflow files given as inputs are granted in the host envelope.
+        action["artifacts"] = as_dict(request_payload.get("artifacts"))
         action_id = as_text(action.get("action_id") or request_payload.get("action_id"))
         action_handler = ACTION_HANDLERS.get(action_id)
         if action_handler is None:
