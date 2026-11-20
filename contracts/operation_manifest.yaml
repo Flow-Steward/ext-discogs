@@ -9,7 +9,8 @@ operations:
       - {name: "user_token", value_type: text, required: false}
     outputs:
       - {name: "result.data.username", value_type: object}
-    result_fields: ["result.data.username"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.username", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_search_database
     display_name: "Search the Discogs music database"
@@ -32,7 +33,8 @@ operations:
       - {name: "result.data.pagination", value_type: object}
       - {name: "result.data.result_count", value_type: integer}
       - {name: "result.data.results_json", value_type: text}
-    result_fields: ["result.data.results[]", "result.data.pagination", "result.data.result_count", "result.data.results_json"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.results[]", "result.data.pagination", "result.data.result_count", "result.data.results_json", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_get_release
     display_name: "Get a record release"
@@ -45,7 +47,8 @@ operations:
     outputs:
       - {name: "result.data.id", value_type: object}
       - {name: "result.data.title", value_type: object}
-    result_fields: ["result.data.id", "result.data.title"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.id", "result.data.title", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_get_release_rating
     display_name: "Get an account’s release rating"
@@ -58,7 +61,8 @@ operations:
       - {name: "username", value_type: text, required: false}
     outputs:
       - {name: "result.data.rating", value_type: object}
-    result_fields: ["result.data.rating"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.rating", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_update_release_rating
     display_name: "Set an account’s release rating"
@@ -73,7 +77,8 @@ operations:
       - {name: "confirm", value_type: boolean, required: true}
     outputs:
       - {name: "result.provider_status", value_type: object}
-    result_fields: ["result.provider_status"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.provider_status", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_delete_release_rating
     display_name: "Remove an account’s release rating"
@@ -87,7 +92,22 @@ operations:
       - {name: "confirm", value_type: boolean, required: true}
     outputs:
       - {name: "result.provider_status", value_type: object}
-    result_fields: ["result.provider_status"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.provider_status", "result.rate_limit"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_get_community_release_rating
+    display_name: "Get a release’s community rating"
+    description: "Read the average rating and the number of ratings the Discogs community has given a release."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_database
+    inputs:
+      - {name: "release_id", value_type: integer, required: true}
+    outputs:
+      - {name: "result.data.rating", value_type: object}
+      - {name: "result.data.release_id", value_type: object}
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.rating", "result.data.release_id", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_get_release_stats
     display_name: "Get release collection and wantlist statistics"
@@ -99,7 +119,8 @@ operations:
       - {name: "release_id", value_type: integer, required: true}
     outputs:
       - {name: "result.data", value_type: object}
-    result_fields: ["result.data"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_get_master
     display_name: "Get a master release"
@@ -112,7 +133,8 @@ operations:
     outputs:
       - {name: "result.data.id", value_type: object}
       - {name: "result.data.title", value_type: object}
-    result_fields: ["result.data.id", "result.data.title"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.id", "result.data.title", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_get_master_versions
     display_name: "List editions of a master release"
@@ -133,7 +155,8 @@ operations:
     outputs:
       - {name: "result.data.versions[]", value_type: object}
       - {name: "result.data.pagination", value_type: object}
-    result_fields: ["result.data.results[]", "result.data.pagination"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.results[]", "result.data.pagination", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_get_artist
     display_name: "Get an artist"
@@ -145,7 +168,8 @@ operations:
     outputs:
       - {name: "result.data.id", value_type: object}
       - {name: "result.data.name", value_type: object}
-    result_fields: ["result.data.id", "result.data.name"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.id", "result.data.name", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_get_artist_releases
     display_name: "List an artist’s releases"
@@ -161,7 +185,8 @@ operations:
     outputs:
       - {name: "result.data.releases[]", value_type: object}
       - {name: "result.data.pagination", value_type: object}
-    result_fields: ["result.data.releases[]", "result.data.pagination"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.releases[]", "result.data.pagination", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_get_label
     display_name: "Get a record label"
@@ -174,7 +199,8 @@ operations:
     outputs:
       - {name: "result.data.id", value_type: object}
       - {name: "result.data.name", value_type: object}
-    result_fields: ["result.data.id", "result.data.name"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.id", "result.data.name", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_get_label_releases
     display_name: "List a label’s releases"
@@ -189,7 +215,8 @@ operations:
     outputs:
       - {name: "result.data.releases[]", value_type: object}
       - {name: "result.data.pagination", value_type: object}
-    result_fields: ["result.data.releases[]", "result.data.pagination"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.releases[]", "result.data.pagination", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_get_marketplace_listing
     display_name: "Get a marketplace sale listing"
@@ -202,7 +229,8 @@ operations:
     outputs:
       - {name: "result.data.id", value_type: object}
       - {name: "result.data.price", value_type: object}
-    result_fields: ["result.data.id", "result.data.price"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.id", "result.data.price", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_create_marketplace_listing
     display_name: "Create a marketplace sale listing"
@@ -226,7 +254,8 @@ operations:
     outputs:
       - {name: "result.data.id", value_type: object}
       - {name: "result.provider_status", value_type: object}
-    result_fields: ["result.data.id", "result.provider_status"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.id", "result.provider_status", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_update_marketplace_listing
     display_name: "Update a marketplace sale listing"
@@ -250,7 +279,8 @@ operations:
       - {name: "confirm", value_type: boolean, required: true}
     outputs:
       - {name: "result.provider_status", value_type: object}
-    result_fields: ["result.provider_status"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.provider_status", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_delete_marketplace_listing
     display_name: "Delete a marketplace sale listing"
@@ -263,7 +293,8 @@ operations:
       - {name: "confirm", value_type: boolean, required: true}
     outputs:
       - {name: "result.provider_status", value_type: object}
-    result_fields: ["result.provider_status"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.provider_status", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_get_marketplace_stats
     display_name: "Get release marketplace statistics"
@@ -276,7 +307,8 @@ operations:
     outputs:
       - {name: "result.data.lowest_price", value_type: object}
       - {name: "result.data.num_for_sale", value_type: object}
-    result_fields: ["result.data.lowest_price", "result.data.num_for_sale"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.lowest_price", "result.data.num_for_sale", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_get_price_suggestions
     display_name: "Get suggested sale prices by condition"
@@ -288,11 +320,12 @@ operations:
       - {name: "release_id", value_type: integer, required: true}
     outputs:
       - {name: "result.data", value_type: object}
-    result_fields: ["result.data"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_calculate_marketplace_fee
     display_name: "Estimate a marketplace sale fee"
-    description: "Calculate the Discogs marketplace fee for a proposed price and currency without creating a listing or order."
+    description: "Calculate the Discogs marketplace fee for a proposed price without creating a listing or order. With a currency the fee is calculated in that currency; without one Discogs uses USD."
     operation_kind: source
     connection_type_ids: [discogs_token_account]
     category: discogs_marketplace
@@ -301,7 +334,8 @@ operations:
       - {name: "currency", value_type: text, required: false}
     outputs:
       - {name: "result.data", value_type: object}
-    result_fields: ["result.data"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_list_orders
     display_name: "List marketplace orders"
@@ -321,7 +355,8 @@ operations:
     outputs:
       - {name: "result.data.orders[]", value_type: object}
       - {name: "result.data.pagination", value_type: object}
-    result_fields: ["result.data.orders[]", "result.data.pagination"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.orders[]", "result.data.pagination", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_get_order
     display_name: "Get a marketplace order"
@@ -334,7 +369,8 @@ operations:
     outputs:
       - {name: "result.data.id", value_type: object}
       - {name: "result.data.status", value_type: object}
-    result_fields: ["result.data.id", "result.data.status"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.id", "result.data.status", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_update_order
     display_name: "Update a marketplace order"
@@ -350,7 +386,8 @@ operations:
       - {name: "confirm", value_type: boolean, required: true}
     outputs:
       - {name: "result.provider_status", value_type: object}
-    result_fields: ["result.provider_status"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.provider_status", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_list_order_messages
     display_name: "Read marketplace order messages"
@@ -362,7 +399,8 @@ operations:
       - {name: "order_id", value_type: text, required: true}
     outputs:
       - {name: "result.data.messages[]", value_type: object}
-    result_fields: ["result.data.messages[]"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.messages[]", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_add_order_message
     display_name: "Send a marketplace order message"
@@ -377,7 +415,8 @@ operations:
       - {name: "confirm", value_type: boolean, required: true}
     outputs:
       - {name: "result.provider_status", value_type: object}
-    result_fields: ["result.provider_status"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.provider_status", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_get_user_profile
     display_name: "Get a Discogs user profile"
@@ -389,7 +428,28 @@ operations:
       - {name: "username", value_type: text, required: true}
     outputs:
       - {name: "result.data.username", value_type: object}
-    result_fields: ["result.data.username"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.username", "result.rate_limit"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_edit_user_profile
+    display_name: "Edit a Discogs user profile"
+    description: "Change the supplied profile fields of the connected Discogs account: real name, website, location, biography or marketplace currency. Requires authentication as that user, enabled writes and confirmation."
+    operation_kind: action
+    connection_type_ids: [discogs_token_account]
+    category: discogs_user
+    inputs:
+      - {name: "username", value_type: text, required: false}
+      - {name: "name", value_type: text, required: false}
+      - {name: "home_page", value_type: text, required: false}
+      - {name: "location", value_type: text, required: false}
+      - {name: "profile", value_type: text, required: false}
+      - {name: "curr_abbr", value_type: text, required: false}
+      - {name: "confirm", value_type: boolean, required: true}
+    outputs:
+      - {name: "result.provider_status", value_type: object}
+      - {name: "result.data", value_type: object}
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.provider_status", "result.data", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_get_user_submissions
     display_name: "List a user’s database submissions"
@@ -404,7 +464,8 @@ operations:
     outputs:
       - {name: "result.data.submissions[]", value_type: object}
       - {name: "result.data.pagination", value_type: object}
-    result_fields: ["result.data.submissions[]", "result.data.pagination"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.submissions[]", "result.data.pagination", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_get_user_contributions
     display_name: "List a user’s database contributions"
@@ -421,7 +482,8 @@ operations:
     outputs:
       - {name: "result.data.contributions[]", value_type: object}
       - {name: "result.data.pagination", value_type: object}
-    result_fields: ["result.data.contributions[]", "result.data.pagination"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.contributions[]", "result.data.pagination", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_get_user_lists
     display_name: "List a user’s saved lists"
@@ -436,7 +498,22 @@ operations:
     outputs:
       - {name: "result.data.lists[]", value_type: object}
       - {name: "result.data.pagination", value_type: object}
-    result_fields: ["result.data.lists[]", "result.data.pagination"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.lists[]", "result.data.pagination", "result.rate_limit"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_get_list
+    display_name: "Get a saved list’s items"
+    description: "Read the items of one Discogs list by its list ID. Private lists are visible only to their owner’s token."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_user
+    inputs:
+      - {name: "list_id", value_type: text, required: true}
+    outputs:
+      - {name: "result.data.items[]", value_type: object}
+      - {name: "result.data.name", value_type: object}
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.items[]", "result.data.name", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_get_collection_folders
     display_name: "List record collection folders"
@@ -448,7 +525,8 @@ operations:
       - {name: "username", value_type: text, required: false}
     outputs:
       - {name: "result.data.folders[]", value_type: object}
-    result_fields: ["result.data.folders[]"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.folders[]", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_create_collection_folder
     display_name: "Create a record collection folder"
@@ -462,7 +540,8 @@ operations:
       - {name: "confirm", value_type: boolean, required: true}
     outputs:
       - {name: "result.data.id", value_type: object}
-    result_fields: ["result.data.id"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.id", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_get_collection_folder
     display_name: "Get a record collection folder"
@@ -476,7 +555,8 @@ operations:
     outputs:
       - {name: "result.data.id", value_type: object}
       - {name: "result.data.name", value_type: object}
-    result_fields: ["result.data.id", "result.data.name"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.id", "result.data.name", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_update_collection_folder
     display_name: "Rename a record collection folder"
@@ -491,7 +571,8 @@ operations:
       - {name: "confirm", value_type: boolean, required: true}
     outputs:
       - {name: "result.provider_status", value_type: object}
-    result_fields: ["result.provider_status"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.provider_status", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_delete_collection_folder
     display_name: "Delete a record collection folder"
@@ -505,7 +586,8 @@ operations:
       - {name: "confirm", value_type: boolean, required: true}
     outputs:
       - {name: "result.provider_status", value_type: object}
-    result_fields: ["result.provider_status"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.provider_status", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_get_collection_releases
     display_name: "List records in a collection folder"
@@ -523,7 +605,8 @@ operations:
     outputs:
       - {name: "result.data.releases[]", value_type: object}
       - {name: "result.data.pagination", value_type: object}
-    result_fields: ["result.data.releases[]", "result.data.pagination"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.releases[]", "result.data.pagination", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_get_collection_release
     display_name: "Get collection copies of a release"
@@ -537,7 +620,23 @@ operations:
       - {name: "release_id", value_type: integer, required: true}
     outputs:
       - {name: "result.data.releases[]", value_type: object}
-    result_fields: ["result.data.releases[]"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.releases[]", "result.rate_limit"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_get_collection_items_by_release
+    display_name: "Find a release in a collection"
+    description: "Read every owned copy of one release in the account’s collection, across all folders, with folder and instance IDs. A private collection requires the owner’s token."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_collection
+    inputs:
+      - {name: "username", value_type: text, required: false}
+      - {name: "release_id", value_type: integer, required: true}
+    outputs:
+      - {name: "result.data.releases[]", value_type: object}
+      - {name: "result.data.pagination", value_type: object}
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.releases[]", "result.data.pagination", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_add_collection_release
     display_name: "Add a release to a collection folder"
@@ -554,7 +653,27 @@ operations:
       - {name: "confirm", value_type: boolean, required: true}
     outputs:
       - {name: "result.provider_status", value_type: object}
-    result_fields: ["result.provider_status"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.provider_status", "result.rate_limit"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_edit_collection_instance
+    display_name: "Rate or move a collection copy"
+    description: "Change the rating of one owned copy and/or move it to another folder, using its current folder, release and instance IDs. Requires enabled writes and confirmation."
+    operation_kind: action
+    connection_type_ids: [discogs_token_account]
+    category: discogs_collection
+    inputs:
+      - {name: "username", value_type: text, required: false}
+      - {name: "folder_id", value_type: integer, required: true}
+      - {name: "release_id", value_type: integer, required: true}
+      - {name: "instance_id", value_type: integer, required: true}
+      - {name: "new_folder_id", value_type: integer, required: false}
+      - {name: "rating", value_type: integer, required: false}
+      - {name: "confirm", value_type: boolean, required: true}
+    outputs:
+      - {name: "result.provider_status", value_type: object}
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.provider_status", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_delete_collection_instance
     display_name: "Remove one copy from a collection"
@@ -570,7 +689,8 @@ operations:
       - {name: "confirm", value_type: boolean, required: true}
     outputs:
       - {name: "result.provider_status", value_type: object}
-    result_fields: ["result.provider_status"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.provider_status", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_get_collection_fields
     display_name: "List custom collection fields"
@@ -582,7 +702,23 @@ operations:
       - {name: "username", value_type: text, required: false}
     outputs:
       - {name: "result.data.fields[]", value_type: object}
-    result_fields: ["result.data.fields[]"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.fields[]", "result.rate_limit"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_get_collection_value
+    display_name: "Get collection value"
+    description: "Read the minimum, median and maximum value of the account’s collection. Requires the collection owner’s token."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_collection
+    inputs:
+      - {name: "username", value_type: text, required: false}
+    outputs:
+      - {name: "result.data.minimum", value_type: object}
+      - {name: "result.data.median", value_type: object}
+      - {name: "result.data.maximum", value_type: object}
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.minimum", "result.data.median", "result.data.maximum", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_edit_collection_field_value
     display_name: "Set a custom field on a collection copy"
@@ -600,7 +736,8 @@ operations:
       - {name: "confirm", value_type: boolean, required: true}
     outputs:
       - {name: "result.provider_status", value_type: object}
-    result_fields: ["result.provider_status"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.provider_status", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_get_wantlist
     display_name: "List wanted releases"
@@ -615,7 +752,8 @@ operations:
     outputs:
       - {name: "result.data.wants[]", value_type: object}
       - {name: "result.data.pagination", value_type: object}
-    result_fields: ["result.data.wants[]", "result.data.pagination"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.wants[]", "result.data.pagination", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_get_wantlist_release
     display_name: "Get one wanted release"
@@ -628,7 +766,8 @@ operations:
       - {name: "release_id", value_type: integer, required: true}
     outputs:
       - {name: "result.data.id", value_type: object}
-    result_fields: ["result.data.id"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.id", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_add_wantlist_release
     display_name: "Add or update a wanted release"
@@ -644,7 +783,26 @@ operations:
       - {name: "confirm", value_type: boolean, required: true}
     outputs:
       - {name: "result.provider_status", value_type: object}
-    result_fields: ["result.provider_status"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.provider_status", "result.rate_limit"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_edit_wantlist_release
+    display_name: "Edit a wanted release"
+    description: "Change the notes or rating of a release already in the account’s wantlist. Requires enabled writes and confirmation."
+    operation_kind: action
+    connection_type_ids: [discogs_token_account]
+    category: discogs_wantlist
+    inputs:
+      - {name: "username", value_type: text, required: false}
+      - {name: "release_id", value_type: integer, required: true}
+      - {name: "notes", value_type: text, required: false}
+      - {name: "rating", value_type: integer, required: false}
+      - {name: "confirm", value_type: boolean, required: true}
+    outputs:
+      - {name: "result.provider_status", value_type: object}
+      - {name: "result.data", value_type: object}
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.provider_status", "result.data", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_delete_wantlist_release
     display_name: "Remove a wanted release"
@@ -658,7 +816,70 @@ operations:
       - {name: "confirm", value_type: boolean, required: true}
     outputs:
       - {name: "result.provider_status", value_type: object}
-    result_fields: ["result.provider_status"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.provider_status", "result.rate_limit"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_list_inventory
+    display_name: "List a seller’s inventory"
+    description: "Read one page of a seller’s marketplace listings with its pagination. Without the owner’s token only listings that are For Sale are visible."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_inventory
+    inputs:
+      - {name: "username", value_type: text, required: false}
+      - {name: "status", value_type: text, required: false}
+      - {name: "sort", value_type: text, required: false}
+      - {name: "sort_order", value_type: text, required: false}
+      - {name: "page", value_type: integer, required: false}
+      - {name: "per_page", value_type: integer, required: false}
+    outputs:
+      - {name: "result.data.listings[]", value_type: object}
+      - {name: "result.data.pagination", value_type: object}
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.listings[]", "result.data.pagination", "result.rate_limit"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_list_all_inventory
+    display_name: "Read a seller’s whole inventory"
+    description: "Read the seller’s listings page by page, up to 100 per page, checking every page against its pagination so no listing is skipped or repeated. Stops at the time or result-size limit with next_page to continue from, and returns complete true only when the last page was read. If the inventory total changes during the read, the result is incomplete with a warning."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_inventory
+    inputs:
+      - {name: "username", value_type: text, required: false}
+      - {name: "status", value_type: text, required: false}
+      - {name: "sort", value_type: text, required: false}
+      - {name: "sort_order", value_type: text, required: false}
+      - {name: "page", value_type: integer, required: false}
+      - {name: "per_page", value_type: integer, required: false}
+      - {name: "max_items", value_type: integer, required: false}
+      - {name: "time_budget_seconds", value_type: integer, required: false}
+    outputs:
+      - {name: "result.listings[]", value_type: object}
+      - {name: "result.item_count", value_type: integer}
+      - {name: "result.total_items", value_type: integer}
+      - {name: "result.pages_read", value_type: integer}
+      - {name: "result.next_page", value_type: integer}
+      - {name: "result.complete", value_type: boolean}
+      - {name: "result.stop_reason", value_type: text}
+      - {name: "result.warnings[]", value_type: text}
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.listings[]", "result.item_count", "result.total_items", "result.pages_read", "result.next_page", "result.complete", "result.stop_reason", "result.warnings[]", "result.rate_limit"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_request_inventory_export
+    display_name: "Request an inventory export"
+    description: "Ask Discogs to prepare a CSV export of the seller’s inventory. Discogs only accepts the job: the result reports processing accepted, applied false and the export ID; check it with Get an inventory export status. Requires enabled writes and confirmation."
+    operation_kind: action
+    connection_type_ids: [discogs_token_account]
+    category: discogs_inventory
+    inputs:
+      - {name: "confirm", value_type: boolean, required: true}
+    outputs:
+      - {name: "result.processing", value_type: text}
+      - {name: "result.applied", value_type: boolean}
+      - {name: "result.check", value_type: text}
+      - {name: "result.export_id", value_type: integer}
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.processing", "result.applied", "result.check", "result.export_id", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_get_inventory_exports
     display_name: "List seller inventory exports"
@@ -670,7 +891,8 @@ operations:
       []
     outputs:
       - {name: "result.data.items[]", value_type: object}
-    result_fields: ["result.data.items[]"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.items[]", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_get_inventory_export
     display_name: "Get an inventory export status"
@@ -682,7 +904,8 @@ operations:
       - {name: "export_id", value_type: integer, required: true}
     outputs:
       - {name: "result.data", value_type: object}
-    result_fields: ["result.data"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_download_inventory_export
     display_name: "Read an inventory export download"
@@ -694,11 +917,12 @@ operations:
       - {name: "export_id", value_type: integer, required: true}
     outputs:
       - {name: "result.data", value_type: object}
-    result_fields: ["result.data"]
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_inventory_upload_add
     display_name: "Submit inventory additions"
-    description: "Submit the supplied inventory items or CSV value to Discogs’ inventory add endpoint. Requires enabled writes and confirmation; inspect the provider response before assuming processing is complete."
+    description: "Submit the supplied inventory items or CSV value to Discogs’ inventory add endpoint. Discogs records the submission as an upload: the result reports processing accepted and the upload ID; check the outcome with Get an inventory upload status. Requires enabled writes and confirmation."
     operation_kind: action
     connection_type_ids: [discogs_token_account]
     category: discogs_inventory
@@ -708,11 +932,15 @@ operations:
       - {name: "confirm", value_type: boolean, required: true}
     outputs:
       - {name: "result.provider_status", value_type: object}
-    result_fields: ["result.provider_status"]
+      - {name: "result.processing", value_type: text}
+      - {name: "result.check", value_type: text}
+      - {name: "result.upload_id", value_type: integer}
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.provider_status", "result.processing", "result.check", "result.upload_id", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_inventory_upload_change
     display_name: "Submit inventory changes"
-    description: "Submit the supplied inventory items or CSV value to Discogs’ inventory change endpoint. Requires enabled writes and confirmation; inspect the provider response before assuming processing is complete."
+    description: "Submit the supplied inventory items or CSV value to Discogs’ inventory change endpoint. Discogs records the submission as an upload: the result reports processing accepted and the upload ID; check the outcome with Get an inventory upload status. Requires enabled writes and confirmation."
     operation_kind: action
     connection_type_ids: [discogs_token_account]
     category: discogs_inventory
@@ -722,11 +950,15 @@ operations:
       - {name: "confirm", value_type: boolean, required: true}
     outputs:
       - {name: "result.provider_status", value_type: object}
-    result_fields: ["result.provider_status"]
+      - {name: "result.processing", value_type: text}
+      - {name: "result.check", value_type: text}
+      - {name: "result.upload_id", value_type: integer}
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.provider_status", "result.processing", "result.check", "result.upload_id", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
   - operation_id: discogs_inventory_upload_delete
     display_name: "Submit inventory removals"
-    description: "Submit the supplied inventory items or CSV value to Discogs’ inventory delete endpoint. Requires enabled writes and confirmation; inspect the provider response before assuming processing is complete."
+    description: "Submit the supplied inventory items or CSV value to Discogs’ inventory delete endpoint. Discogs records the submission as an upload: the result reports processing accepted and the upload ID; check the outcome with Get an inventory upload status. Requires enabled writes and confirmation."
     operation_kind: action
     connection_type_ids: [discogs_token_account]
     category: discogs_inventory
@@ -736,5 +968,38 @@ operations:
       - {name: "confirm", value_type: boolean, required: true}
     outputs:
       - {name: "result.provider_status", value_type: object}
-    result_fields: ["result.provider_status"]
+      - {name: "result.processing", value_type: text}
+      - {name: "result.check", value_type: text}
+      - {name: "result.upload_id", value_type: integer}
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.provider_status", "result.processing", "result.check", "result.upload_id", "result.rate_limit"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_list_inventory_uploads
+    display_name: "List recent inventory uploads"
+    description: "Read one page of the seller’s recent inventory uploads with their status and processing results."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_inventory
+    inputs:
+      - {name: "page", value_type: integer, required: false}
+      - {name: "per_page", value_type: integer, required: false}
+    outputs:
+      - {name: "result.data.items[]", value_type: object}
+      - {name: "result.data.pagination", value_type: object}
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.items[]", "result.data.pagination", "result.rate_limit"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+  - operation_id: discogs_get_inventory_upload
+    display_name: "Get an inventory upload status"
+    description: "Read the status and processing results of one inventory upload using its upload ID."
+    operation_kind: source
+    connection_type_ids: [discogs_token_account]
+    category: discogs_inventory
+    inputs:
+      - {name: "upload_id", value_type: integer, required: true}
+    outputs:
+      - {name: "result.data.status", value_type: object}
+      - {name: "result.data.results", value_type: object}
+      - {name: "result.rate_limit", value_type: object, description: "Discogs rate-limit window from the X-Discogs-Ratelimit response headers: limit, used and remaining requests. Also returned when Discogs refuses a request with 429."}
+    result_fields: ["result.data.status", "result.data.results", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]

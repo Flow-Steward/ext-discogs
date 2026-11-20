@@ -9,3 +9,7 @@ content: |
   **List a user’s database contributions**: Read one page of music database contributions associated with the named Discogs account.
 
   **List a user’s saved lists**: Read one page of lists belonging to the named Discogs account.
+
+  **Edit a Discogs user profile**: Change the supplied profile fields of the connected Discogs account: real name, website, location, biography or marketplace currency. Requires authentication as that user, enabled writes and confirmation.
+
+  **Get a saved list’s items**: Read the items of one Discogs list by its list ID. Private lists are visible only to their owner’s token.

@@ -1,6 +1,6 @@
 schema_version: extension_descriptor_v1
 extension_id: com.discogs.api
-release_version: 0.2.6
+release_version: 0.2.7
 extension_type: service_extension
 identity:
   display_name: Discogs API
@@ -12,8 +12,9 @@ identity:
 
     Marketplace operations cover listings, release sales statistics, price suggestions, fee calculations, orders
     and order messages. Collection and wantlist operations let workflows inspect folders, release instances and
-    custom collection fields, then add, update or remove supported items. The release also exposes user profiles,
-    contributions, submissions, lists, release ratings and inventory export or upload operations.
+    custom collection fields, then add, update or remove supported items. The release also exposes user profiles
+    and profile edits, contributions, submissions, lists and their items, personal and community release ratings,
+    collection value, seller inventory reads, and inventory export or upload operations with their status.
 
 
     Use these functions to enrich a record catalog, research a pressing, compare collection holdings against a wantlist,

@@ -208,9 +208,9 @@ def test_token_is_sent_only_in_headers_and_not_returned(monkeypatch) -> None:
     class _FakeResponse:
         status = 200
         headers: ClassVar[dict[str, str]] = {
-            "Discogs-Ratelimit": "60",
-            "Discogs-Ratelimit-Used": "2",
-            "Discogs-Ratelimit-Remaining": "58",
+            "X-Discogs-Ratelimit": "60",
+            "X-Discogs-Ratelimit-Used": "2",
+            "X-Discogs-Ratelimit-Remaining": "58",
         }
 
         def __enter__(self):
@@ -244,6 +244,7 @@ def test_token_is_sent_only_in_headers_and_not_returned(monkeypatch) -> None:
     assert direct["ok"] is True
     assert headers["authorization"] == "Discogs token=secret-token"
     assert "secret-token" not in json.dumps(direct)
+    assert direct["rate_limit"] == {"limit": 60, "used": 2, "remaining": 58}
 
 
 def test_redirects_are_rejected_before_credentials_can_be_forwarded() -> None:

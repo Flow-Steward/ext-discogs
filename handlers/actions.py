@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import json
+import time
 from typing import Any
+from urllib.parse import urlparse
 
 from handlers.common import (
     action_input,
@@ -21,12 +23,11 @@ from handlers.common import (
 )
 from handlers.discogs_client import DiscogsClient
 from handlers.queries import (
+    _normalize_search_item,
     _provider_error,
     _provider_error_details,
-    _normalize_search_item,
     normalize_release,
 )
-
 
 DISCOGS_API_OPERATIONS: dict[str, dict[str, Any]] = {
     "discogs_identity": {"method": "GET", "path": "/oauth/identity", "auth": True},
@@ -70,6 +71,11 @@ DISCOGS_API_OPERATIONS: dict[str, dict[str, Any]] = {
         "required": ["release_id", "username"],
         "write": True,
     },
+    "discogs_get_community_release_rating": {
+        "method": "GET",
+        "path": "/releases/{release_id}/rating",
+        "required": ["release_id"],
+    },
     "discogs_get_release_stats": {
         "method": "GET",
         "path": "/releases/{release_id}/stats",
@@ -112,6 +118,13 @@ DISCOGS_API_OPERATIONS: dict[str, dict[str, Any]] = {
         "path": "/labels/{label_id}/releases",
         "required": ["label_id"],
         "params": ["page", "per_page"],
+    },
+    "discogs_list_inventory": {
+        "method": "GET",
+        "path": "/users/{username}/inventory",
+        "required": ["username"],
+        "params": ["status", "sort", "sort_order", "page", "per_page"],
+        "items_key": "listings",
     },
     "discogs_get_marketplace_listing": {
         "method": "GET",
@@ -224,6 +237,13 @@ DISCOGS_API_OPERATIONS: dict[str, dict[str, Any]] = {
         "path": "/users/{username}",
         "required": ["username"],
     },
+    "discogs_edit_user_profile": {
+        "method": "POST",
+        "path": "/users/{username}",
+        "required": ["username"],
+        "write": True,
+        "body_fields": ["name", "home_page", "location", "profile", "curr_abbr"],
+    },
     "discogs_get_user_submissions": {
         "method": "GET",
         "path": "/users/{username}/submissions",
@@ -241,6 +261,12 @@ DISCOGS_API_OPERATIONS: dict[str, dict[str, Any]] = {
         "path": "/users/{username}/lists",
         "required": ["username"],
         "params": ["page", "per_page"],
+    },
+    "discogs_get_list": {
+        "method": "GET",
+        "path": "/lists/{list_id}",
+        "required": ["list_id"],
+        "items_key": "items",
     },
     "discogs_get_collection_folders": {
         "method": "GET",
@@ -274,6 +300,12 @@ DISCOGS_API_OPERATIONS: dict[str, dict[str, Any]] = {
         "required": ["username", "folder_id"],
         "write": True,
     },
+    "discogs_get_collection_items_by_release": {
+        "method": "GET",
+        "path": "/users/{username}/collection/releases/{release_id}",
+        "required": ["username", "release_id"],
+        "items_key": "releases",
+    },
     "discogs_get_collection_releases": {
         "method": "GET",
         "path": "/users/{username}/collection/folders/{folder_id}/releases",
@@ -294,6 +326,15 @@ DISCOGS_API_OPERATIONS: dict[str, dict[str, Any]] = {
         "write": True,
         "body_fields": ["notes", "rating"],
     },
+    "discogs_edit_collection_instance": {
+        "method": "POST",
+        "path": "/users/{username}/collection/folders/{folder_id}/releases/{release_id}/instances/{instance_id}",
+        "required": ["username", "folder_id", "release_id", "instance_id"],
+        "write": True,
+        "body_fields": ["rating"],
+        # The URL folder is the instance's current folder; the body folder_id moves it.
+        "body_renames": {"new_folder_id": "folder_id"},
+    },
     "discogs_delete_collection_instance": {
         "method": "DELETE",
         "path": "/users/{username}/collection/folders/{folder_id}/releases/{release_id}/instances/{instance_id}",
@@ -312,6 +353,12 @@ DISCOGS_API_OPERATIONS: dict[str, dict[str, Any]] = {
         "required": ["username", "folder_id", "release_id", "instance_id", "field_id"],
         "write": True,
         "body_fields": ["value"],
+    },
+    "discogs_get_collection_value": {
+        "method": "GET",
+        "path": "/users/{username}/collection/value",
+        "required": ["username"],
+        "auth": True,
     },
     "discogs_get_wantlist": {
         "method": "GET",
@@ -333,13 +380,34 @@ DISCOGS_API_OPERATIONS: dict[str, dict[str, Any]] = {
         "write": True,
         "body_fields": ["notes", "rating"],
     },
+    "discogs_edit_wantlist_release": {
+        "method": "POST",
+        "path": "/users/{username}/wants/{release_id}",
+        "required": ["username", "release_id"],
+        "write": True,
+        "body_fields": ["notes", "rating"],
+    },
     "discogs_delete_wantlist_release": {
         "method": "DELETE",
         "path": "/users/{username}/wants/{release_id}",
         "required": ["username", "release_id"],
         "write": True,
     },
-    "discogs_get_inventory_exports": {"method": "GET", "path": "/inventory/export", "auth": True},
+    "discogs_request_inventory_export": {
+        "method": "POST",
+        "path": "/inventory/export",
+        "write": True,
+        "body_fields": [],
+        "no_body": True,
+        "check": "discogs_get_inventory_export",
+        "job_id": "export_id",
+    },
+    "discogs_get_inventory_exports": {
+        "method": "GET",
+        "path": "/inventory/export",
+        "auth": True,
+        "items_key": "items",
+    },
     "discogs_get_inventory_export": {
         "method": "GET",
         "path": "/inventory/export/{export_id}",
@@ -357,20 +425,55 @@ DISCOGS_API_OPERATIONS: dict[str, dict[str, Any]] = {
         "path": "/inventory/upload/add",
         "write": True,
         "body_fields": ["items", "csv"],
+        "check": "discogs_get_inventory_upload",
+        "job_id": "upload_id",
     },
     "discogs_inventory_upload_change": {
         "method": "POST",
         "path": "/inventory/upload/change",
         "write": True,
         "body_fields": ["items", "csv"],
+        "check": "discogs_get_inventory_upload",
+        "job_id": "upload_id",
     },
     "discogs_inventory_upload_delete": {
         "method": "POST",
         "path": "/inventory/upload/delete",
         "write": True,
         "body_fields": ["items", "csv"],
+        "check": "discogs_get_inventory_upload",
+        "job_id": "upload_id",
+    },
+    "discogs_list_inventory_uploads": {
+        "method": "GET",
+        "path": "/inventory/upload",
+        "auth": True,
+        "items_key": "items",
+    },
+    "discogs_get_inventory_upload": {
+        "method": "GET",
+        "path": "/inventory/upload/{upload_id}",
+        "required": ["upload_id"],
+        "auth": True,
     },
 }
+
+# Currencies the Discogs documentation lists for /marketplace/fee/{price}/{currency}
+# and curr_abbr (tests/reference/discogs_api_endpoints.json).
+DOCUMENTED_CURRENCIES = (
+    "USD",
+    "GBP",
+    "EUR",
+    "CAD",
+    "AUD",
+    "JPY",
+    "CHF",
+    "MXN",
+    "BRL",
+    "NZD",
+    "SEK",
+    "ZAR",
+)
 
 
 def _client_for_action(action: dict[str, Any]) -> DiscogsClient:
@@ -415,6 +518,8 @@ def _filled_path(
         "instance_id",
         "field_id",
         "export_id",
+        "upload_id",
+        "list_id",
         "price",
     ):
         token = "{" + key + "}"
@@ -430,10 +535,22 @@ def _filled_path(
     return path, None
 
 
-def _body_from_payload(payload: dict[str, Any], fields: list[str]) -> dict[str, Any]:
+def _body_from_payload(
+    payload: dict[str, Any], fields: list[str], renames: dict[str, Any] | None = None
+) -> dict[str, Any]:
     if isinstance(payload.get("body"), dict):
         return as_dict(payload.get("body"))
-    return {field: payload[field] for field in fields if field in payload}
+    body = {field: payload[field] for field in fields if field in payload}
+    for source, target in (renames or {}).items():
+        if payload.get(source) not in (None, ""):
+            body[as_text(target)] = payload[source]
+    return body
+
+
+def _job_id_from_location(location: str) -> int | None:
+    """The documented Location header ends with the export or upload ID."""
+    last = urlparse(location).path.rstrip("/").rsplit("/", 1)[-1]
+    return int(last) if last.isdigit() else None
 
 
 def _params_from_payload(payload: dict[str, Any], fields: list[str]) -> dict[str, Any]:
@@ -470,14 +587,38 @@ def execute_discogs_api_operation(action: dict[str, Any]) -> dict[str, Any]:
     params = _params_from_payload(payload, as_list(spec.get("params"))) if method == "GET" else {}
     if operation_id == "discogs_search_database" and "query" in params:
         params["q"] = params.pop("query")
+    if operation_id == "discogs_calculate_marketplace_fee":
+        # Documented: /marketplace/fee/{price} (USD) or /marketplace/fee/{price}/{currency};
+        # a currency query parameter is ignored by Discogs.
+        params = {}
+        currency = as_text(payload.get("currency")).upper()
+        if currency:
+            if currency not in DOCUMENTED_CURRENCIES:
+                return fail(
+                    "invalid_payload",
+                    f"currency must be one of: {', '.join(DOCUMENTED_CURRENCIES)}.",
+                )
+            path = f"{path}/{currency}"
+    curr_abbr = as_text(payload.get("curr_abbr")).upper()
+    if "curr_abbr" in as_list(spec.get("body_fields")) and curr_abbr:
+        if curr_abbr not in DOCUMENTED_CURRENCIES:
+            return fail(
+                "invalid_payload",
+                f"curr_abbr must be one of: {', '.join(DOCUMENTED_CURRENCIES)}.",
+            )
+        payload = {**payload, "curr_abbr": curr_abbr}
     body = (
-        _body_from_payload(payload, as_list(spec.get("body_fields"))) if method != "GET" else None
+        _body_from_payload(
+            payload, as_list(spec.get("body_fields")), as_dict(spec.get("body_renames"))
+        )
+        if method != "GET" and not spec.get("no_body")
+        else None
     )
     response = client.request_api(method, path, params=params, body=body)
     if not response.get("ok"):
         return _provider_error(response)
     data = as_dict(response.get("body"))
-    items = as_list(data.get("results"))
+    items = as_list(data.get(as_text(spec.get("items_key"), "results")))
     if operation_id == "discogs_search_database":
         data["result_count"] = len(items)
         data["results_json"] = json.dumps(items, ensure_ascii=False, indent=2)
@@ -489,6 +630,22 @@ def execute_discogs_api_operation(action: dict[str, Any]) -> dict[str, Any]:
         "data": data,
         "rate_limit": response.get("rate_limit"),
     }
+    if spec.get("check"):
+        # Discogs answers with a Location header naming the export or upload record;
+        # the work is finished only when that record reports its status.
+        location = as_text(response.get("location"))
+        job_id = _job_id_from_location(location) if location else None
+        if job_id is None and as_int(data.get("id"), 0) > 0:
+            job_id = as_int(data.get("id"), 0)
+        result.update(
+            {
+                "processing": "accepted",
+                "applied": False,
+                "check": spec["check"],
+                as_text(spec.get("job_id")): job_id,
+                "location": location or None,
+            }
+        )
     return ok(
         result,
         items=items,
@@ -818,6 +975,137 @@ def delete_collection_instance(action: dict[str, Any]) -> dict[str, Any]:
     )
 
 
+INVENTORY_MAX_PER_PAGE = 100  # Discogs pagination: "up to 100" items per page.
+INVENTORY_DEFAULT_TIME_BUDGET_SECONDS = 15
+INVENTORY_MAX_TIME_BUDGET_SECONDS = 18  # The entrypoint is stopped after 30 seconds.
+INVENTORY_MAX_RESULT_BYTES = 1024 * 1024
+
+
+def list_all_inventory(action: dict[str, Any]) -> dict[str, Any]:
+    """Read a seller inventory page by page with an exact continuation point.
+
+    Every page must match the requested page and per_page, hold exactly the number of
+    listings its pagination promises and repeat no listing. When the total changes
+    while reading, offsets have shifted: the read stops incomplete with a warning.
+    """
+    operation_id = "discogs_list_all_inventory"
+    payload = action_input(action)
+    client = _client_for_action(action)
+    username = as_text(payload.get("username"), client.config.username)
+    if not username:
+        return fail("invalid_payload", "username is required.")
+    start_page = as_int(payload.get("page"), 1)
+    per_page = as_int(payload.get("per_page"), INVENTORY_MAX_PER_PAGE)
+    if start_page < 1 or not 1 <= per_page <= INVENTORY_MAX_PER_PAGE:
+        return fail(
+            "invalid_payload",
+            f"page must be 1 or more and per_page between 1 and {INVENTORY_MAX_PER_PAGE}.",
+        )
+    max_items = as_int(payload.get("max_items"), 0)
+    budget = as_int(payload.get("time_budget_seconds"), INVENTORY_DEFAULT_TIME_BUDGET_SECONDS)
+    budget = max(1, min(INVENTORY_MAX_TIME_BUDGET_SECONDS, budget))
+    filters = {
+        key: payload[key]
+        for key in ("status", "sort", "sort_order")
+        if payload.get(key) not in (None, "")
+    }
+    path = f"/users/{username}/inventory"
+    started = time.monotonic()
+    listings: list[dict[str, Any]] = []
+    seen: set[Any] = set()
+    warnings: list[str] = []
+    size = 0
+    page = start_page
+    pages_read = 0
+    total_items: int | None = None
+    next_page: int | None = page
+    stop_reason = ""
+    rate_limit: dict[str, Any] = {}
+    while True:
+        if pages_read and time.monotonic() - started >= budget:
+            stop_reason = "time_budget"
+            break
+        response = client.request_api(
+            "GET", path, params={**filters, "page": page, "per_page": per_page}
+        )
+        rate_limit = as_dict(response.get("rate_limit")) or rate_limit
+        if not response.get("ok"):
+            if not pages_read:
+                return _provider_error(response)
+            stop_reason = as_text(response.get("error"), "provider_request_failed")
+            break
+        body = as_dict(response.get("body"))
+        pagination = as_dict(body.get("pagination"))
+        page_listings = [item for item in as_list(body.get("listings")) if isinstance(item, dict)]
+        page_total = as_int(pagination.get("items"), -1)
+        if (
+            as_int(pagination.get("page"), 0) != page
+            or as_int(pagination.get("per_page"), 0) != per_page
+            or page_total < 0
+        ):
+            warnings.append("pagination_mismatch")
+            next_page, stop_reason = None, "pagination_mismatch"
+            break
+        if total_items is not None and page_total != total_items:
+            warnings.append("inventory_changed_during_read")
+            next_page, stop_reason = None, "inventory_changed_during_read"
+            break
+        total_items = page_total
+        expected = max(0, min(per_page, total_items - (page - 1) * per_page))
+        page_ids = [item.get("id") for item in page_listings]
+        if (
+            len(page_listings) != expected
+            or len(set(page_ids)) != len(page_ids)
+            or seen & set(page_ids)
+        ):
+            warnings.append("inconsistent_page")
+            next_page, stop_reason = None, "inconsistent_page"
+            break
+        page_size = len(json.dumps(page_listings, ensure_ascii=False))
+        over_size = size + page_size > INVENTORY_MAX_RESULT_BYTES
+        over_count = bool(max_items) and len(listings) + len(page_listings) > max_items
+        if listings and (over_size or over_count):
+            stop_reason = "result_size" if over_size else "max_items"
+            break
+        listings.extend(page_listings)
+        seen.update(page_ids)
+        size += page_size
+        pages_read += 1
+        if page * per_page >= total_items:
+            next_page, stop_reason = None, "complete"
+            break
+        page += 1
+        next_page = page
+        if rate_limit.get("remaining") == 0:
+            stop_reason = "rate_limit"
+            break
+    complete = stop_reason == "complete"
+    result = {
+        "operation_id": operation_id,
+        "listings": listings,
+        "item_count": len(listings),
+        "total_items": total_items,
+        "start_page": start_page,
+        "per_page": per_page,
+        "pages_read": pages_read,
+        "next_page": next_page,
+        "complete": complete,
+        "stop_reason": stop_reason,
+        "warnings": warnings,
+        "rate_limit": rate_limit,
+    }
+    return ok(
+        result,
+        items=listings,
+        summary={
+            "operation_id": operation_id,
+            "item_count": len(listings),
+            "complete": complete,
+            "next_page": next_page,
+        },
+    )
+
+
 ACTION_HANDLERS = {
     "save_connection_settings": save_connection_settings,
     "save_secrets": save_secrets,
@@ -832,6 +1120,7 @@ ACTION_HANDLERS = {
     "remove_release_from_wantlist": remove_release_from_wantlist,
     "add_release_to_collection_folder": add_release_to_collection_folder,
     "delete_collection_instance": delete_collection_instance,
+    "discogs_list_all_inventory": list_all_inventory,
 }
 
 for _operation_id in DISCOGS_API_OPERATIONS:

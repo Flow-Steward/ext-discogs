@@ -8,8 +8,18 @@ content: |
 
   **Read an inventory export download**: Request the download response for an existing seller inventory export. Returns the provider response through this action’s result; it does not create a workflow file artifact.
 
-  **Submit inventory additions**: Submit the supplied inventory items or CSV value to Discogs’ inventory add endpoint. Requires enabled writes and confirmation; inspect the provider response before assuming processing is complete.
+  **Submit inventory additions**: Submit the supplied inventory items or CSV value to Discogs’ inventory add endpoint. Discogs records the submission as an upload: the result reports processing accepted and the upload ID; check the outcome with Get an inventory upload status. Requires enabled writes and confirmation.
 
-  **Submit inventory changes**: Submit the supplied inventory items or CSV value to Discogs’ inventory change endpoint. Requires enabled writes and confirmation; inspect the provider response before assuming processing is complete.
+  **Submit inventory changes**: Submit the supplied inventory items or CSV value to Discogs’ inventory change endpoint. Discogs records the submission as an upload: the result reports processing accepted and the upload ID; check the outcome with Get an inventory upload status. Requires enabled writes and confirmation.
 
-  **Submit inventory removals**: Submit the supplied inventory items or CSV value to Discogs’ inventory delete endpoint. Requires enabled writes and confirmation; inspect the provider response before assuming processing is complete.
+  **Submit inventory removals**: Submit the supplied inventory items or CSV value to Discogs’ inventory delete endpoint. Discogs records the submission as an upload: the result reports processing accepted and the upload ID; check the outcome with Get an inventory upload status. Requires enabled writes and confirmation.
+
+  **List a seller’s inventory**: Read one page of a seller’s marketplace listings with its pagination. Without the owner’s token only listings that are For Sale are visible.
+
+  **Read a seller’s whole inventory**: Read the seller’s listings page by page, up to 100 per page, checking every page against its pagination so no listing is skipped or repeated. Stops at the time or result-size limit with next_page to continue from, and returns complete true only when the last page was read. If the inventory total changes during the read, the result is incomplete with a warning.
+
+  **Request an inventory export**: Ask Discogs to prepare a CSV export of the seller’s inventory. Discogs only accepts the job: the result reports processing accepted, applied false and the export ID; check it with Get an inventory export status. Requires enabled writes and confirmation.
+
+  **List recent inventory uploads**: Read one page of the seller’s recent inventory uploads with their status and processing results.
+
+  **Get an inventory upload status**: Read the status and processing results of one inventory upload using its upload ID.

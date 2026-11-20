@@ -38,6 +38,10 @@ forms:
       - {name: release_id, widget_type: resource_picker, label: "Release ID", query_id: discogs_search, required: true, help_text: "Discogs ID of a specific release or pressing, returned by a database search or release lookup. A master ID is different.", placeholder: "249504"}
       - {name: username, widget_type: text, label: "Username", required: false, help_text: "Discogs account username. If omitted, account actions use the connection’s configured username where supported.", placeholder: "record_collector"}
       - {name: confirm, widget_type: boolean, label: "Confirm this change", required: true, help_text: "Set true only after reviewing this modification. A user token must also be available and write actions enabled.", placeholder: "true"}
+  - operation_id: discogs_get_community_release_rating
+    title: "Get a release’s community rating"
+    fields:
+      - {name: release_id, widget_type: resource_picker, label: "Release ID", query_id: discogs_search, required: true, help_text: "Discogs ID of a specific release or pressing, returned by a database search or release lookup. A master ID is different.", placeholder: "249504"}
   - operation_id: discogs_get_release_stats
     title: "Get release collection and wantlist statistics"
     fields:
@@ -132,7 +136,7 @@ forms:
     title: "Estimate a marketplace sale fee"
     fields:
       - {name: price, widget_type: number, label: "Price", required: true, help_text: "Sale price or fee calculation amount as a number, without a currency symbol. Marketplace listings use the seller’s configured currency.", placeholder: "19.9"}
-      - {name: currency, widget_type: text, label: "Currency", required: false, help_text: "Currency code for the fee calculation.", placeholder: "EUR"}
+      - {name: currency, widget_type: text, label: "Currency", required: false, help_text: "Currency of the fee: USD, GBP, EUR, CAD, AUD, JPY, CHF, MXN, BRL, NZD, SEK or ZAR. Leave empty for USD.", placeholder: "EUR"}
   - operation_id: discogs_list_orders
     title: "List marketplace orders"
     fields:
@@ -171,6 +175,16 @@ forms:
     title: "Get a Discogs user profile"
     fields:
       - {name: username, widget_type: text, label: "Username", required: true, help_text: "Discogs account username. If omitted, account actions use the connection’s configured username where supported.", placeholder: "record_collector"}
+  - operation_id: discogs_edit_user_profile
+    title: "Edit a Discogs user profile"
+    fields:
+      - {name: username, widget_type: text, label: "Username", required: false, help_text: "Discogs account username. If omitted, account actions use the connection’s configured username where supported.", placeholder: "record_collector"}
+      - {name: name, widget_type: text, label: "Real name", required: false, help_text: "Real name shown on the profile.", placeholder: "Jane Doe"}
+      - {name: home_page, widget_type: text, label: "Website", required: false, help_text: "Website shown on the profile.", placeholder: "www.example.com"}
+      - {name: location, widget_type: text, label: "Location", required: false, help_text: "Geographical location shown on the profile.", placeholder: "Vilnius"}
+      - {name: profile, widget_type: textarea, label: "Biography", required: false, help_text: "Biographical text shown on the profile."}
+      - {name: curr_abbr, widget_type: text, label: "Marketplace currency", required: false, help_text: "Currency for marketplace data: USD, GBP, EUR, CAD, AUD, JPY, CHF, MXN, BRL, NZD, SEK or ZAR.", placeholder: "EUR"}
+      - {name: confirm, widget_type: boolean, label: "Confirm this change", required: true, help_text: "Set true only after reviewing this modification. A user token must also be available and write actions enabled.", placeholder: "true"}
   - operation_id: discogs_get_user_submissions
     title: "List a user’s database submissions"
     fields:
@@ -191,6 +205,10 @@ forms:
       - {name: username, widget_type: text, label: "Username", required: true, help_text: "Discogs account username. If omitted, account actions use the connection’s configured username where supported.", placeholder: "record_collector"}
       - {name: page, widget_type: integer, label: "Page", required: false, help_text: "Page number to read. List actions return one page; use the returned pagination to read later pages.", placeholder: "1"}
       - {name: per_page, widget_type: integer, label: "Results per page", required: false, help_text: "Requested results per page for this action. Set it explicitly; Discogs permits up to 100.", placeholder: "25"}
+  - operation_id: discogs_get_list
+    title: "Get a saved list’s items"
+    fields:
+      - {name: list_id, widget_type: text, label: "List ID", required: true, help_text: "ID of a Discogs list, returned by List a user’s saved lists.", placeholder: "123"}
   - operation_id: discogs_get_collection_folders
     title: "List record collection folders"
     fields:
@@ -234,6 +252,11 @@ forms:
       - {name: username, widget_type: text, label: "Username", required: false, help_text: "Discogs account username. If omitted, account actions use the connection’s configured username where supported.", placeholder: "record_collector"}
       - {name: folder_id, widget_type: integer, label: "Folder ID", required: true, help_text: "Existing collection folder ID. Get it from List record collection folders; folder IDs belong to that account.", placeholder: "1"}
       - {name: release_id, widget_type: resource_picker, label: "Release ID", query_id: discogs_search, required: true, help_text: "Discogs ID of a specific release or pressing, returned by a database search or release lookup. A master ID is different.", placeholder: "249504"}
+  - operation_id: discogs_get_collection_items_by_release
+    title: "Find a release in a collection"
+    fields:
+      - {name: username, widget_type: text, label: "Username", required: false, help_text: "Discogs account username. If omitted, account actions use the connection’s configured username where supported.", placeholder: "record_collector"}
+      - {name: release_id, widget_type: resource_picker, label: "Release ID", query_id: discogs_search, required: true, help_text: "Discogs ID of a specific release or pressing, returned by a database search or release lookup. A master ID is different.", placeholder: "249504"}
   - operation_id: discogs_add_collection_release
     title: "Add a release to a collection folder"
     fields:
@@ -242,6 +265,16 @@ forms:
       - {name: release_id, widget_type: resource_picker, label: "Release ID", query_id: discogs_search, required: true, help_text: "Discogs ID of a specific release or pressing, returned by a database search or release lookup. A master ID is different.", placeholder: "249504"}
       - {name: notes, widget_type: textarea, label: "Notes", required: false, help_text: "Notes to save with this collection or wantlist entry, using the action’s declared value type.", placeholder: "First pressing wanted."}
       - {name: rating, widget_type: integer, label: "Rating", required: false, help_text: "Personal rating for this release or collection entry, using Discogs’ rating scale.", placeholder: "4"}
+      - {name: confirm, widget_type: boolean, label: "Confirm this change", required: true, help_text: "Set true only after reviewing this modification. A user token must also be available and write actions enabled.", placeholder: "true"}
+  - operation_id: discogs_edit_collection_instance
+    title: "Rate or move a collection copy"
+    fields:
+      - {name: username, widget_type: text, label: "Username", required: false, help_text: "Discogs account username. If omitted, account actions use the connection’s configured username where supported.", placeholder: "record_collector"}
+      - {name: folder_id, widget_type: integer, label: "Current folder ID", required: true, help_text: "Folder that holds the copy now. Get it from List record collection folders or a collection lookup.", placeholder: "1"}
+      - {name: release_id, widget_type: resource_picker, label: "Release ID", query_id: discogs_search, required: true, help_text: "Discogs ID of a specific release or pressing, returned by a database search or release lookup. A master ID is different.", placeholder: "249504"}
+      - {name: instance_id, widget_type: integer, label: "Instance ID", required: true, help_text: "ID of one owned copy, returned by a collection lookup. It is not the release ID.", placeholder: "123456789"}
+      - {name: new_folder_id, widget_type: integer, label: "Move to folder ID", required: false, help_text: "Optional destination folder for the copy. Leave empty to keep it in its current folder.", placeholder: "2"}
+      - {name: rating, widget_type: integer, label: "Rating", required: false, help_text: "Personal rating from 0 (unrated) to 5 (best), using Discogs’ rating scale.", placeholder: "4"}
       - {name: confirm, widget_type: boolean, label: "Confirm this change", required: true, help_text: "Set true only after reviewing this modification. A user token must also be available and write actions enabled.", placeholder: "true"}
   - operation_id: discogs_delete_collection_instance
     title: "Remove one copy from a collection"
@@ -253,6 +286,10 @@ forms:
       - {name: confirm, widget_type: boolean, label: "Confirm this change", required: true, help_text: "Set true only after reviewing this modification. A user token must also be available and write actions enabled.", placeholder: "true"}
   - operation_id: discogs_get_collection_fields
     title: "List custom collection fields"
+    fields:
+      - {name: username, widget_type: text, label: "Username", required: false, help_text: "Discogs account username. If omitted, account actions use the connection’s configured username where supported.", placeholder: "record_collector"}
+  - operation_id: discogs_get_collection_value
+    title: "Get collection value"
     fields:
       - {name: username, widget_type: text, label: "Username", required: false, help_text: "Discogs account username. If omitted, account actions use the connection’s configured username where supported.", placeholder: "record_collector"}
   - operation_id: discogs_edit_collection_field_value
@@ -284,11 +321,43 @@ forms:
       - {name: notes, widget_type: textarea, label: "Notes", required: false, help_text: "Notes to save with this collection or wantlist entry, using the action’s declared value type.", placeholder: "First pressing wanted."}
       - {name: rating, widget_type: integer, label: "Rating", required: false, help_text: "Personal rating for this release or collection entry, using Discogs’ rating scale.", placeholder: "4"}
       - {name: confirm, widget_type: boolean, label: "Confirm this change", required: true, help_text: "Set true only after reviewing this modification. A user token must also be available and write actions enabled.", placeholder: "true"}
+  - operation_id: discogs_edit_wantlist_release
+    title: "Edit a wanted release"
+    fields:
+      - {name: username, widget_type: text, label: "Username", required: false, help_text: "Discogs account username. If omitted, account actions use the connection’s configured username where supported.", placeholder: "record_collector"}
+      - {name: release_id, widget_type: resource_picker, label: "Release ID", query_id: discogs_search, required: true, help_text: "Discogs ID of a specific release or pressing, returned by a database search or release lookup. A master ID is different.", placeholder: "249504"}
+      - {name: notes, widget_type: textarea, label: "Notes", required: false, help_text: "Notes to save with this collection or wantlist entry, using the action’s declared value type.", placeholder: "First pressing wanted."}
+      - {name: rating, widget_type: integer, label: "Rating", required: false, help_text: "Personal rating from 0 (unrated) to 5 (best), using Discogs’ rating scale.", placeholder: "4"}
+      - {name: confirm, widget_type: boolean, label: "Confirm this change", required: true, help_text: "Set true only after reviewing this modification. A user token must also be available and write actions enabled.", placeholder: "true"}
   - operation_id: discogs_delete_wantlist_release
     title: "Remove a wanted release"
     fields:
       - {name: username, widget_type: text, label: "Username", required: false, help_text: "Discogs account username. If omitted, account actions use the connection’s configured username where supported.", placeholder: "record_collector"}
       - {name: release_id, widget_type: resource_picker, label: "Release ID", query_id: discogs_search, required: true, help_text: "Discogs ID of a specific release or pressing, returned by a database search or release lookup. A master ID is different.", placeholder: "249504"}
+      - {name: confirm, widget_type: boolean, label: "Confirm this change", required: true, help_text: "Set true only after reviewing this modification. A user token must also be available and write actions enabled.", placeholder: "true"}
+  - operation_id: discogs_list_inventory
+    title: "List a seller’s inventory"
+    fields:
+      - {name: username, widget_type: text, label: "Username", required: false, help_text: "Discogs account username. If omitted, account actions use the connection’s configured username where supported.", placeholder: "record_collector"}
+      - {name: status, widget_type: text, label: "Status", required: false, help_text: "Only return listings with this status. Without the owner’s token Discogs shows only listings that are For Sale.", placeholder: "For Sale"}
+      - {name: sort, widget_type: text, label: "Sort", required: false, help_text: "Sort field: listed, price, item, artist, label, catno, audio, status or location.", placeholder: "listed"}
+      - {name: sort_order, widget_type: text, label: "Sort Order", required: false, help_text: "Sort direction: asc or desc.", placeholder: "asc"}
+      - {name: page, widget_type: integer, label: "Page", required: false, help_text: "Page number to read. List actions return one page; use the returned pagination to read later pages.", placeholder: "1"}
+      - {name: per_page, widget_type: integer, label: "Results per page", required: false, help_text: "Requested results per page for this action. Set it explicitly; Discogs permits up to 100.", placeholder: "25"}
+  - operation_id: discogs_list_all_inventory
+    title: "Read a seller’s whole inventory"
+    fields:
+      - {name: username, widget_type: text, label: "Username", required: false, help_text: "Discogs account username. If omitted, account actions use the connection’s configured username where supported.", placeholder: "record_collector"}
+      - {name: status, widget_type: text, label: "Status", required: false, help_text: "Only return listings with this status. Without the owner’s token Discogs shows only listings that are For Sale.", placeholder: "For Sale"}
+      - {name: sort, widget_type: text, label: "Sort", required: false, help_text: "Sort field: listed, price, item, artist, label, catno, audio, status or location.", placeholder: "listed"}
+      - {name: sort_order, widget_type: text, label: "Sort Order", required: false, help_text: "Sort direction: asc or desc.", placeholder: "asc"}
+      - {name: page, widget_type: integer, label: "Start page", required: false, help_text: "Page to start from: 1 for a new read, or next_page from an earlier incomplete result.", placeholder: "1"}
+      - {name: per_page, widget_type: integer, label: "Listings per page", required: false, help_text: "Listings per request, from 1 to 100. Keep the same value when continuing from next_page.", placeholder: "100"}
+      - {name: max_items, widget_type: integer, label: "Maximum listings", required: false, help_text: "Optional limit on listings returned in one run; the read stops before a page that would exceed it.", placeholder: "500"}
+      - {name: time_budget_seconds, widget_type: integer, label: "Time budget (seconds)", required: false, help_text: "No new page is requested after this many seconds; from 1 to 18, default 15.", placeholder: "15"}
+  - operation_id: discogs_request_inventory_export
+    title: "Request an inventory export"
+    fields:
       - {name: confirm, widget_type: boolean, label: "Confirm this change", required: true, help_text: "Set true only after reviewing this modification. A user token must also be available and write actions enabled.", placeholder: "true"}
   - operation_id: discogs_get_inventory_exports
     title: "List seller inventory exports"
@@ -320,3 +389,12 @@ forms:
       - {name: items, widget_type: json, label: "Items", required: false, help_text: "JSON array of inventory entries sent to the selected inventory upload endpoint. Follow Discogs’ format for add, change or delete; this extension does not reconcile row outcomes."}
       - {name: csv, widget_type: textarea, label: "Csv", required: false, help_text: "CSV content sent as the csv value to the selected inventory upload endpoint. This is text, not a local path or workflow file handle."}
       - {name: confirm, widget_type: boolean, label: "Confirm this change", required: true, help_text: "Set true only after reviewing this modification. A user token must also be available and write actions enabled.", placeholder: "true"}
+  - operation_id: discogs_list_inventory_uploads
+    title: "List recent inventory uploads"
+    fields:
+      - {name: page, widget_type: integer, label: "Page", required: false, help_text: "Page number to read. List actions return one page; use the returned pagination to read later pages.", placeholder: "1"}
+      - {name: per_page, widget_type: integer, label: "Results per page", required: false, help_text: "Requested results per page for this action. Set it explicitly; Discogs permits up to 100.", placeholder: "25"}
+  - operation_id: discogs_get_inventory_upload
+    title: "Get an inventory upload status"
+    fields:
+      - {name: upload_id, widget_type: integer, label: "Upload ID", required: true, help_text: "ID returned by an inventory add, change or delete submission, or by List recent inventory uploads.", placeholder: "119615"}

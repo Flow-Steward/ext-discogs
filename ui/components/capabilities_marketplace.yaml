@@ -14,4 +14,4 @@ content: |
 
   **Get suggested sale prices by condition**: Read Discogs price suggestions for a release by condition. These are suggestions, not a change to your listings.
 
-  **Estimate a marketplace sale fee**: Calculate the Discogs marketplace fee for a proposed price and currency without creating a listing or order.
+  **Estimate a marketplace sale fee**: Calculate the Discogs marketplace fee for a proposed price without creating a listing or order. With a currency the fee is calculated in that currency; without one Discogs uses USD.

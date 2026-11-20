@@ -25,3 +25,5 @@ content: |
   **Get a record label**: Read a Discogs record label profile using its label ID.
 
   **List a label’s releases**: Read one page of releases associated with a Discogs record label.
+
+  **Get a release’s community rating**: Read the average rating and the number of ratings the Discogs community has given a release.

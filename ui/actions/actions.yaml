@@ -199,7 +199,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.data.username"]
+    result_fields: ["result.data.username", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_search_database
@@ -213,7 +213,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.data.results[]", "result.data.pagination"]
+    result_fields: ["result.data.results[]", "result.data.pagination", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_get_release
@@ -227,7 +227,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.data.id", "result.data.title"]
+    result_fields: ["result.data.id", "result.data.title", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_get_release_rating
@@ -241,7 +241,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.data.rating"]
+    result_fields: ["result.data.rating", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_update_release_rating
@@ -255,7 +255,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.provider_status"]
+    result_fields: ["result.provider_status", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_delete_release_rating
@@ -269,7 +269,21 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.provider_status"]
+    result_fields: ["result.provider_status", "result.rate_limit"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+    mutates_platform: false
+  - action_id: discogs_get_community_release_rating
+    workflow_visible: true
+    title: "Get a release’s community rating"
+    description: "Read the average rating and the number of ratings the Discogs community has given a release."
+    required_scopes: [extension:invoke]
+    handler:
+      mode: extension
+      config:
+        provider_key: discogs
+        required_provider_secrets:
+          - user_token
+    result_fields: ["result.data.rating", "result.data.release_id", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_get_release_stats
@@ -283,7 +297,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.data"]
+    result_fields: ["result.data", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_get_master
@@ -297,7 +311,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.data.id", "result.data.title"]
+    result_fields: ["result.data.id", "result.data.title", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_get_master_versions
@@ -311,7 +325,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.data.versions[]", "result.data.pagination"]
+    result_fields: ["result.data.versions[]", "result.data.pagination", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_get_artist
@@ -325,7 +339,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.data.id", "result.data.name"]
+    result_fields: ["result.data.id", "result.data.name", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_get_artist_releases
@@ -339,7 +353,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.data.releases[]", "result.data.pagination"]
+    result_fields: ["result.data.releases[]", "result.data.pagination", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_get_label
@@ -353,7 +367,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.data.id", "result.data.name"]
+    result_fields: ["result.data.id", "result.data.name", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_get_label_releases
@@ -367,7 +381,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.data.releases[]", "result.data.pagination"]
+    result_fields: ["result.data.releases[]", "result.data.pagination", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_get_marketplace_listing
@@ -381,7 +395,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.data.id", "result.data.price"]
+    result_fields: ["result.data.id", "result.data.price", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_create_marketplace_listing
@@ -395,7 +409,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.data.id", "result.provider_status"]
+    result_fields: ["result.data.id", "result.provider_status", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_update_marketplace_listing
@@ -409,7 +423,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.provider_status"]
+    result_fields: ["result.provider_status", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_delete_marketplace_listing
@@ -423,7 +437,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.provider_status"]
+    result_fields: ["result.provider_status", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_get_marketplace_stats
@@ -437,7 +451,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.data.lowest_price", "result.data.num_for_sale"]
+    result_fields: ["result.data.lowest_price", "result.data.num_for_sale", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_get_price_suggestions
@@ -451,13 +465,13 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.data"]
+    result_fields: ["result.data", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_calculate_marketplace_fee
     workflow_visible: true
     title: "Estimate a marketplace sale fee"
-    description: "Calculate the Discogs marketplace fee for a proposed price and currency without creating a listing or order."
+    description: "Calculate the Discogs marketplace fee for a proposed price without creating a listing or order. With a currency the fee is calculated in that currency; without one Discogs uses USD."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -465,7 +479,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.data"]
+    result_fields: ["result.data", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_list_orders
@@ -479,7 +493,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.data.orders[]", "result.data.pagination"]
+    result_fields: ["result.data.orders[]", "result.data.pagination", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_get_order
@@ -493,7 +507,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.data.id", "result.data.status"]
+    result_fields: ["result.data.id", "result.data.status", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_update_order
@@ -507,7 +521,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.provider_status"]
+    result_fields: ["result.provider_status", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_list_order_messages
@@ -521,7 +535,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.data.messages[]"]
+    result_fields: ["result.data.messages[]", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_add_order_message
@@ -535,7 +549,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.provider_status"]
+    result_fields: ["result.provider_status", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_get_user_profile
@@ -549,7 +563,21 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.data.username"]
+    result_fields: ["result.data.username", "result.rate_limit"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+    mutates_platform: false
+  - action_id: discogs_edit_user_profile
+    workflow_visible: true
+    title: "Edit a Discogs user profile"
+    description: "Change the supplied profile fields of the connected Discogs account: real name, website, location, biography or marketplace currency. Requires authentication as that user, enabled writes and confirmation."
+    required_scopes: [extension:invoke]
+    handler:
+      mode: extension
+      config:
+        provider_key: discogs
+        required_provider_secrets:
+          - user_token
+    result_fields: ["result.provider_status", "result.data", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_get_user_submissions
@@ -563,7 +591,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.data.submissions[]", "result.data.pagination"]
+    result_fields: ["result.data.submissions[]", "result.data.pagination", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_get_user_contributions
@@ -577,7 +605,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.data.contributions[]", "result.data.pagination"]
+    result_fields: ["result.data.contributions[]", "result.data.pagination", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_get_user_lists
@@ -591,7 +619,21 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.data.lists[]", "result.data.pagination"]
+    result_fields: ["result.data.lists[]", "result.data.pagination", "result.rate_limit"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+    mutates_platform: false
+  - action_id: discogs_get_list
+    workflow_visible: true
+    title: "Get a saved list’s items"
+    description: "Read the items of one Discogs list by its list ID. Private lists are visible only to their owner’s token."
+    required_scopes: [extension:invoke]
+    handler:
+      mode: extension
+      config:
+        provider_key: discogs
+        required_provider_secrets:
+          - user_token
+    result_fields: ["result.data.items[]", "result.data.name", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_get_collection_folders
@@ -605,7 +647,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.data.folders[]"]
+    result_fields: ["result.data.folders[]", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_create_collection_folder
@@ -619,7 +661,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.data.id"]
+    result_fields: ["result.data.id", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_get_collection_folder
@@ -633,7 +675,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.data.id", "result.data.name"]
+    result_fields: ["result.data.id", "result.data.name", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_update_collection_folder
@@ -647,7 +689,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.provider_status"]
+    result_fields: ["result.provider_status", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_delete_collection_folder
@@ -661,7 +703,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.provider_status"]
+    result_fields: ["result.provider_status", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_get_collection_releases
@@ -675,7 +717,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.data.releases[]", "result.data.pagination"]
+    result_fields: ["result.data.releases[]", "result.data.pagination", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_get_collection_release
@@ -689,7 +731,21 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.data.releases[]"]
+    result_fields: ["result.data.releases[]", "result.rate_limit"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+    mutates_platform: false
+  - action_id: discogs_get_collection_items_by_release
+    workflow_visible: true
+    title: "Find a release in a collection"
+    description: "Read every owned copy of one release in the account’s collection, across all folders, with folder and instance IDs. A private collection requires the owner’s token."
+    required_scopes: [extension:invoke]
+    handler:
+      mode: extension
+      config:
+        provider_key: discogs
+        required_provider_secrets:
+          - user_token
+    result_fields: ["result.data.releases[]", "result.data.pagination", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_add_collection_release
@@ -703,7 +759,21 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.provider_status"]
+    result_fields: ["result.provider_status", "result.rate_limit"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+    mutates_platform: false
+  - action_id: discogs_edit_collection_instance
+    workflow_visible: true
+    title: "Rate or move a collection copy"
+    description: "Change the rating of one owned copy and/or move it to another folder, using its current folder, release and instance IDs. Requires enabled writes and confirmation."
+    required_scopes: [extension:invoke]
+    handler:
+      mode: extension
+      config:
+        provider_key: discogs
+        required_provider_secrets:
+          - user_token
+    result_fields: ["result.provider_status", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_delete_collection_instance
@@ -717,7 +787,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.provider_status"]
+    result_fields: ["result.provider_status", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_get_collection_fields
@@ -731,7 +801,21 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.data.fields[]"]
+    result_fields: ["result.data.fields[]", "result.rate_limit"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+    mutates_platform: false
+  - action_id: discogs_get_collection_value
+    workflow_visible: true
+    title: "Get collection value"
+    description: "Read the minimum, median and maximum value of the account’s collection. Requires the collection owner’s token."
+    required_scopes: [extension:invoke]
+    handler:
+      mode: extension
+      config:
+        provider_key: discogs
+        required_provider_secrets:
+          - user_token
+    result_fields: ["result.data.minimum", "result.data.median", "result.data.maximum", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_edit_collection_field_value
@@ -745,7 +829,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.provider_status"]
+    result_fields: ["result.provider_status", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_get_wantlist
@@ -759,7 +843,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.data.wants[]", "result.data.pagination"]
+    result_fields: ["result.data.wants[]", "result.data.pagination", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_get_wantlist_release
@@ -773,7 +857,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.data.id"]
+    result_fields: ["result.data.id", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_add_wantlist_release
@@ -787,7 +871,21 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.provider_status"]
+    result_fields: ["result.provider_status", "result.rate_limit"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+    mutates_platform: false
+  - action_id: discogs_edit_wantlist_release
+    workflow_visible: true
+    title: "Edit a wanted release"
+    description: "Change the notes or rating of a release already in the account’s wantlist. Requires enabled writes and confirmation."
+    required_scopes: [extension:invoke]
+    handler:
+      mode: extension
+      config:
+        provider_key: discogs
+        required_provider_secrets:
+          - user_token
+    result_fields: ["result.provider_status", "result.data", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_delete_wantlist_release
@@ -801,7 +899,49 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.provider_status"]
+    result_fields: ["result.provider_status", "result.rate_limit"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+    mutates_platform: false
+  - action_id: discogs_list_inventory
+    workflow_visible: true
+    title: "List a seller’s inventory"
+    description: "Read one page of a seller’s marketplace listings with its pagination. Without the owner’s token only listings that are For Sale are visible."
+    required_scopes: [extension:invoke]
+    handler:
+      mode: extension
+      config:
+        provider_key: discogs
+        required_provider_secrets:
+          - user_token
+    result_fields: ["result.data.listings[]", "result.data.pagination", "result.rate_limit"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+    mutates_platform: false
+  - action_id: discogs_list_all_inventory
+    workflow_visible: true
+    title: "Read a seller’s whole inventory"
+    description: "Read the seller’s listings page by page, up to 100 per page, checking every page against its pagination so no listing is skipped or repeated. Stops at the time or result-size limit with next_page to continue from, and returns complete true only when the last page was read. If the inventory total changes during the read, the result is incomplete with a warning."
+    required_scopes: [extension:invoke]
+    handler:
+      mode: extension
+      config:
+        provider_key: discogs
+        required_provider_secrets:
+          - user_token
+    result_fields: ["result.listings[]", "result.item_count", "result.total_items", "result.pages_read", "result.next_page", "result.complete", "result.stop_reason", "result.warnings[]", "result.rate_limit"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+    mutates_platform: false
+  - action_id: discogs_request_inventory_export
+    workflow_visible: true
+    title: "Request an inventory export"
+    description: "Ask Discogs to prepare a CSV export of the seller’s inventory. Discogs only accepts the job: the result reports processing accepted, applied false and the export ID; check it with Get an inventory export status. Requires enabled writes and confirmation."
+    required_scopes: [extension:invoke]
+    handler:
+      mode: extension
+      config:
+        provider_key: discogs
+        required_provider_secrets:
+          - user_token
+    result_fields: ["result.processing", "result.applied", "result.check", "result.export_id", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_get_inventory_exports
@@ -815,7 +955,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.data.items[]"]
+    result_fields: ["result.data.items[]", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_get_inventory_export
@@ -829,7 +969,7 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.data"]
+    result_fields: ["result.data", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_download_inventory_export
@@ -843,13 +983,13 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.data"]
+    result_fields: ["result.data", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_inventory_upload_add
     workflow_visible: true
     title: "Submit inventory additions"
-    description: "Submit the supplied inventory items or CSV value to Discogs’ inventory add endpoint. Requires enabled writes and confirmation; inspect the provider response before assuming processing is complete."
+    description: "Submit the supplied inventory items or CSV value to Discogs’ inventory add endpoint. Discogs records the submission as an upload: the result reports processing accepted and the upload ID; check the outcome with Get an inventory upload status. Requires enabled writes and confirmation."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -857,13 +997,13 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.provider_status"]
+    result_fields: ["result.provider_status", "result.processing", "result.check", "result.upload_id", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_inventory_upload_change
     workflow_visible: true
     title: "Submit inventory changes"
-    description: "Submit the supplied inventory items or CSV value to Discogs’ inventory change endpoint. Requires enabled writes and confirmation; inspect the provider response before assuming processing is complete."
+    description: "Submit the supplied inventory items or CSV value to Discogs’ inventory change endpoint. Discogs records the submission as an upload: the result reports processing accepted and the upload ID; check the outcome with Get an inventory upload status. Requires enabled writes and confirmation."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -871,13 +1011,13 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.provider_status"]
+    result_fields: ["result.provider_status", "result.processing", "result.check", "result.upload_id", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false
   - action_id: discogs_inventory_upload_delete
     workflow_visible: true
     title: "Submit inventory removals"
-    description: "Submit the supplied inventory items or CSV value to Discogs’ inventory delete endpoint. Requires enabled writes and confirmation; inspect the provider response before assuming processing is complete."
+    description: "Submit the supplied inventory items or CSV value to Discogs’ inventory delete endpoint. Discogs records the submission as an upload: the result reports processing accepted and the upload ID; check the outcome with Get an inventory upload status. Requires enabled writes and confirmation."
     required_scopes: [extension:invoke]
     handler:
       mode: extension
@@ -885,6 +1025,34 @@ actions:
         provider_key: discogs
         required_provider_secrets:
           - user_token
-    result_fields: ["result.provider_status"]
+    result_fields: ["result.provider_status", "result.processing", "result.check", "result.upload_id", "result.rate_limit"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+    mutates_platform: false
+  - action_id: discogs_list_inventory_uploads
+    workflow_visible: true
+    title: "List recent inventory uploads"
+    description: "Read one page of the seller’s recent inventory uploads with their status and processing results."
+    required_scopes: [extension:invoke]
+    handler:
+      mode: extension
+      config:
+        provider_key: discogs
+        required_provider_secrets:
+          - user_token
+    result_fields: ["result.data.items[]", "result.data.pagination", "result.rate_limit"]
+    error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
+    mutates_platform: false
+  - action_id: discogs_get_inventory_upload
+    workflow_visible: true
+    title: "Get an inventory upload status"
+    description: "Read the status and processing results of one inventory upload using its upload ID."
+    required_scopes: [extension:invoke]
+    handler:
+      mode: extension
+      config:
+        provider_key: discogs
+        required_provider_secrets:
+          - user_token
+    result_fields: ["result.data.status", "result.data.results", "result.rate_limit"]
     error_codes: [invalid_payload, authentication_required, write_actions_disabled, confirmation_required, provider_request_failed, provider_not_found, rate_limited]
     mutates_platform: false

@@ -56,9 +56,12 @@ These IDs are separate and cannot be substituted for each other.
 ## Manage a marketplace listing and order
 
 **Estimate a marketplace sale fee** (`discogs_calculate_marketplace_fee`) takes
-an explicit **Currency**, for example `EUR`, together with the proposed price.
-The connection's **Default currency** setting is currently unused and does not
-supply a currency to this action.
+the proposed price and an optional **Currency**, for example `EUR`. The fee is
+calculated in that currency (`/marketplace/fee/{price}/{currency}`); without a
+currency Discogs calculates it in USD. Discogs accepts USD, GBP, EUR, CAD, AUD,
+JPY, CHF, MXN, BRL, NZD, SEK and ZAR; any other code is refused before Discogs
+is called. The connection's **Default currency** setting does not supply a
+currency to this action.
 
 **Create a marketplace sale listing** (`discogs_create_marketplace_listing`)
 offers a real sale copy. After identifying the release, enter its exact Discogs
@@ -73,17 +76,75 @@ order actions. **Send a marketplace order message** posts real text to that
 order's thread, for example `Your order has been packed and will ship tomorrow.`
 Order status changes must be permitted by Discogs for the current order state.
 
+## Read a seller inventory
+
+**List a seller’s inventory** (`discogs_list_inventory`) reads one page of
+listings with its `pagination` (`page`, `pages`, `per_page`, `items`). Filter by
+**Status** (for example `For Sale`) and sort by `listed`, `price`, `item`,
+`artist`, `label`, `catno`, `audio`, `status` or `location` in `asc` or `desc`
+order. Without the owner’s token Discogs shows only listings that are For Sale.
+
+**Read a seller’s whole inventory** (`discogs_list_all_inventory`) reads every
+page, up to 100 listings per page, and checks each page against its pagination:
+the page and page size must be the ones requested, the page must hold exactly
+the number of listings the total promises, and no listing may repeat. The
+result carries `listings`, `item_count`, `total_items`, `pages_read`,
+`next_page`, `complete`, `stop_reason` and `warnings`:
+
+- `complete: true` means the last page was read and `next_page` is empty.
+- When the time budget (default 15 seconds), the result size or **Maximum
+  listings** is reached, `complete` is false and `next_page` names the first
+  page not yet read. Run the step again with **Start page** set to `next_page`
+  and the same **Listings per page** to continue exactly where it stopped.
+- If the inventory total changes while the pages are read, offsets have
+  shifted: the result is incomplete, `next_page` is empty and `warnings`
+  contains `inventory_changed_during_read`. Start again from page 1.
+
 ## Inventory exports and submissions
 
-List seller inventory exports, inspect an export's status and pass its returned
-export ID to **Read an inventory export download**. The action returns the
-provider response and does not create a workflow file artifact.
+**Request an inventory export** (`discogs_request_inventory_export`) asks
+Discogs to prepare a CSV export. Discogs only accepts the job, so the result
+reports `processing: accepted`, `applied: false`, `check:
+discogs_get_inventory_export` and the `export_id` from the Location header
+Discogs returns. Pass that ID to **Get an inventory export status** until its
+status is `success`, then to **Read an inventory export download**. List
+earlier exports with **List seller inventory exports**. The download action
+returns the provider response and does not create a workflow file artifact.
 
 The inventory add/change/delete actions submit the supplied `items` array or
-`csv` text value to the corresponding fixed Discogs endpoint. Follow Discogs'
-format for that endpoint and inspect the provider response. These actions do not
-validate or reconcile every inventory row, upload an arbitrary local file, or
-wait for all provider processing to finish.
+`csv` text value to the corresponding fixed Discogs endpoint. Discogs records
+each submission as an upload: the result reports `processing: accepted`,
+`check: discogs_get_inventory_upload` and the `upload_id`. **Get an inventory
+upload status** returns the upload’s `status` and `results` text, and **List
+recent inventory uploads** lists earlier uploads.
+
+## Profiles, lists, collection value and ratings
+
+**Edit a Discogs user profile** (`discogs_edit_user_profile`) changes the
+supplied real name, website, location, biography or marketplace currency of the
+account the token belongs to. **Get a saved list’s items**
+(`discogs_get_list`) reads one list by the ID returned by **List a user’s saved
+lists**. **Get collection value** (`discogs_get_collection_value`) returns the
+minimum, median and maximum value of the collection; it needs the owner’s
+token. **Get a release’s community rating**
+(`discogs_get_community_release_rating`) returns the community average and the
+number of ratings, separate from the account’s own rating.
+
+**Find a release in a collection** (`discogs_get_collection_items_by_release`)
+lists every owned copy of a release across folders with folder and instance
+IDs. **Rate or move a collection copy** (`discogs_edit_collection_instance`)
+takes those IDs: **Current folder ID** addresses the copy, **Move to folder ID**
+moves it, and **Rating** sets its rating. **Edit a wanted release**
+(`discogs_edit_wantlist_release`) changes the notes or rating of a release
+already in the wantlist.
+
+## Rate limit
+
+Every action returns `result.rate_limit` with `limit`, `used` and `remaining`
+from Discogs’ `X-Discogs-Ratelimit`, `X-Discogs-Ratelimit-Used` and
+`X-Discogs-Ratelimit-Remaining` headers, also when Discogs refuses a request
+with 429 (`rate_limited`). Bind it in a workflow to pause before `remaining`
+reaches 0.
 
 For read-only reporting, user profile, submissions, contributions, saved-list
 and collection/wantlist actions supply their own data without modifying it.

@@ -9,3 +9,5 @@ content: |
   **Add or update a wanted release**: Add a release to the account’s wantlist, or update its supplied notes and rating. Requires enabled writes and confirmation.
 
   **Remove a wanted release**: Remove a specific release from the account’s wantlist. Requires enabled writes and confirmation.
+
+  **Edit a wanted release**: Change the notes or rating of a release already in the account’s wantlist. Requires enabled writes and confirmation.

@@ -1,0 +1,2068 @@
+{
+ "source_url": "https://www.discogs.com/developers",
+ "snapshot_sha256": "3a0979581229a4d44cac287305ff91f8323836ce337c8d5a0961e5445669859a",
+ "snapshot_bytes": 557999,
+ "rate_limit_headers": [
+  "X-Discogs-Ratelimit",
+  "X-Discogs-Ratelimit-Used",
+  "X-Discogs-Ratelimit-Remaining"
+ ],
+ "pagination_max_per_page": 100,
+ "endpoints": [
+  {
+   "section": "authentication-request-token-url-get",
+   "action": "Request token",
+   "method": "GET",
+   "path": "/oauth/request_token",
+   "query": [],
+   "parameters": [],
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "section": "authentication-access-token-url-post",
+   "action": "Access token",
+   "method": "POST",
+   "path": "/oauth/access_token",
+   "query": [],
+   "parameters": [],
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "section": "database-release-get",
+   "action": "Get Release",
+   "method": "GET",
+   "path": "/releases/{release_id}",
+   "query": [
+    "curr_abbr"
+   ],
+   "parameters": [
+    {
+     "name": "release_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "curr_abbr",
+     "type": "string",
+     "required": false,
+     "choices": [
+      "USD",
+      "GBP",
+      "EUR",
+      "CAD",
+      "AUD",
+      "JPY",
+      "CHF",
+      "MXN",
+      "BRL",
+      "NZD",
+      "SEK",
+      "ZAR"
+     ]
+    }
+   ],
+   "responses": [
+    "200",
+    "404"
+   ]
+  },
+  {
+   "section": "database-release-rating-by-user-get",
+   "action": "Get Release Rating By User",
+   "method": "GET",
+   "path": "/releases/{release_id}/rating/{username}",
+   "query": [],
+   "parameters": [
+    {
+     "name": "release_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "username",
+     "type": "string",
+     "required": true,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "section": "database-release-rating-by-user-put",
+   "action": "Update Release Rating By User",
+   "method": "PUT",
+   "path": "/releases/{release_id}/rating/{username}",
+   "query": [],
+   "parameters": [
+    {
+     "name": "release_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "username",
+     "type": "string",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "rating",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "section": "database-release-rating-by-user-delete",
+   "action": "Delete Release Rating By User",
+   "method": "DELETE",
+   "path": "/releases/{release_id}/rating/{username}",
+   "query": [],
+   "parameters": [
+    {
+     "name": "release_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "username",
+     "type": "string",
+     "required": true,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "204"
+   ]
+  },
+  {
+   "section": "database-community-release-rating-get",
+   "action": "Get Community Release Rating",
+   "method": "GET",
+   "path": "/releases/{release_id}/rating",
+   "query": [],
+   "parameters": [
+    {
+     "name": "release_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "section": "database-release-stats-get",
+   "action": "Get Release Stats",
+   "method": "GET",
+   "path": "/releases/{release_id}/stats",
+   "query": [],
+   "parameters": [
+    {
+     "name": "release_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "section": "database-master-release-get",
+   "action": "Get Master",
+   "method": "GET",
+   "path": "/masters/{master_id}",
+   "query": [],
+   "parameters": [
+    {
+     "name": "master_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "200",
+    "404"
+   ]
+  },
+  {
+   "section": "database-master-release-versions-get",
+   "action": "Get all Master versions",
+   "method": "GET",
+   "path": "/masters/{master_id}/versions",
+   "query": [
+    "page",
+    "per_page",
+    "format",
+    "label",
+    "released",
+    "country",
+    "sort",
+    "sort_order"
+   ],
+   "parameters": [
+    {
+     "name": "master_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "page",
+     "type": "integer",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "per_page",
+     "type": "integer",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "format",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "label",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "released",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "country",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "sort",
+     "type": "string",
+     "required": false,
+     "choices": [
+      "released",
+      "title",
+      "format",
+      "label",
+      "catno",
+      "country"
+     ]
+    },
+    {
+     "name": "sort_order",
+     "type": "string",
+     "required": false,
+     "choices": [
+      "asc",
+      "desc"
+     ]
+    }
+   ],
+   "responses": [
+    "200",
+    "404"
+   ]
+  },
+  {
+   "section": "database-artist-get",
+   "action": "Get Artist",
+   "method": "GET",
+   "path": "/artists/{artist_id}",
+   "query": [],
+   "parameters": [
+    {
+     "name": "artist_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "200",
+    "404"
+   ]
+  },
+  {
+   "section": "database-artist-releases-get",
+   "action": "Get an Artist's Releases",
+   "method": "GET",
+   "path": "/artists/{artist_id}/releases",
+   "query": [
+    "sort",
+    "sort_order"
+   ],
+   "parameters": [
+    {
+     "name": "artist_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "sort",
+     "type": "string",
+     "required": false,
+     "choices": [
+      "year",
+      "title",
+      "format"
+     ]
+    },
+    {
+     "name": "sort_order",
+     "type": "string",
+     "required": false,
+     "choices": [
+      "asc",
+      "desc"
+     ]
+    }
+   ],
+   "responses": [
+    "200",
+    "404"
+   ]
+  },
+  {
+   "section": "database-label-get",
+   "action": "Get Label",
+   "method": "GET",
+   "path": "/labels/{label_id}",
+   "query": [],
+   "parameters": [
+    {
+     "name": "label_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "200",
+    "404"
+   ]
+  },
+  {
+   "section": "database-all-label-releases-get",
+   "action": "Get all Label Releases",
+   "method": "GET",
+   "path": "/labels/{label_id}/releases",
+   "query": [
+    "page",
+    "per_page"
+   ],
+   "parameters": [
+    {
+     "name": "label_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "page",
+     "type": "integer",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "per_page",
+     "type": "integer",
+     "required": false,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "200",
+    "404"
+   ]
+  },
+  {
+   "section": "database-search-get",
+   "action": "Search",
+   "method": "GET",
+   "path": "/database/search",
+   "query": [
+    "type",
+    "title",
+    "release_title",
+    "credit",
+    "artist",
+    "anv",
+    "label",
+    "genre",
+    "style",
+    "country",
+    "year",
+    "format",
+    "catno",
+    "barcode",
+    "track",
+    "submitter",
+    "contributor",
+    "sort",
+    "sort_order"
+   ],
+   "parameters": [
+    {
+     "name": "q",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "required": false,
+     "choices": [
+      "release",
+      "master",
+      "artist",
+      "label"
+     ]
+    },
+    {
+     "name": "title",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "release_title",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "credit",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "artist",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "anv",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "label",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "genre",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "style",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "country",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "year",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "format",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "catno",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "barcode",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "track",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "submitter",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "contributor",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "sort",
+     "type": "string",
+     "required": false,
+     "choices": [
+      "score",
+      "title",
+      "have",
+      "want",
+      "hot",
+      "date_added",
+      "date_changed",
+      "year"
+     ]
+    },
+    {
+     "name": "sort_order",
+     "type": "string",
+     "required": false,
+     "choices": [
+      "asc",
+      "desc"
+     ]
+    }
+   ],
+   "responses": [
+    "200",
+    "500"
+   ]
+  },
+  {
+   "section": "marketplace-inventory-get",
+   "action": "Get inventory",
+   "method": "GET",
+   "path": "/users/{username}/inventory",
+   "query": [
+    "status",
+    "sort",
+    "sort_order"
+   ],
+   "parameters": [
+    {
+     "name": "username",
+     "type": "string",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "sort",
+     "type": "string",
+     "required": false,
+     "choices": [
+      "listed",
+      "price",
+      "item",
+      "artist",
+      "label",
+      "catno",
+      "audio",
+      "status",
+      "location"
+     ]
+    },
+    {
+     "name": "sort_order",
+     "type": "string",
+     "required": false,
+     "choices": [
+      "asc",
+      "desc"
+     ]
+    }
+   ],
+   "responses": [
+    "200",
+    "404",
+    "422"
+   ]
+  },
+  {
+   "section": "marketplace-listing-get",
+   "action": "Get listing",
+   "method": "GET",
+   "path": "/marketplace/listings/{listing_id}",
+   "query": [],
+   "parameters": [
+    {
+     "name": "listing_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "curr_abbr",
+     "type": "string",
+     "required": false,
+     "choices": [
+      "USD",
+      "GBP",
+      "EUR",
+      "CAD",
+      "AUD",
+      "JPY",
+      "CHF",
+      "MXN",
+      "BRL",
+      "NZD",
+      "SEK",
+      "ZAR"
+     ]
+    }
+   ],
+   "responses": [
+    "200",
+    "404"
+   ]
+  },
+  {
+   "section": "marketplace-listing-post",
+   "action": "Edit A Listing",
+   "method": "POST",
+   "path": "/marketplace/listings/{listing_id}",
+   "query": [],
+   "parameters": [
+    {
+     "name": "listing_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "release_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "condition",
+     "type": "string",
+     "required": true,
+     "choices": [
+      "Mint (M)",
+      "Near Mint (NM or M-)",
+      "Very Good Plus (VG+)",
+      "Very Good (VG)",
+      "Good Plus (G+)",
+      "Good (G)",
+      "Fair (F)",
+      "Poor (P)"
+     ]
+    },
+    {
+     "name": "sleeve_condition",
+     "type": "string",
+     "required": false,
+     "choices": [
+      "Mint (M)",
+      "Near Mint (NM or M-)",
+      "Very Good Plus (VG+)",
+      "Very Good (VG)",
+      "Good Plus (G+)",
+      "Good (G)",
+      "Fair (F)",
+      "Poor (P)",
+      "Generic",
+      "Not Graded",
+      "No Cover"
+     ]
+    },
+    {
+     "name": "price",
+     "type": "number",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "comments",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "allow_offers",
+     "type": "boolean",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "required": true,
+     "choices": [
+      "For Sale",
+      "Draft"
+     ]
+    },
+    {
+     "name": "external_id",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "location",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "weight",
+     "type": "number",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "format_quantity",
+     "type": "number",
+     "required": false,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "204"
+   ]
+  },
+  {
+   "section": "marketplace-listing-delete",
+   "action": "Delete A Listing",
+   "method": "DELETE",
+   "path": "/marketplace/listings/{listing_id}",
+   "query": [],
+   "parameters": [
+    {
+     "name": "listing_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "204"
+   ]
+  },
+  {
+   "section": "marketplace-new-listing-post",
+   "action": "Create New Listing",
+   "method": "POST",
+   "path": "/marketplace/listings",
+   "query": [],
+   "parameters": [
+    {
+     "name": "release_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "condition",
+     "type": "string",
+     "required": true,
+     "choices": [
+      "Mint (M)",
+      "Near Mint (NM or M-)",
+      "Very Good Plus (VG+)",
+      "Very Good (VG)",
+      "Good Plus (G+)",
+      "Good (G)",
+      "Fair (F)",
+      "Poor (P)"
+     ]
+    },
+    {
+     "name": "sleeve_condition",
+     "type": "string",
+     "required": false,
+     "choices": [
+      "Mint (M)",
+      "Near Mint (NM or M-)",
+      "Very Good Plus (VG+)",
+      "Very Good (VG)",
+      "Good Plus (G+)",
+      "Good (G)",
+      "Fair (F)",
+      "Poor (P)",
+      "Generic",
+      "Not Graded",
+      "No Cover"
+     ]
+    },
+    {
+     "name": "price",
+     "type": "number",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "comments",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "allow_offers",
+     "type": "boolean",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "required": true,
+     "choices": [
+      "For Sale",
+      "Draft"
+     ]
+    },
+    {
+     "name": "external_id",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "location",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "weight",
+     "type": "number",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "format_quantity",
+     "type": "number",
+     "required": false,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "201",
+    "403"
+   ]
+  },
+  {
+   "section": "marketplace-order-get",
+   "action": "Get Order",
+   "method": "GET",
+   "path": "/marketplace/orders/{order_id}",
+   "query": [],
+   "parameters": [
+    {
+     "name": "order_id",
+     "type": "string",
+     "required": true,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "200",
+    "401"
+   ]
+  },
+  {
+   "section": "marketplace-order-post",
+   "action": "Edit An Order",
+   "method": "POST",
+   "path": "/marketplace/orders/{order_id}",
+   "query": [],
+   "parameters": [
+    {
+     "name": "order_id",
+     "type": "string",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "required": false,
+     "choices": [
+      "New Order",
+      "Buyer Contacted",
+      "Invoice Sent",
+      "Payment Pending",
+      "Payment Received",
+      "In Progress",
+      "Shipped",
+      "Refund Sent",
+      "Cancelled (Non-Paying Buyer)",
+      "Cancelled (Item Unavailable)",
+      "Cancelled (Per Buyer&#39;s Request)"
+     ]
+    },
+    {
+     "name": "shipping",
+     "type": "number",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "tracking",
+     "type": "object",
+     "required": false,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "200",
+    "400",
+    "403"
+   ]
+  },
+  {
+   "section": "marketplace-list-orders-get",
+   "action": "List Orders",
+   "method": "GET",
+   "path": "/marketplace/orders",
+   "query": [
+    "status",
+    "created_after",
+    "created_before",
+    "archived",
+    "sort",
+    "sort_order"
+   ],
+   "parameters": [
+    {
+     "name": "status",
+     "type": "string",
+     "required": false,
+     "choices": [
+      "All",
+      "New Order",
+      "Buyer Contacted",
+      "Invoice Sent",
+      "Payment Pending",
+      "Payment Received",
+      "In Progress",
+      "Shipped",
+      "Merged",
+      "Order Changed",
+      "Refund Sent",
+      "Cancelled",
+      "Cancelled (Non-Paying Buyer)",
+      "Cancelled (Item Unavailable)",
+      "Cancelled (Per Buyer&#39;s Request)",
+      "Cancelled (Refund Received)"
+     ]
+    },
+    {
+     "name": "created_after",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "created_before",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "archived",
+     "type": "boolean",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "sort",
+     "type": "string",
+     "required": false,
+     "choices": [
+      "id",
+      "buyer",
+      "created",
+      "status",
+      "last_activity"
+     ]
+    },
+    {
+     "name": "sort_order",
+     "type": "string",
+     "required": false,
+     "choices": [
+      "asc",
+      "desc"
+     ]
+    }
+   ],
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "section": "marketplace-list-order-messages-get",
+   "action": "List Order Messages",
+   "method": "GET",
+   "path": "/marketplace/orders/{order_id}/messages",
+   "query": [],
+   "parameters": [
+    {
+     "name": "order_id",
+     "type": "string",
+     "required": true,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "section": "marketplace-list-order-messages-post",
+   "action": "Add New Message",
+   "method": "POST",
+   "path": "/marketplace/orders/{order_id}/messages",
+   "query": [],
+   "parameters": [
+    {
+     "name": "order_id",
+     "type": "string",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "message",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "required": false,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "201",
+    "403"
+   ]
+  },
+  {
+   "section": "marketplace-fee-get",
+   "action": "Calculate Fee",
+   "method": "GET",
+   "path": "/marketplace/fee/{price}",
+   "query": [],
+   "parameters": [
+    {
+     "name": "price",
+     "type": "number",
+     "required": true,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "section": "marketplace-fee-with-currency-get",
+   "action": "Calculate Fee",
+   "method": "GET",
+   "path": "/marketplace/fee/{price}/{currency}",
+   "query": [],
+   "parameters": [
+    {
+     "name": "price",
+     "type": "number",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "currency",
+     "type": "string",
+     "required": true,
+     "choices": [
+      "USD",
+      "GBP",
+      "EUR",
+      "CAD",
+      "AUD",
+      "JPY",
+      "CHF",
+      "MXN",
+      "BRL",
+      "NZD",
+      "SEK",
+      "ZAR"
+     ]
+    }
+   ],
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "section": "marketplace-price-suggestions-get",
+   "action": "Get Price Suggestions",
+   "method": "GET",
+   "path": "/marketplace/price_suggestions/{release_id}",
+   "query": [],
+   "parameters": [
+    {
+     "name": "release_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "section": "marketplace-release-statistics-get",
+   "action": "Get Marketplace Stats",
+   "method": "GET",
+   "path": "/marketplace/stats/{release_id}",
+   "query": [
+    "curr_abbr"
+   ],
+   "parameters": [
+    {
+     "name": "release_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "curr_abbr",
+     "type": "string",
+     "required": false,
+     "choices": [
+      "USD",
+      "GBP",
+      "EUR",
+      "CAD",
+      "AUD",
+      "JPY",
+      "CHF",
+      "MXN",
+      "BRL",
+      "NZD",
+      "SEK",
+      "ZAR"
+     ]
+    }
+   ],
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "section": "inventory-export-export-your-inventory-post",
+   "action": "Export your inventory",
+   "method": "POST",
+   "path": "/inventory/export",
+   "query": [],
+   "parameters": [],
+   "responses": [
+    "200",
+    "401",
+    "409"
+   ]
+  },
+  {
+   "section": "inventory-export-get-recent-exports-get",
+   "action": "Get recent exports",
+   "method": "GET",
+   "path": "/inventory/export",
+   "query": [],
+   "parameters": [],
+   "responses": [
+    "200",
+    "401"
+   ]
+  },
+  {
+   "section": "inventory-export-get-an-export-get",
+   "action": "Get an export",
+   "method": "GET",
+   "path": "/inventory/export/{id}",
+   "query": [],
+   "parameters": [
+    {
+     "name": "id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "200",
+    "304",
+    "401",
+    "404"
+   ]
+  },
+  {
+   "section": "inventory-export-download-an-export-get",
+   "action": "Download an export",
+   "method": "GET",
+   "path": "/inventory/export/{id}/download",
+   "query": [],
+   "parameters": [
+    {
+     "name": "id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "200",
+    "401",
+    "404"
+   ]
+  },
+  {
+   "section": "inventory-upload-add-inventory-post",
+   "action": "Add inventory",
+   "method": "POST",
+   "path": "/inventory/upload/add",
+   "query": [],
+   "parameters": [
+    {
+     "name": "upload",
+     "type": "file",
+     "required": true,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "200",
+    "401",
+    "409",
+    "415",
+    "422"
+   ]
+  },
+  {
+   "section": "inventory-upload-change-inventory-post",
+   "action": "Change inventory",
+   "method": "POST",
+   "path": "/inventory/upload/change",
+   "query": [],
+   "parameters": [
+    {
+     "name": "upload",
+     "type": "file",
+     "required": true,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "200",
+    "401",
+    "409",
+    "415",
+    "422"
+   ]
+  },
+  {
+   "section": "inventory-upload-delete-inventory-post",
+   "action": "Delete inventory",
+   "method": "POST",
+   "path": "/inventory/upload/delete",
+   "query": [],
+   "parameters": [
+    {
+     "name": "upload",
+     "type": "file",
+     "required": true,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "200",
+    "401",
+    "409",
+    "415",
+    "422"
+   ]
+  },
+  {
+   "section": "inventory-upload-get-recent-uploads-get",
+   "action": "Get recent uploads",
+   "method": "GET",
+   "path": "/inventory/upload",
+   "query": [],
+   "parameters": [],
+   "responses": [
+    "200",
+    "401"
+   ]
+  },
+  {
+   "section": "inventory-upload-get-an-upload-get",
+   "action": "Get an upload",
+   "method": "GET",
+   "path": "/inventory/upload/{id}",
+   "query": [],
+   "parameters": [
+    {
+     "name": "id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "200",
+    "304",
+    "401",
+    "404"
+   ]
+  },
+  {
+   "section": "user-identity-identity-get",
+   "action": "Get Identity",
+   "method": "GET",
+   "path": "/oauth/identity",
+   "query": [],
+   "parameters": [],
+   "responses": [
+    "200",
+    "401"
+   ]
+  },
+  {
+   "section": "user-identity-profile-get",
+   "action": "Get Profile",
+   "method": "GET",
+   "path": "/users/{username}",
+   "query": [],
+   "parameters": [
+    {
+     "name": "username",
+     "type": "string",
+     "required": true,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "section": "user-identity-profile-post",
+   "action": "Edit Profile",
+   "method": "POST",
+   "path": "/users/{username}",
+   "query": [],
+   "parameters": [
+    {
+     "name": "username",
+     "type": "string",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "home_page",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "location",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "profile",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "curr_abbr",
+     "type": "string",
+     "required": false,
+     "choices": [
+      "USD",
+      "GBP",
+      "EUR",
+      "CAD",
+      "AUD",
+      "JPY",
+      "CHF",
+      "MXN",
+      "BRL",
+      "NZD",
+      "SEK",
+      "ZAR"
+     ]
+    }
+   ],
+   "responses": [
+    "200",
+    "403"
+   ]
+  },
+  {
+   "section": "user-identity-user-submissions-get",
+   "action": "Get Submissions",
+   "method": "GET",
+   "path": "/users/{username}/submissions",
+   "query": [],
+   "parameters": [
+    {
+     "name": "username",
+     "type": "string",
+     "required": true,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "section": "user-identity-user-contributions-get",
+   "action": "Get Contributions",
+   "method": "GET",
+   "path": "/users/{username}/contributions",
+   "query": [
+    "sort",
+    "sort_order"
+   ],
+   "parameters": [
+    {
+     "name": "username",
+     "type": "string",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "sort",
+     "type": "string",
+     "required": false,
+     "choices": [
+      "label",
+      "artist",
+      "title",
+      "catno",
+      "format",
+      "rating",
+      "year",
+      "added"
+     ]
+    },
+    {
+     "name": "sort_order",
+     "type": "string",
+     "required": false,
+     "choices": [
+      "asc",
+      "desc"
+     ]
+    }
+   ],
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "section": "user-collection-collection-get",
+   "action": "Get Collection Folders",
+   "method": "GET",
+   "path": "/users/{username}/collection/folders",
+   "query": [],
+   "parameters": [
+    {
+     "name": "username",
+     "type": "string",
+     "required": true,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "section": "user-collection-collection-post",
+   "action": "Create Folder",
+   "method": "POST",
+   "path": "/users/{username}/collection/folders",
+   "query": [],
+   "parameters": [
+    {
+     "name": "username",
+     "type": "string",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "required": false,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "section": "user-collection-collection-folder-get",
+   "action": "Get Folders",
+   "method": "GET",
+   "path": "/users/{username}/collection/folders/{folder_id}",
+   "query": [],
+   "parameters": [
+    {
+     "name": "username",
+     "type": "string",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "folder_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "section": "user-collection-collection-folder-post",
+   "action": "Edit Folder",
+   "method": "POST",
+   "path": "/users/{username}/collection/folders/{folder_id}",
+   "query": [],
+   "parameters": [
+    {
+     "name": "username",
+     "type": "string",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "folder_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "section": "user-collection-collection-folder-delete",
+   "action": "Delete Folder",
+   "method": "DELETE",
+   "path": "/users/{username}/collection/folders/{folder_id}",
+   "query": [],
+   "parameters": [
+    {
+     "name": "username",
+     "type": "string",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "folder_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "204"
+   ]
+  },
+  {
+   "section": "user-collection-collection-items-by-release-get",
+   "action": "Get Items By Release",
+   "method": "GET",
+   "path": "/users/{username}/collection/releases/{release_id}",
+   "query": [],
+   "parameters": [
+    {
+     "name": "username",
+     "type": "string",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "release_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "section": "user-collection-collection-items-by-folder-get",
+   "action": "Get Items",
+   "method": "GET",
+   "path": "/users/{username}/collection/folders/{folder_id}/releases",
+   "query": [
+    "sort",
+    "sort_order"
+   ],
+   "parameters": [
+    {
+     "name": "username",
+     "type": "string",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "folder_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "sort",
+     "type": "string",
+     "required": false,
+     "choices": [
+      "label",
+      "artist",
+      "title",
+      "catno",
+      "format",
+      "rating",
+      "added",
+      "year"
+     ]
+    },
+    {
+     "name": "sort_order",
+     "type": "string",
+     "required": false,
+     "choices": [
+      "asc",
+      "desc"
+     ]
+    }
+   ],
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "section": "user-collection-add-to-collection-folder-post",
+   "action": "Add Release",
+   "method": "POST",
+   "path": "/users/{username}/collection/folders/{folder_id}/releases/{release_id}",
+   "query": [],
+   "parameters": [
+    {
+     "name": "username",
+     "type": "string",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "folder_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "release_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "section": "user-collection-change-rating-of-release-post",
+   "action": "Change Rating",
+   "method": "POST",
+   "path": "/users/{username}/collection/folders/{folder_id}/releases/{release_id}/instances/{instance_id}",
+   "query": [],
+   "parameters": [
+    {
+     "name": "username",
+     "type": "string",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "folder_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "release_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "instance_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "folder_id",
+     "type": "number",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "rating",
+     "type": "number",
+     "required": false,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "204"
+   ]
+  },
+  {
+   "section": "user-collection-delete-instance-from-folder-delete",
+   "action": "Delete Instance",
+   "method": "DELETE",
+   "path": "/users/{username}/collection/folders/{folder_id}/releases/{release_id}/instances/{instance_id}",
+   "query": [],
+   "parameters": [
+    {
+     "name": "username",
+     "type": "string",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "folder_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "release_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "instance_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "204",
+    "403"
+   ]
+  },
+  {
+   "section": "user-collection-list-custom-fields-get",
+   "action": "List Fields",
+   "method": "GET",
+   "path": "/users/{username}/collection/fields",
+   "query": [],
+   "parameters": [
+    {
+     "name": "username",
+     "type": "string",
+     "required": true,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "section": "user-collection-edit-fields-instance-post",
+   "action": "Edit Fields",
+   "method": "POST",
+   "path": "/users/{username}/collection/folders/{folder_id}/releases/{release_id}/instances/{instance_id}/fields/{field_id}",
+   "query": [],
+   "parameters": [
+    {
+     "name": "username",
+     "type": "string",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "folder_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "release_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "instance_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "field_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "value",
+     "type": "string",
+     "required": true,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "204"
+   ]
+  },
+  {
+   "section": "user-collection-collection-value-get",
+   "action": "Get Collection Value",
+   "method": "GET",
+   "path": "/users/{username}/collection/value",
+   "query": [],
+   "parameters": [
+    {
+     "name": "username",
+     "type": "string",
+     "required": true,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "section": "user-wantlist-wantlist-get",
+   "action": "Get Wantlist",
+   "method": "GET",
+   "path": "/users/{username}/wants",
+   "query": [],
+   "parameters": [
+    {
+     "name": "username",
+     "type": "string",
+     "required": true,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "section": "user-wantlist-add-to-wantlist-put",
+   "action": "Add To Wantlist",
+   "method": "PUT",
+   "path": "/users/{username}/wants/{release_id}",
+   "query": [],
+   "parameters": [
+    {
+     "name": "username",
+     "type": "string",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "release_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "notes",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "rating",
+     "type": "integer",
+     "required": false,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "section": "user-wantlist-add-to-wantlist-post",
+   "action": "Edit Release In Wantlist",
+   "method": "POST",
+   "path": "/users/{username}/wants/{release_id}",
+   "query": [],
+   "parameters": [
+    {
+     "name": "username",
+     "type": "string",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "release_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "notes",
+     "type": "string",
+     "required": false,
+     "choices": []
+    },
+    {
+     "name": "rating",
+     "type": "integer",
+     "required": false,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "section": "user-wantlist-add-to-wantlist-delete",
+   "action": "Delete Release From Wantlist",
+   "method": "DELETE",
+   "path": "/users/{username}/wants/{release_id}",
+   "query": [],
+   "parameters": [
+    {
+     "name": "username",
+     "type": "string",
+     "required": true,
+     "choices": []
+    },
+    {
+     "name": "release_id",
+     "type": "integer",
+     "required": true,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "204"
+   ]
+  },
+  {
+   "section": "user-lists-user-lists-get",
+   "action": "Get Lists",
+   "method": "GET",
+   "path": "/users/{username}/lists",
+   "query": [],
+   "parameters": [
+    {
+     "name": "username",
+     "type": "string",
+     "required": true,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "section": "user-lists-list-get",
+   "action": "Get List Items",
+   "method": "GET",
+   "path": "/lists/{list_id}",
+   "query": [],
+   "parameters": [
+    {
+     "name": "list_id",
+     "type": "string",
+     "required": true,
+     "choices": []
+    }
+   ],
+   "responses": [
+    "200"
+   ]
+  }
+ ]
+}

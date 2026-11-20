@@ -28,7 +28,7 @@ TOKEN_ENV_NAMES = ("DISCOGS_USER_TOKEN", "DISCOGS_API_TOKEN", "DISCOGS_TOKEN")
 class _RejectRedirectHandler(HTTPRedirectHandler):
     """Keep credentials on the already validated request URL only."""
 
-    def redirect_request(self, req, fp, code, msg, headers, newurl):  # noqa: ANN001
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
         return None
 
 
@@ -61,7 +61,7 @@ class DiscogsClient:
     @classmethod
     def from_payload(
         cls, config: dict[str, Any], secrets: dict[str, Any] | None = None
-    ) -> "DiscogsClient":
+    ) -> DiscogsClient:
         merged = dict(config)
         secrets = secrets or {}
         token = as_text(secrets.get("user_token") or merged.get("user_token"))
@@ -154,17 +154,21 @@ class DiscogsClient:
             headers["Content-Type"] = "application/json"
         request = Request(url, data=data, headers=headers, method=method)
         try:
-            with urlopen(request, timeout=10) as response:  # noqa: S310 - URL is validated above.
+            with urlopen(request, timeout=10) as response:
                 raw = response.read(MAX_RESPONSE_BYTES + 1)
                 if len(raw) > MAX_RESPONSE_BYTES:
                     return {"ok": False, "error": "provider_response_too_large"}
                 payload = _decode_json(raw)
-                return {
+                result = {
                     "ok": True,
                     "status_code": int(getattr(response, "status", 200)),
                     "body": payload,
                     "rate_limit": _rate_limit_from_headers(response.headers),
                 }
+                location = _header(response.headers, "Location")
+                if location:
+                    result["location"] = location
+                return result
         except HTTPError as exc:
             return {
                 "ok": False,
@@ -349,6 +353,29 @@ class DiscogsClient:
                 "body": {"releases": [{"id": 249504, "instance_id": 77, "folder_id": 1}]},
                 "rate_limit": rate_limit,
             }
+        if path.endswith("/inventory") and path.startswith("/users/"):
+            page = max(1, as_int(params.get("page"), 1))
+            per_page = max(1, as_int(params.get("per_page"), 50))
+            total = 3
+            first = (page - 1) * per_page
+            return {
+                "ok": True,
+                "status_code": 200,
+                "body": {
+                    "pagination": {
+                        "page": page,
+                        "pages": max(1, -(-total // per_page)),
+                        "per_page": per_page,
+                        "items": total,
+                        "urls": {},
+                    },
+                    "listings": [
+                        {"id": 1000 + index, "status": "For Sale", "release": {"id": 249504}}
+                        for index in range(first, min(total, first + per_page))
+                    ],
+                },
+                "rate_limit": rate_limit,
+            }
         if "/wants/" in path:
             return {
                 "ok": True,
@@ -451,13 +478,19 @@ def _decode_json(raw: bytes) -> Any:
         return {"text": text[:1000]}
 
 
+def _header(headers: Any, name: str) -> str:
+    try:
+        value = headers.get(name)
+    except AttributeError:
+        value = None
+    return as_text(value)
+
+
 def _rate_limit_from_headers(headers: Any) -> dict[str, int | None]:
+    # Discogs documents and sends X-Discogs-Ratelimit*; the unprefixed names are a fallback.
     def _get(name: str) -> int | None:
-        try:
-            value = headers.get(name)
-        except AttributeError:
-            value = None
-        return as_int(value, 0) if value not in (None, "") else None
+        value = _header(headers, f"X-{name}") or _header(headers, name)
+        return as_int(value, 0) if value else None
 
     return {
         "limit": _get("Discogs-Ratelimit"),

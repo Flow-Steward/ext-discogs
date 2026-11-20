@@ -6,7 +6,7 @@ For the upstream API reference, see [Discogs developer documentation](https://ww
 
 Research record releases, enrich a music catalog and manage Discogs account tasks from Flow Steward workflows. Search releases, masters, artists and labels using filters such as artist, release title, year, barcode or catalog number. Look up individual records, explore master versions and artist or label releases, and return result objects with pagination for subsequent workflow steps.
 
-Marketplace operations cover listings, release sales statistics, price suggestions, fee calculations, orders and order messages. Collection and wantlist operations let workflows inspect folders, release instances and custom collection fields, then add, update or remove supported items. The release also exposes user profiles, contributions, submissions, lists, release ratings and inventory export or upload operations.
+Marketplace operations cover listings, release sales statistics, price suggestions, fee calculations, orders and order messages. Collection and wantlist operations let workflows inspect folders, release instances and custom collection fields, then add, update or remove supported items. The release also exposes user profiles and profile edits, contributions, submissions, lists and their items, personal and community release ratings, collection value, seller inventory reads, and inventory export or upload operations with their status.
 
 Use these functions to enrich a record catalog, research a pressing, compare collection holdings against a wantlist, or connect record-selling tasks to other systems. Write operations require a token, explicit enablement and confirmation. Discogs permissions and rate limits still apply. This is a Flow Steward-maintained integration with Discogs; the returned marketplace information does not itself place a purchase.
 
@@ -36,6 +36,27 @@ Logo: `icon.png` at the bundle root (the original Discogs vinyl-record mark; PNG
 - Check authenticated collection and wantlist state.
 - Add/remove wantlist entries and collection instances when write actions are
   explicitly enabled.
+- Read a seller inventory one page at a time or completely, with an exact
+  continuation page and a check of every page against its pagination.
+- Request inventory exports and follow exports and inventory uploads by ID.
+- Read community release ratings, collection value, the copies of a release in
+  a collection and the items of a saved list; rate or move a collection copy,
+  edit a wanted release and edit the account profile.
+- Return the Discogs rate-limit window (`result.rate_limit`) from every action.
+
+## API coverage
+
+Every method and address in the Discogs developer documentation is a workflow
+action, except the two OAuth 1.0a login addresses (`GET /oauth/request_token`,
+`POST /oauth/access_token`): the extension authenticates with a personal user
+token. `tests/test_api_reference_coverage.py` checks this against
+`tests/reference/discogs_api_endpoints.json`, the facts extracted from a saved
+copy of the documentation by `scripts/extract_api_reference.py` (SHA-256 of the
+copy recorded in the file).
+
+`tests/test_live_discogs.py` reads Discogs live, with GET requests only, when
+`DISCOGS_TOKEN_FILE` names a file holding a user token; otherwise it is
+skipped.
 
 ## Authentication
 

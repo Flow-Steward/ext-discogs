@@ -23,3 +23,9 @@ content: |
   **List custom collection fields**: Read the account’s custom collection field definitions and IDs before updating a field on an owned copy.
 
   **Set a custom field on a collection copy**: Save a value for one custom collection field on a specific owned copy. Requires folder, release, instance and field IDs, enabled writes and confirmation.
+
+  **Find a release in a collection**: Read every owned copy of one release in the account’s collection, across all folders, with folder and instance IDs. A private collection requires the owner’s token.
+
+  **Rate or move a collection copy**: Change the rating of one owned copy and/or move it to another folder, using its current folder, release and instance IDs. Requires enabled writes and confirmation.
+
+  **Get collection value**: Read the minimum, median and maximum value of the account’s collection. Requires the collection owner’s token.
