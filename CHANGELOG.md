@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.8 - 2026-11-24
+
+- Update development PyYAML to 6.0.4.
+
 ## 0.2.7
 
 ### Added
